@@ -35,8 +35,12 @@ export default async function MembersPage({
   return (
     <div className="w-full space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-primary sm:text-2xl">ค้นหาสมาชิก</h1>
-        <p className="text-sm text-on-surface-variant">ค้นหาสมาชิกจากชื่อหรือชื่อผู้ใช้</p>
+        <h1 className="text-xl font-bold text-primary sm:text-2xl">
+          ค้นหาสมาชิก
+        </h1>
+        <p className="text-sm text-on-surface-variant">
+          ค้นหาสมาชิกจากชื่อหรือชื่อผู้ใช้
+        </p>
       </div>
 
       <form action="/members" method="get" className="relative">
@@ -55,13 +59,22 @@ export default async function MembersPage({
           <Link
             key={p.username}
             href={`/u/${p.username}`}
-            className="flex items-center gap-3 p-4 hover:bg-surface-container-low"
+            className="flex items-center gap-3 px-3 py-2 hover:bg-surface-container-low"
           >
-            <Avatar src={(p as any).avatar_url} name={p.display_name || p.username} role={(p as any).role} size={40} />
+            <Avatar
+              src={(p as any).avatar_url}
+              name={p.display_name || p.username}
+              role={(p as any).role}
+              size={40}
+            />
             <div className="flex-1 min-w-0">
-              <p className="truncate font-medium">{p.display_name || p.username}</p>
+              <p className="truncate font-medium">
+                {p.display_name || p.username}
+              </p>
               <div className="flex items-center gap-2">
-                <span className="truncate text-xs text-on-surface-variant">@{p.username}</span>
+                <span className="truncate text-xs text-on-surface-variant">
+                  @{p.username}
+                </span>
                 <LevelBadge levelId={p.level_id} />
               </div>
             </div>

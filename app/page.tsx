@@ -488,7 +488,7 @@ function PopularRow({ t }: { t: any }) {
       minute: "2-digit",
     }) + " น.";
   return (
-    <div className="flex items-center gap-3 p-4 hover:bg-surface-container-low">
+    <div className="flex items-center gap-3 px-3 py-2 hover:bg-surface-container-low">
       <Flame className="h-5 w-5 shrink-0 text-orange-500" />
       <div className="min-w-0 flex-1">
         <Link

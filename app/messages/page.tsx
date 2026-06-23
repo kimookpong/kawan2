@@ -10,7 +10,9 @@ export const metadata = {
 
 export default async function MessagesPage() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login?redirect=/messages");
 
   const { data: memberships } = await supabase
@@ -30,17 +32,21 @@ export default async function MessagesPage() {
     : { data: [] as any[] };
 
   const otherByConv = new Map<number, any>();
-  (others ?? []).forEach((o: any) => otherByConv.set(o.conversation_id, o.profiles));
+  (others ?? []).forEach((o: any) =>
+    otherByConv.set(o.conversation_id, o.profiles),
+  );
 
   const sorted = [...(memberships ?? [])].sort(
     (a: any, b: any) =>
       new Date(b.conversations?.last_message_at ?? 0).getTime() -
-      new Date(a.conversations?.last_message_at ?? 0).getTime()
+      new Date(a.conversations?.last_message_at ?? 0).getTime(),
   );
 
   return (
     <div className="w-full">
-      <h1 className="mb-4 text-xl font-bold text-primary sm:text-2xl">ข้อความ</h1>
+      <h1 className="mb-4 text-xl font-bold text-primary sm:text-2xl">
+        ข้อความ
+      </h1>
       <div className="card divide-y divide-outline-variant">
         {sorted.length > 0 ? (
           sorted.map((m: any) => {
@@ -49,14 +55,22 @@ export default async function MessagesPage() {
               <Link
                 key={m.conversation_id}
                 href={`/messages/${m.conversation_id}`}
-                className="flex items-center gap-3 p-4 hover:bg-surface-container-low"
+                className="flex items-center gap-3 px-3 py-2 hover:bg-surface-container-low"
               >
-                <Avatar src={other?.avatar_url} name={other?.display_name || other?.username} size={40} />
+                <Avatar
+                  src={other?.avatar_url}
+                  name={other?.display_name || other?.username}
+                  size={40}
+                />
                 <div className="flex-1">
-                  <p className="font-medium">{other?.display_name || other?.username || "ผู้ใช้"}</p>
+                  <p className="font-medium">
+                    {other?.display_name || other?.username || "ผู้ใช้"}
+                  </p>
                   <p className="text-xs text-on-surface-variant">
                     {m.conversations?.last_message_at &&
-                      new Date(m.conversations.last_message_at).toLocaleString("th-TH")}
+                      new Date(m.conversations.last_message_at).toLocaleString(
+                        "th-TH",
+                      )}
                   </p>
                 </div>
               </Link>
