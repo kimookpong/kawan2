@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { AppShell } from "@/components/layout/app-shell";
 import { Footer } from "@/components/layout/footer";
 import { createClient } from "@/lib/supabase/server";
@@ -63,6 +64,7 @@ export default async function RootLayout({
           <div className="min-h-[70vh] px-4 py-6 md:px-6">{children}</div>
           <Footer />
         </AppShell>
+        <Analytics />
       </body>
     </html>
   );
