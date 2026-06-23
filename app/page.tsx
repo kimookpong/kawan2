@@ -46,7 +46,7 @@ export default async function HomePage() {
       .select("id, title, slug, excerpt, cover_url, category, published_at")
       .eq("status", "published")
       .order("published_at", { ascending: false })
-      .limit(7),
+      .limit(8),
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("threads").select("*", { count: "exact", head: true }),
     supabase.from("posts").select("*", { count: "exact", head: true }),
@@ -92,7 +92,7 @@ export default async function HomePage() {
   // ข่าวที่เหลือ (ไม่รวม featured) สำหรับการ์ดเล็ก
   const otherNews = (news ?? [])
     .filter((n: any) => n.id !== featured?.id)
-    .slice(0, 6);
+    .slice(0, 7);
   const hero = featured ?? (news ?? [])[0];
 
   // จัดกลุ่มกระทู้ตามหมวด สำหรับกล่องเว็บบอร์ด (เรียงปักหมุดขึ้นก่อน)
