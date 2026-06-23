@@ -30,7 +30,7 @@ export default async function AdminLevelsPage({
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold text-primary">จัดการระดับสมาชิก</h1>
+        <h1 className="text-xl font-bold text-primary sm:text-2xl">จัดการระดับสมาชิก</h1>
         <p className="text-sm text-on-surface-variant">
           แก้ชื่อและคะแนนขั้นต่ำของแต่ละระดับ — เมื่อบันทึก ระบบจะคำนวณระดับของสมาชิกทุกคนใหม่ทันที
         </p>

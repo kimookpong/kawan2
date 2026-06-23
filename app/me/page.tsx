@@ -50,7 +50,7 @@ export default async function MePage({ searchParams }: { searchParams: { error?:
 
   return (
     <div className="w-full max-w-2xl">
-      <h1 className="mb-4 text-2xl font-bold text-primary">ตั้งค่าโปรไฟล์</h1>
+      <h1 className="mb-4 text-xl font-bold text-primary sm:text-2xl">ตั้งค่าโปรไฟล์</h1>
 
       {searchParams.ok && (
         <p className="mb-4 flex items-center gap-2 rounded border border-primary/30 bg-primary-container/5 px-3 py-2 text-sm text-primary">

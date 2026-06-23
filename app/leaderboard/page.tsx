@@ -15,7 +15,7 @@ export default async function LeaderboardPage() {
 
   return (
     <div className="w-full space-y-4">
-      <h1 className="text-2xl font-bold text-primary">หอเกียรติยศ</h1>
+      <h1 className="text-xl font-bold text-primary sm:text-2xl">หอเกียรติยศ</h1>
       <p className="text-sm text-on-surface-variant">จัดอันดับสมาชิกตามคะแนนสะสม</p>
 
       <div className="card divide-y divide-outline-variant">

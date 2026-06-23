@@ -218,7 +218,7 @@ export default async function ProfilePage({
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="card p-4 text-center">
-      <p className="text-2xl font-bold text-primary">{value.toLocaleString("th-TH")}</p>
+      <p className="text-xl font-bold text-primary sm:text-2xl">{value.toLocaleString("th-TH")}</p>
       <p className="text-xs text-on-surface-variant">{label}</p>
     </div>
   );

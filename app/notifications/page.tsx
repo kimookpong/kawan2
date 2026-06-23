@@ -24,7 +24,7 @@ export default async function NotificationsPage() {
 
   return (
     <div className="w-full space-y-4">
-      <h1 className="text-2xl font-bold text-primary">การแจ้งเตือน</h1>
+      <h1 className="text-xl font-bold text-primary sm:text-2xl">การแจ้งเตือน</h1>
       <div className="card divide-y divide-outline-variant">
         {(notifs ?? []).map((n) => (
           <div key={n.id} className={`p-4 ${n.is_read ? "" : "bg-primary-container/5"}`}>

@@ -38,8 +38,12 @@ export default async function HomePage() {
       .eq("status", "published").order("created_at", { ascending: false }).limit(60),
     supabase.from("threads")
       .select("id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)")
-      .eq("status", "published").order("like_count", { ascending: false }).order("view_count", { ascending: false }).limit(6),
-    supabase.from("profiles").select("username, display_name, reputation, level_id, role, avatar_url").order("reputation", { ascending: false }).limit(8),
+      .eq("status", "published")
+      .gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString())
+      .order("like_count", { ascending: false }).order("view_count", { ascending: false }).limit(10),
+    supabase.from("weekly_top_members")
+      .select("username, display_name, level_id, role, avatar_url, weekly_points")
+      .order("weekly_points", { ascending: false }).limit(10),
     supabase.from("events").select("id, title, location, cover_url, starts_at, provinces(name_th)")
       .gte("starts_at", new Date().toISOString()).order("starts_at").limit(4),
   ]);
@@ -188,7 +192,7 @@ export default async function HomePage() {
       {/* ===== 5) กระทู้ยอดนิยม + สมาชิกเด่น ===== */}
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <SectionHead title="กระทู้ยอดนิยม" href="/board" />
+          <SectionHead title="กระทู้ยอดนิยมประจำสัปดาห์" href="/board" />
           <div className="card divide-y divide-outline-variant">
             {(popular ?? []).length > 0 ? (
               (popular ?? []).map((t: any, i: number) => <PopularRow key={t.id} t={t} rank={i + 1} />)
@@ -199,7 +203,7 @@ export default async function HomePage() {
         </div>
 
         <aside>
-          <SectionHead title="สมาชิกเด่น" href="/leaderboard" />
+          <SectionHead title="สมาชิกเด่นประจำสัปดาห์" href="/leaderboard" />
           <div className="card divide-y divide-outline-variant">
             {(topMembers ?? []).length > 0 ? (
               (topMembers ?? []).map((m: any, i: number) => <MemberRow key={m.username} m={m} rank={i + 1} />)
@@ -344,7 +348,10 @@ function MemberRow({ m, rank }: { m: any; rank: number }) {
         <p className="truncate text-sm font-medium">{m.display_name || m.username}</p>
         <LevelBadge levelId={m.level_id} />
       </div>
-      <span className="shrink-0 text-sm font-bold text-primary">{m.reputation.toLocaleString("th-TH")}</span>
+      <span className="shrink-0 text-right text-sm font-bold text-primary">
+        +{(m.weekly_points ?? 0).toLocaleString("th-TH")}
+        <span className="block text-[10px] font-normal text-on-surface-variant">สัปดาห์นี้</span>
+      </span>
     </Link>
   );
 }

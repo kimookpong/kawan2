@@ -47,9 +47,9 @@ export default async function ThreadPage({ params }: { params: { id: string } })
       </nav>
 
       {/* header */}
-      <div className="flex items-start justify-between gap-3">
-        <h1 className="flex items-start gap-2 text-2xl font-bold text-on-surface">
-          {thread.is_pinned && <Pin className="mt-1.5 h-5 w-5 shrink-0 text-tertiary-container" />}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <h1 className="flex items-start gap-2 text-xl font-bold text-on-surface sm:text-2xl">
+          {thread.is_pinned && <Pin className="mt-1 h-5 w-5 shrink-0 text-tertiary-container" />}
           {thread.title}
         </h1>
         <div className="flex shrink-0 flex-wrap gap-2">

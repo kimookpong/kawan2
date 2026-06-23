@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: { params: { category: str
     <div className="w-full space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-primary">{category.name_th}</h1>
+          <h1 className="text-xl font-bold text-primary sm:text-2xl">{category.name_th}</h1>
           <p className="text-sm text-on-surface-variant">{category.description}</p>
         </div>
         <Link href="/board/new" className="btn-accent inline-flex items-center gap-1"><Plus className="h-4 w-4" /> สร้างกระทู้</Link>

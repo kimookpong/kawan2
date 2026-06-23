@@ -43,7 +43,7 @@ export default async function MembershipPage({
     <div className="w-full space-y-6">
       <div className="text-center">
         <p className="text-xs font-bold tracking-widest text-emerald-600">JOIN · MEMBERSHIP</p>
-        <h1 className="mt-2 text-3xl font-bold text-primary">ร่วมสนับสนุนค่าเซิฟเวอร์</h1>
+        <h1 className="mt-2 text-2xl font-bold text-primary sm:text-3xl">ร่วมสนับสนุนค่าเซิฟเวอร์</h1>
         <p className="mt-2 text-on-surface-variant">
           ปิดโฆษณา รับ EXP เพิ่ม มีตราสมาชิก — และสิทธิพิเศษอื่นๆ
         </p>

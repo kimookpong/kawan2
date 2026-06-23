@@ -10,7 +10,7 @@ export default function SignupPage({
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4">
       <div className="rounded-lg border border-outline-variant bg-surface-container-lowest p-8">
-        <h1 className="text-2xl font-bold text-primary">สมัครสมาชิก</h1>
+        <h1 className="text-xl font-bold text-primary sm:text-2xl">สมัครสมาชิก</h1>
         <p className="mt-1 text-sm text-on-surface-variant">
           ร่วมเป็นส่วนหนึ่งของชุมชนชายแดนใต้
         </p>

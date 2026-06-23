@@ -24,7 +24,7 @@ export default async function NewsPage() {
   return (
     <div className="w-full space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-primary">ข่าวสารภูมิภาค</h1>
+        <h1 className="text-xl font-bold text-primary sm:text-2xl">ข่าวสารภูมิภาค</h1>
         {canWrite && (
           <Link href="/news/new" className="btn-accent inline-flex items-center gap-1">
             <Plus className="h-4 w-4" /> เขียนข่าว

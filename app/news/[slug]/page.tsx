@@ -49,9 +49,9 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
       )}
 
       {/* header */}
-      <div className="flex items-start justify-between gap-3">
-        <h1 className="text-2xl font-bold text-on-surface">{news.title}</h1>
-        <div className="flex shrink-0 gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <h1 className="text-xl font-bold text-on-surface sm:text-2xl">{news.title}</h1>
+        <div className="flex shrink-0 flex-wrap gap-2">
           {canEdit && (
             <Link href={`/news/${params.slug}/edit`} className="btn-outline gap-1"><Pencil className="h-4 w-4" /> แก้ไข</Link>
           )}

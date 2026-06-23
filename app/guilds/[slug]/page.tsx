@@ -21,11 +21,13 @@ export default async function GuildPage({
 
   if (!guild) notFound();
 
-  const { data: members } = await supabase
-    .from("guild_members")
-    .select("role, joined_at, profiles(username, display_name, avatar_url, level_id, role)")
-    .eq("guild_id", guild.id)
-    .order("joined_at");
+  const [{ data: members }, { data: ranking }] = await Promise.all([
+    supabase.from("guild_members")
+      .select("role, joined_at, profiles(username, display_name, avatar_url, level_id, role)")
+      .eq("guild_id", guild.id).order("joined_at"),
+    supabase.from("guild_rankings").select("total_points").eq("id", guild.id).maybeSingle(),
+  ]);
+  const totalPoints = ranking?.total_points ?? 0;
 
   const { data: { user } } = await supabase.auth.getUser();
   let myGuildId: number | null = null;
@@ -58,13 +60,13 @@ export default async function GuildPage({
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-bold text-on-surface">{guild.name}</h1>
+              <h1 className="text-xl font-bold text-on-surface sm:text-2xl">{guild.name}</h1>
               {guild.is_official && <span className="chip bg-amber-100 text-amber-800">ทางการ</span>}
             </div>
-            <p className="mt-1 flex items-center gap-2 text-sm text-on-surface-variant">
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-on-surface-variant">
               <span className="inline-flex items-center gap-1"><Users className="h-4 w-4" /> {guild.member_count} สมาชิก</span>
-              · XP {guild.xp}
-              {owner && <> · หัวหน้า <Link href={`/u/${owner.username}`} className="text-primary hover:underline">{owner.display_name || owner.username}</Link></>}
+              <span className="font-medium text-primary">{totalPoints.toLocaleString("th-TH")} แต้มรวม</span>
+              {owner && <span>· หัวหน้า <Link href={`/u/${owner.username}`} className="text-primary hover:underline">{owner.display_name || owner.username}</Link></span>}
             </p>
           </div>
 

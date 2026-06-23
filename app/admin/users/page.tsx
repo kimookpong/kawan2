@@ -32,7 +32,7 @@ export default async function AdminUsersPage({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-primary">จัดการสมาชิก</h1>
+        <h1 className="text-xl font-bold text-primary sm:text-2xl">จัดการสมาชิก</h1>
         <form className="flex gap-2" action="/admin/users">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-on-surface-variant" />

@@ -35,7 +35,7 @@ export default async function MessagesPage() {
 
   return (
     <div className="w-full">
-      <h1 className="mb-4 text-2xl font-bold text-primary">ข้อความ</h1>
+      <h1 className="mb-4 text-xl font-bold text-primary sm:text-2xl">ข้อความ</h1>
       <div className="card divide-y divide-outline-variant">
         {sorted.length > 0 ? (
           sorted.map((m: any) => {

@@ -21,7 +21,7 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-primary">ภาพรวมระบบ</h1>
+      <h1 className="text-xl font-bold text-primary sm:text-2xl">ภาพรวมระบบ</h1>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard icon={<Users className="h-5 w-5" />} label="สมาชิก" value={members ?? 0} />
@@ -47,7 +47,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   return (
     <div className="card p-4">
       <div className="flex items-center gap-2 text-primary">{icon}<span className="text-xs text-on-surface-variant">{label}</span></div>
-      <p className="mt-1 text-2xl font-bold text-primary">{value.toLocaleString("th-TH")}</p>
+      <p className="mt-1 text-xl font-bold text-primary sm:text-2xl">{value.toLocaleString("th-TH")}</p>
     </div>
   );
 }
@@ -55,7 +55,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 function RoleStat({ label, value }: { label: string; value: number }) {
   return (
     <div>
-      <p className="text-2xl font-bold text-on-surface">{value.toLocaleString("th-TH")}</p>
+      <p className="text-xl font-bold text-on-surface sm:text-2xl">{value.toLocaleString("th-TH")}</p>
       <p className="text-xs text-on-surface-variant">{label}</p>
     </div>
   );
