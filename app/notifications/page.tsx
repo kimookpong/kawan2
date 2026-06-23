@@ -8,6 +8,7 @@ const TYPE_LABEL: Record<string, string> = {
   badge: "คุณได้รับเหรียญรางวัล",
   level_up: "คุณเลื่อนระดับสมาชิก",
   ban: "บัญชีของคุณถูกระงับการใช้งาน",
+  report: "มีการรายงานเนื้อหาใหม่ (รอแอดมินตรวจสอบ)",
 };
 
 export const metadata = {

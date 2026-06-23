@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Bookmark, Heart, Lock, CornerUpLeft, MoreHorizontal, Pin, PinOff } from "lucide-react";
+import { Bookmark, Heart, Lock, CornerUpLeft, Pin, PinOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createReply, setThreadPin, reactThread, reactPost } from "@/app/board/actions";
 import { AuthorCard } from "@/components/board/author-card";
@@ -131,14 +131,25 @@ export default async function ThreadPage({ params }: { params: { id: string } })
       <article className="card flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
         <AuthorCard author={thread.profiles as any} />
         <div className="min-w-0 flex-1 border-t border-outline-variant pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
-          <p className="text-xs text-on-surface-variant">
+          <h1 className="flex items-start gap-2 text-xl font-bold text-on-surface sm:text-2xl">
+            {thread.is_pinned && <Pin className="mt-1 h-5 w-5 shrink-0 text-tertiary-container" />}
+            {thread.title}
+          </h1>
+          <p className="mt-1 text-xs text-on-surface-variant">
             โพสต์เมื่อ {new Date(thread.created_at).toLocaleString("th-TH")} · {thread.view_count} อ่าน
           </p>
           <div className="bbcode mt-3 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(thread.body) }} />
           <div className="mt-5 flex items-center gap-4 border-t border-outline-variant pt-3 text-sm text-on-surface-variant">
-            <span className="inline-flex items-center gap-1"><Heart className="h-4 w-4" /> ถูกใจ ({thread.like_count})</span>
+            <form action={reactThread}>
+              <input type="hidden" name="thread_id" value={threadId} />
+              <button className={`inline-flex items-center gap-1 ${likedThread ? "font-medium text-primary" : "hover:text-primary"}`}>
+                <Heart className={`h-4 w-4 ${likedThread ? "fill-current" : ""}`} /> ถูกใจ ({thread.like_count})
+              </button>
+            </form>
             <a href="#reply" className="inline-flex items-center gap-1 hover:text-primary"><CornerUpLeft className="h-4 w-4" /> ตอบกลับ</a>
-            <button className="ml-auto"><MoreHorizontal className="h-4 w-4" /></button>
+            <div className="ml-auto">
+              <ReportButton targetType="thread" targetId={threadId} />
+            </div>
           </div>
         </div>
       </article>
@@ -159,8 +170,17 @@ export default async function ThreadPage({ params }: { params: { id: string } })
               </div>
               <div className="bbcode mt-2 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(p.body) }} />
               <div className="mt-3 flex items-center gap-4 text-xs text-on-surface-variant">
-                <span className="inline-flex items-center gap-1"><Heart className="h-3.5 w-3.5" /> {p.like_count} ถูกใจ</span>
+                <form action={reactPost}>
+                  <input type="hidden" name="post_id" value={p.id} />
+                  <input type="hidden" name="thread_id" value={threadId} />
+                  <button className={`inline-flex items-center gap-1 ${likedPosts.has(p.id) ? "font-medium text-primary" : "hover:text-primary"}`}>
+                    <Heart className={`h-3.5 w-3.5 ${likedPosts.has(p.id) ? "fill-current" : ""}`} /> {p.like_count} ถูกใจ
+                  </button>
+                </form>
                 <QuoteButton author={p.profiles?.display_name || p.profiles?.username || "สมาชิก"} body={p.body} />
+                <div className="ml-auto">
+                  <ReportButton targetType="post" targetId={p.id} />
+                </div>
               </div>
             </div>
           </div>

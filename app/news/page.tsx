@@ -42,11 +42,17 @@ export default async function NewsPage() {
           const commentCount = n.news_comments?.[0]?.count ?? 0;
           return (
             <Link key={n.id} href={`/news/${n.slug}`} className="card flex flex-col overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:shadow-card">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={n.cover_url || NEWS_FALLBACK_IMG} alt="" className="h-40 w-full object-cover" />
+              <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={n.cover_url || NEWS_FALLBACK_IMG} alt="" className="h-40 w-full object-cover" />
+                {n.category && (
+                  <span className="chip absolute bottom-2 left-2 bg-primary text-on-primary shadow-sm">
+                    {n.category}
+                  </span>
+                )}
+              </div>
               <div className="flex flex-1 flex-col p-4">
-                {n.category && <span className="chip bg-primary-container/10 text-primary">{n.category}</span>}
-                <h2 className="mt-2 font-semibold text-on-surface">{n.title}</h2>
+                <h2 className="font-semibold text-on-surface">{n.title}</h2>
                 <p className="mt-1 line-clamp-2 text-sm text-on-surface-variant">{n.excerpt}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-outline-variant pt-3 text-xs text-on-surface-variant">
                   {n.published_at && (

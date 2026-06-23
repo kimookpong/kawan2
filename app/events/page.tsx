@@ -1,5 +1,7 @@
-import { MapPin } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Plus, Pencil, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { deleteEvent } from "./actions";
 
 export const revalidate = 120;
 
@@ -17,9 +19,25 @@ export default async function EventsPage() {
     .order("starts_at")
     .limit(30);
 
+  const { data: { user } } = await supabase.auth.getUser();
+  let role: string | null = null;
+  if (user) {
+    const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    role = me?.role ?? null;
+  }
+  const isStaff = role === "admin" || role === "editor";
+  const isAdmin = role === "admin";
+
   return (
     <div className="w-full space-y-6">
-      <h1 className="text-xl font-bold text-primary sm:text-2xl">ปฏิทินกิจกรรม</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-primary sm:text-2xl">ปฏิทินกิจกรรม</h1>
+        {isStaff && (
+          <Link href="/events/new" className="btn-accent inline-flex items-center gap-1">
+            <Plus className="h-4 w-4" /> เพิ่มกิจกรรม
+          </Link>
+        )}
+      </div>
 
       {events && events.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -45,6 +63,25 @@ export default async function EventsPage() {
                   <p className="mt-2 flex items-center gap-1 text-xs text-on-surface-variant">
                     <MapPin className="h-3.5 w-3.5 shrink-0" /> {e.location}
                   </p>
+
+                  {isStaff && (
+                    <div className="mt-3 flex items-center gap-2 border-t border-outline-variant pt-3">
+                      <Link
+                        href={`/events/${e.id}/edit`}
+                        className="inline-flex items-center gap-1 rounded-lg border border-outline-variant px-3 py-1.5 text-xs font-medium text-on-surface-variant hover:bg-surface-container-low"
+                      >
+                        <Pencil className="h-3.5 w-3.5" /> แก้ไข
+                      </Link>
+                      {isAdmin && (
+                        <form action={deleteEvent}>
+                          <input type="hidden" name="id" value={e.id} />
+                          <button className="inline-flex items-center gap-1 rounded-lg border border-error/40 px-3 py-1.5 text-xs font-medium text-error hover:bg-error-container">
+                            <Trash2 className="h-3.5 w-3.5" /> ลบ
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             );

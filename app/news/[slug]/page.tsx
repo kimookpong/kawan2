@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Bookmark, Heart, MessageSquare, MoreHorizontal, Pencil } from "lucide-react";
+import { Bookmark, MessageSquare, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createNewsComment } from "../actions";
 import { AuthorCard } from "@/components/board/author-card";
@@ -9,6 +9,7 @@ import { QuoteButton } from "@/components/board/quote-button";
 import { renderBBCode } from "@/lib/bbcode";
 import { JsonLd } from "@/components/seo/json-ld";
 import { ShareButtons } from "@/components/share-buttons";
+import { ReportButton } from "@/components/report-button";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const supabase = createClient();
@@ -111,16 +112,13 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
         </p>
       )}
 
-      {/* header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <h1 className="text-xl font-bold text-on-surface sm:text-2xl">{news.title}</h1>
-        <div className="flex shrink-0 flex-wrap gap-2">
-          {canEdit && (
-            <Link href={`/news/${params.slug}/edit`} className="btn-outline gap-1"><Pencil className="h-4 w-4" /> แก้ไข</Link>
-          )}
-          <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
-          <a href="#comments" className="btn-primary gap-1"><MessageSquare className="h-4 w-4" /> แสดงความเห็น</a>
-        </div>
+      {/* header actions */}
+      <div className="flex flex-wrap justify-end gap-2">
+        {canEdit && (
+          <Link href={`/news/${params.slug}/edit`} className="btn-outline gap-1"><Pencil className="h-4 w-4" /> แก้ไข</Link>
+        )}
+        <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
+        <a href="#comments" className="btn-primary gap-1"><MessageSquare className="h-4 w-4" /> แสดงความเห็น</a>
       </div>
 
       <ShareButtons title={news.title} />
@@ -129,7 +127,8 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
       <article className="card flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
         <AuthorCard author={news.profiles as any} />
         <div className="min-w-0 flex-1 border-t border-outline-variant pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
+          <h1 className="text-xl font-bold text-on-surface sm:text-2xl">{news.title}</h1>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
             {news.category && <span className="chip bg-primary-container/10 text-primary">{news.category}</span>}
             <span>
               เผยแพร่เมื่อ {news.published_at && new Date(news.published_at).toLocaleString("th-TH")}
@@ -145,11 +144,12 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
           <div className="bbcode mt-4 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(news.body) }} />
 
           <div className="mt-5 flex items-center gap-4 border-t border-outline-variant pt-3 text-sm text-on-surface-variant">
-            <span className="inline-flex items-center gap-1"><Heart className="h-4 w-4" /> ถูกใจ</span>
             <a href="#comments" className="inline-flex items-center gap-1 hover:text-primary">
               <MessageSquare className="h-4 w-4" /> ความเห็น ({comments?.length ?? 0})
             </a>
-            <button className="ml-auto"><MoreHorizontal className="h-4 w-4" /></button>
+            <div className="ml-auto">
+              <ReportButton targetType="news" targetId={news.id} />
+            </div>
           </div>
         </div>
       </article>
@@ -170,8 +170,10 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
               </div>
               <div className="bbcode mt-2 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(c.body) }} />
               <div className="mt-3 flex items-center gap-4 text-xs text-on-surface-variant">
-                <button className="inline-flex items-center gap-1 hover:text-primary"><Heart className="h-3.5 w-3.5" /> ถูกใจ</button>
                 <QuoteButton author={c.profiles?.display_name || c.profiles?.username || "สมาชิก"} body={c.body} />
+                <div className="ml-auto">
+                  <ReportButton targetType="news_comment" targetId={c.id} />
+                </div>
               </div>
             </div>
           </div>

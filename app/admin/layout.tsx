@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Shield, Users, LayoutDashboard, Gauge } from "lucide-react";
+import { Shield, Users, LayoutDashboard, Gauge, Flag } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 /** ป้องกันโซน /admin — เฉพาะ role = admin เท่านั้น */
@@ -47,6 +47,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
           <Link href="/admin/levels" className="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-on-surface-variant hover:bg-surface-container hover:text-primary">
             <Gauge className="h-4 w-4" /> ระดับสมาชิก
+          </Link>
+          <Link href="/admin/reports" className="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-on-surface-variant hover:bg-surface-container hover:text-primary">
+            <Flag className="h-4 w-4" /> รายงานเนื้อหา
           </Link>
         </nav>
       </aside>
