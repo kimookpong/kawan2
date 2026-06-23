@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { ThreadRow } from "@/components/board/thread-row";
+import { ThreadListItem } from "@/components/board/thread-list-item";
 
 export const revalidate = 30;
 
@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
   const { data: threads } = await supabase
     .from("threads")
-    .select("id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)")
+    .select("id, title, reply_count, view_count, created_at, is_pinned, profiles(username, display_name), categories(name_th, slug)")
     .eq("category_id", category.id)
     .eq("status", "published")
     .order("is_pinned", { ascending: false })
@@ -38,7 +38,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
       <div className="card divide-y divide-outline-variant">
         {threads && threads.length > 0 ? (
-          threads.map((t: any) => <ThreadRow key={t.id} thread={t} />)
+          threads.map((t: any) => <ThreadListItem key={t.id} t={t} hideCategory />)
         ) : (
           <p className="p-6 text-center text-sm text-on-surface-variant">ยังไม่มีกระทู้ในหมวดนี้</p>
         )}

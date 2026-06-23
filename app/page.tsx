@@ -5,6 +5,7 @@ import { ProvinceFilter } from "@/components/province-filter";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
 import { BannerCarousel, type Banner } from "@/components/home/banner-carousel";
+import { ThreadListItem } from "@/components/board/thread-list-item";
 import { NEWS_FALLBACK_IMG } from "@/lib/constants";
 
 export const revalidate = 60; // ISR
@@ -33,7 +34,7 @@ export default async function HomePage() {
     supabase.from("posts").select("*", { count: "exact", head: true }),
     supabase.from("categories").select("id, name_th, slug, icon").eq("is_active", true).order("sort_order"),
     supabase.from("threads")
-      .select("id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, profiles(username, display_name, level_id, role, avatar_url)")
+      .select("id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)")
       .eq("status", "published").order("created_at", { ascending: false }).limit(60),
     supabase.from("threads")
       .select("id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)")
@@ -48,13 +49,16 @@ export default async function HomePage() {
   const otherNews = (news ?? []).filter((n: any) => n.id !== featured?.id).slice(0, 6);
   const hero = featured ?? (news ?? [])[0];
 
-  // จัดกลุ่มกระทู้ตามหมวด สำหรับกล่องเว็บบอร์ด
+  // จัดกลุ่มกระทู้ตามหมวด สำหรับกล่องเว็บบอร์ด (เรียงปักหมุดขึ้นก่อน)
   const threadsByCat = new Map<number, any[]>();
-  (recentThreads ?? []).forEach((t: any) => {
-    const arr = threadsByCat.get(t.category_id) ?? [];
-    if (arr.length < 4) arr.push(t);
-    threadsByCat.set(t.category_id, arr);
-  });
+  (recentThreads ?? [])
+    .slice()
+    .sort((a: any, b: any) => Number(b.is_pinned) - Number(a.is_pinned))
+    .forEach((t: any) => {
+      const arr = threadsByCat.get(t.category_id) ?? [];
+      if (arr.length < 5) arr.push(t);
+      threadsByCat.set(t.category_id, arr);
+    });
 
   // สไลด์ banner carousel
   const banners: Banner[] = [
@@ -156,13 +160,28 @@ export default async function HomePage() {
         <ProvinceFilter />
       </section>
 
-      {/* ===== 4) Webboard รายหมวด ===== */}
+      {/* ===== 4) ห้องสนทนาแยกหมวด ===== */}
       <section>
         <SectionHead title="ห้องสนทนา" href="/board" />
         <div className="grid gap-4 lg:grid-cols-2">
-          {(categories ?? []).map((c: any) => (
-            <CategoryBox key={c.id} cat={c} threads={threadsByCat.get(c.id) ?? []} />
-          ))}
+          {(categories ?? []).map((c: any) => {
+            const list = threadsByCat.get(c.id) ?? [];
+            return (
+              <div key={c.id} className="card overflow-hidden">
+                <div className="flex items-center justify-between border-b border-outline-variant bg-surface-container-low px-4 py-2.5">
+                  <Link href={`/board/${c.slug}`} className="font-semibold text-primary hover:underline">{c.name_th}</Link>
+                  <Link href={`/board/${c.slug}`} className="text-xs text-primary hover:underline">ดูทั้งหมด →</Link>
+                </div>
+                <div className="divide-y divide-outline-variant">
+                  {list.length > 0 ? (
+                    list.map((t: any) => <ThreadListItem key={t.id} t={t} hideCategory />)
+                  ) : (
+                    <p className="px-4 py-6 text-center text-sm text-on-surface-variant">ยังไม่มีกระทู้ในหมวดนี้</p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 

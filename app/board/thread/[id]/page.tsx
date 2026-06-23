@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Bookmark, Heart, Lock, CornerUpLeft, MoreHorizontal } from "lucide-react";
+import { Bookmark, Heart, Lock, CornerUpLeft, MoreHorizontal, Pin, PinOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { createReply } from "@/app/board/actions";
+import { createReply, setThreadPin } from "@/app/board/actions";
 import { AuthorCard } from "@/components/board/author-card";
 import { BBCodeEditor } from "@/components/board/bbcode-editor";
 import { QuoteButton } from "@/components/board/quote-button";
@@ -14,7 +14,7 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
   const { data: thread } = await supabase
     .from("threads")
-    .select("id, title, body, like_count, reply_count, view_count, created_at, is_locked, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at), categories(name_th, slug)")
+    .select("id, title, body, like_count, reply_count, view_count, created_at, is_locked, is_pinned, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at), categories(name_th, slug)")
     .eq("id", threadId)
     .single();
 
@@ -29,6 +29,11 @@ export default async function ThreadPage({ params }: { params: { id: string } })
     .order("created_at");
 
   const { data: { user } } = await supabase.auth.getUser();
+  let isAdmin = false;
+  if (user) {
+    const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    isAdmin = me?.role === "admin";
+  }
   const cat: any = thread.categories;
 
   return (
@@ -43,8 +48,20 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
       {/* header */}
       <div className="flex items-start justify-between gap-3">
-        <h1 className="text-2xl font-bold text-on-surface">{thread.title}</h1>
-        <div className="flex shrink-0 gap-2">
+        <h1 className="flex items-start gap-2 text-2xl font-bold text-on-surface">
+          {thread.is_pinned && <Pin className="mt-1.5 h-5 w-5 shrink-0 text-tertiary-container" />}
+          {thread.title}
+        </h1>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          {isAdmin && (
+            <form action={setThreadPin}>
+              <input type="hidden" name="thread_id" value={threadId} />
+              <input type="hidden" name="pinned" value={thread.is_pinned ? "0" : "1"} />
+              <button className="btn-outline gap-1">
+                {thread.is_pinned ? <><PinOff className="h-4 w-4" /> ยกเลิกปักหมุด</> : <><Pin className="h-4 w-4" /> ปักหมุด</>}
+              </button>
+            </form>
+          )}
           <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
           <a href="#reply" className="btn-primary gap-1"><CornerUpLeft className="h-4 w-4" /> ตอบกระทู้</a>
         </div>

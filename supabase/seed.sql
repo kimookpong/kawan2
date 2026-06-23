@@ -23,15 +23,12 @@ insert into public.membership_levels (id, name_th, name_en, min_points, perks) v
   (8, 'เบินดาฮารา',  'Bendahara',  10000, '{"submit_news":true,"special_badge":true}'::jsonb)
 on conflict (id) do nothing;
 
--- ---------- หมวดหมู่เว็บบอร์ด ----------
+-- ---------- หมวดหมู่เว็บบอร์ด (4 หมวด) ----------
 insert into public.categories (name_th, slug, description, icon, sort_order) values
-  ('พูดคุยทั่วไป',  'general',   'พูดคุยเรื่องทั่วไปของชุมชน',        'forum',       1),
-  ('ข่าวสารท้องถิ่น','local-news','แลกเปลี่ยนข่าวในพื้นที่',           'newspaper',   2),
-  ('วัฒนธรรม',     'culture',   'ประเพณี ภาษา อาหาร และมรดกวัฒนธรรม', 'temple_buddhist', 3),
-  ('การศึกษา',     'education', 'ทุน การเรียน และโอกาสทางการศึกษา',   'school',      4),
-  ('ท่องเที่ยว',   'travel',    'สถานที่ ที่พัก และของกิน',          'travel',      5),
-  ('กีฬา',         'sports',    'ฟุตบอล ตะกร้อ และกีฬาในพื้นที่',     'sports_soccer', 6),
-  ('ซื้อ-ขาย',     'market',    'ประกาศซื้อขายแลกเปลี่ยน',           'storefront',  7)
+  ('ทั่วไป',     'general',   'พูดคุยเรื่องทั่วไปของชุมชน',         'forum',         1),
+  ('กีฬา',       'sports',    'ฟุตบอล ตะกร้อ และกีฬาในพื้นที่',     'sports_soccer', 2),
+  ('ท่องเที่ยว', 'travel',    'สถานที่ ที่พัก และของกิน',          'travel',        3),
+  ('การศึกษา',   'education', 'ทุน การเรียน และโอกาสทางการศึกษา',   'school',        4)
 on conflict (slug) do nothing;
 
 -- ---------- Badge ตัวอย่าง ----------

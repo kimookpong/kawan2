@@ -57,6 +57,17 @@ export async function createReply(formData: FormData) {
   revalidatePath(`/board/thread/${threadId}`);
 }
 
+/** ปักหมุด/ยกเลิกปักหมุดกระทู้ (RPC ตรวจสิทธิ์ admin ฝั่ง DB) */
+export async function setThreadPin(formData: FormData) {
+  const supabase = createClient();
+  const id = Number(formData.get("thread_id"));
+  const pinned = String(formData.get("pinned")) === "1";
+  await supabase.rpc("set_thread_pin", { p_thread: id, p_pinned: pinned });
+  revalidatePath(`/board/thread/${id}`);
+  revalidatePath("/board");
+  revalidatePath("/");
+}
+
 export async function toggleLike(targetType: "thread" | "post", targetId: number) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

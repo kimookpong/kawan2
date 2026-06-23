@@ -112,7 +112,7 @@ on conflict (slug) do nothing;
 insert into public.threads (author_id, category_id, province_id, title, body)
 values
   ('a0000000-0000-0000-0000-000000000003',
-   (select id from public.categories where slug = 'culture'),
+   (select id from public.categories where slug = 'travel'),
    (select id from public.provinces where slug = 'pattani'),
    'แนะนำร้านน้ำชาเก่าแก่ในตัวเมืองปัตตานีหน่อยครับ',
    E'กำลังจะไปเที่ยวปัตตานีสุดสัปดาห์นี้ อยากลองบรรยากาศร้านน้ำชาแบบดั้งเดิม\nมีร้านไหนแนะนำบ้างครับ?'),
@@ -132,7 +132,7 @@ values
    'รวมแหล่งทุนเรียนต่อสำหรับน้องๆ ในพื้นที่',
    E'รวบรวมลิงก์ทุนการศึกษาที่เปิดรับช่วงนี้ ใครมีข้อมูลเพิ่มมาช่วยกันเติมได้เลยครับ'),
   ('a0000000-0000-0000-0000-000000000003',
-   (select id from public.categories where slug = 'market'),
+   (select id from public.categories where slug = 'general'),
    (select id from public.provinces where slug = 'pattani'),
    'ส่งต่อจักรยานมือสอง สภาพดี ราคาคุยกันได้',
    E'มีจักรยานเสือภูเขาส่งต่อ ใช้น้อย สภาพดี อยู่ปัตตานี สนใจทักได้ครับ')

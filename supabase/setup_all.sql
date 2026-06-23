@@ -1,4 +1,4 @@
--- Kawan2 — Setup รวดเดียว (migrations 0001–0011 + seed) — 2026-06-23
+-- Kawan2 — Setup รวดเดียว (migrations 0001–0012 + seed) — 2026-06-23
 
 -- >>>>>>>>>>>>>>>> 0001_schema.sql >>>>>>>>>>>>>>>>
 
@@ -950,6 +950,28 @@ end; $$;
 grant execute on function public.admin_reset_user_names(uuid) to authenticated;
 
 
+-- >>>>>>>>>>>>>>>> 0012_categories_pin.sql >>>>>>>>>>>>>>>>
+
+-- ============================================================
+-- Kawan2 — ปรับหมวดเหลือ 4 + ฟังก์ชันปักหมุดกระทู้ (admin)
+-- 0012_categories_pin.sql
+-- ============================================================
+
+update public.categories set name_th='ทั่วไป',     sort_order=1, is_active=true  where slug='general';
+update public.categories set name_th='กีฬา',       sort_order=2, is_active=true  where slug='sports';
+update public.categories set name_th='ท่องเที่ยว', sort_order=3, is_active=true  where slug='travel';
+update public.categories set name_th='การศึกษา',   sort_order=4, is_active=true  where slug='education';
+update public.categories set is_active=false where slug in ('local-news','culture','market');
+
+create or replace function public.set_thread_pin(p_thread bigint, p_pinned boolean)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin(auth.uid()) then raise exception 'forbidden: admin only'; end if;
+  update public.threads set is_pinned = p_pinned, updated_at = now() where id = p_thread;
+end; $$;
+grant execute on function public.set_thread_pin(bigint, boolean) to authenticated;
+
+
 -- >>>>>>>>>>>>>>>> seed.sql >>>>>>>>>>>>>>>>
 
 -- ============================================================
@@ -977,15 +999,12 @@ insert into public.membership_levels (id, name_th, name_en, min_points, perks) v
   (8, 'เบินดาฮารา',  'Bendahara',  10000, '{"submit_news":true,"special_badge":true}'::jsonb)
 on conflict (id) do nothing;
 
--- ---------- หมวดหมู่เว็บบอร์ด ----------
+-- ---------- หมวดหมู่เว็บบอร์ด (4 หมวด) ----------
 insert into public.categories (name_th, slug, description, icon, sort_order) values
-  ('พูดคุยทั่วไป',  'general',   'พูดคุยเรื่องทั่วไปของชุมชน',        'forum',       1),
-  ('ข่าวสารท้องถิ่น','local-news','แลกเปลี่ยนข่าวในพื้นที่',           'newspaper',   2),
-  ('วัฒนธรรม',     'culture',   'ประเพณี ภาษา อาหาร และมรดกวัฒนธรรม', 'temple_buddhist', 3),
-  ('การศึกษา',     'education', 'ทุน การเรียน และโอกาสทางการศึกษา',   'school',      4),
-  ('ท่องเที่ยว',   'travel',    'สถานที่ ที่พัก และของกิน',          'travel',      5),
-  ('กีฬา',         'sports',    'ฟุตบอล ตะกร้อ และกีฬาในพื้นที่',     'sports_soccer', 6),
-  ('ซื้อ-ขาย',     'market',    'ประกาศซื้อขายแลกเปลี่ยน',           'storefront',  7)
+  ('ทั่วไป',     'general',   'พูดคุยเรื่องทั่วไปของชุมชน',         'forum',         1),
+  ('กีฬา',       'sports',    'ฟุตบอล ตะกร้อ และกีฬาในพื้นที่',     'sports_soccer', 2),
+  ('ท่องเที่ยว', 'travel',    'สถานที่ ที่พัก และของกิน',          'travel',        3),
+  ('การศึกษา',   'education', 'ทุน การเรียน และโอกาสทางการศึกษา',   'school',        4)
 on conflict (slug) do nothing;
 
 -- ---------- Badge ตัวอย่าง ----------
