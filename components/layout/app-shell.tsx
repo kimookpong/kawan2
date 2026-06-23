@@ -11,7 +11,7 @@ import {
   Newspaper,
   MessagesSquare,
   CalendarDays,
-  Store,
+  Flag,
   Trophy,
   MessageCircle,
   Bell,
@@ -32,6 +32,8 @@ type ProfileLite = {
   reputation: number;
   role?: string;
   membership_tier?: string;
+  banned_until?: string | null;
+  disabled?: boolean;
 } | null;
 
 const NAV = [
@@ -39,7 +41,7 @@ const NAV = [
   { href: "/news", label: "ข่าวสารภูมิภาค", Icon: Newspaper },
   { href: "/board", label: "กระดานสนทนา", Icon: MessagesSquare },
   { href: "/events", label: "ปฏิทินกิจกรรม", Icon: CalendarDays },
-  { href: "/marketplace", label: "ตลาดซื้อขาย", Icon: Store },
+  { href: "/guilds", label: "กิลด์", Icon: Flag },
   { href: "/leaderboard", label: "หอเกียรติยศ", Icon: Trophy },
 ];
 
@@ -168,6 +170,15 @@ export function AppShell({
           </div>
         </div>
       </header>
+
+      {/* แบนเนอร์เมื่อถูกระงับ/ปิดบัญชี */}
+      {profile && (profile.disabled || (profile.banned_until && new Date(profile.banned_until).getTime() > Date.now())) && (
+        <div className="bg-error px-4 py-2 text-center text-sm font-medium text-on-error">
+          {profile.disabled
+            ? "บัญชีของคุณถูกปิดใช้งาน — โพสต์/ตอบ/ส่งข้อความไม่ได้"
+            : `บัญชีของคุณถูกระงับถึง ${new Date(profile.banned_until!).toLocaleString("th-TH")} — โพสต์/ตอบ/ส่งข้อความไม่ได้`}
+        </div>
+      )}
 
       {/* ===== body: sidebar + main ===== */}
       <div className="mx-auto flex w-full">

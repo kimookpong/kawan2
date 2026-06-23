@@ -1,16 +1,23 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Award, MessageSquare, MessagesSquare } from "lucide-react";
+import { Award, MessageSquare, MessagesSquare, Ban } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
+import { ModerationPanel } from "@/components/moderation-panel";
 
-export default async function ProfilePage({ params }: { params: { username: string } }) {
+export default async function ProfilePage({
+  params,
+  searchParams,
+}: {
+  params: { username: string };
+  searchParams: { ok?: string; error?: string };
+}) {
   const supabase = createClient();
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, username, display_name, avatar_url, bio, reputation, level_id, role, created_at, provinces(name_th)")
+    .select("id, username, display_name, avatar_url, bio, reputation, level_id, role, disabled, banned_until, created_at, provinces(name_th)")
     .eq("username", params.username)
     .single();
 
@@ -18,6 +25,15 @@ export default async function ProfilePage({ params }: { params: { username: stri
 
   const { data: { user } } = await supabase.auth.getUser();
   const isSelf = user?.id === profile.id;
+
+  // สิทธิ์ของผู้ชม (เจ้าหน้าที่)
+  let viewerRole: string | null = null;
+  if (user && !isSelf) {
+    const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    viewerRole = me?.role ?? null;
+  }
+  const isStaff = viewerRole === "admin" || viewerRole === "editor";
+  const isBanned = profile.banned_until ? new Date(profile.banned_until).getTime() > Date.now() : false;
 
   const [
     { count: threadCount },
@@ -39,12 +55,48 @@ export default async function ProfilePage({ params }: { params: { username: stri
       .eq("author_id", profile.id).eq("status", "published").order("created_at", { ascending: false }).limit(10),
   ]);
 
+  const { data: guildMem } = await supabase
+    .from("guild_members")
+    .select("role, guilds(name, slug)")
+    .eq("user_id", profile.id)
+    .maybeSingle();
+  const guild: any = guildMem?.guilds ?? null;
+
   const progress = nextLevel
     ? Math.min(100, Math.round((profile.reputation / nextLevel.min_points) * 100))
     : 100;
 
   return (
     <div className="w-full space-y-6">
+      {searchParams.ok && (
+        <p className="rounded border border-primary/30 bg-primary-container/5 px-4 py-2 text-sm text-primary">ดำเนินการเรียบร้อย</p>
+      )}
+      {searchParams.error && (
+        <p className="rounded border border-error-container bg-error-container px-4 py-2 text-sm text-on-error-container">{searchParams.error}</p>
+      )}
+
+      {/* สถานะถูกระงับ/ปิดบัญชี */}
+      {(isBanned || profile.disabled) && (
+        <p className="flex items-center gap-2 rounded border border-error-container bg-error-container px-4 py-2 text-sm text-on-error-container">
+          <Ban className="h-4 w-4" />
+          {profile.disabled
+            ? "บัญชีนี้ถูกปิดใช้งาน"
+            : `สมาชิกนี้ถูกระงับการใช้งานถึง ${new Date(profile.banned_until!).toLocaleString("th-TH")}`}
+        </p>
+      )}
+
+      {/* แผงเจ้าหน้าที่ */}
+      {isStaff && (
+        <ModerationPanel
+          targetId={profile.id}
+          username={profile.username}
+          targetRole={profile.role}
+          isAdmin={viewerRole === "admin"}
+          bannedUntil={profile.banned_until}
+          disabled={profile.disabled}
+        />
+      )}
+
       {/* header */}
       <div className="card overflow-hidden">
         <div className="h-28 bg-primary" />
@@ -57,7 +109,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
               <h1 className="text-xl font-bold">{profile.display_name || profile.username}</h1>
               <p className="text-sm text-on-surface-variant">
                 @{profile.username}
-                {(profile as any).provinces && ` · ${(profile as any).provinces.name_th}`}
+                {guild && <> · <Link href={`/guilds/${guild.slug}`} className="text-primary hover:underline">⚔ {guild.name}</Link></>}
               </p>
             </div>
             <div className="flex items-center gap-2">

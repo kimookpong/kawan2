@@ -18,11 +18,6 @@ export default async function NewThreadPage({
     .eq("is_active", true)
     .order("sort_order");
 
-  const { data: provinces } = await supabase
-    .from("provinces")
-    .select("id, name_th, slug")
-    .eq("is_active", true);
-
   return (
     <div className="w-full">
       <h1 className="mb-4 text-2xl font-bold text-primary">สร้างกระทู้ใหม่</h1>
@@ -43,31 +38,17 @@ export default async function NewThreadPage({
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-sm font-medium">หมวดหมู่</label>
-            <select
-              name="category_id"
-              required
-              className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary"
-            >
-              {(categories ?? []).map((c) => (
-                <option key={c.id} value={c.id}>{c.name_th}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">จังหวัด (ไม่บังคับ)</label>
-            <select
-              name="province_id"
-              className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary"
-            >
-              <option value="">— ไม่ระบุ —</option>
-              {(provinces ?? []).map((p) => (
-                <option key={p.id} value={p.id}>{p.name_th}</option>
-              ))}
-            </select>
-          </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium">หมวดหมู่</label>
+          <select
+            name="category_id"
+            required
+            className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary"
+          >
+            {(categories ?? []).map((c) => (
+              <option key={c.id} value={c.id}>{c.name_th}</option>
+            ))}
+          </select>
         </div>
 
         <div>

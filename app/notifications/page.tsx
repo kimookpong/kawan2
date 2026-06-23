@@ -7,6 +7,7 @@ const TYPE_LABEL: Record<string, string> = {
   mention: "มีคนกล่าวถึงคุณ",
   badge: "คุณได้รับเหรียญรางวัล",
   level_up: "คุณเลื่อนระดับสมาชิก",
+  ban: "บัญชีของคุณถูกระงับการใช้งาน",
 };
 
 export default async function NotificationsPage() {

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
@@ -15,7 +16,6 @@ async function updateProfile(formData: FormData) {
   const patch: Record<string, unknown> = {
     bio: String(formData.get("bio") || ""),
     avatar_url: String(formData.get("avatar_url") || "") || null,
-    province_id: formData.get("province_id") ? Number(formData.get("province_id")) : null,
   };
   // username / display_name ส่งมาเฉพาะตอนช่องไม่ถูกล็อก (disabled = ไม่ส่ง)
   const uname = formData.get("username");
@@ -34,12 +34,13 @@ export default async function MePage({ searchParams }: { searchParams: { error?:
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login?redirect=/me");
 
-  const [{ data: profile }, { data: provinces }] = await Promise.all([
+  const [{ data: profile }, { data: guildMem }] = await Promise.all([
     supabase.from("profiles")
-      .select("username, display_name, avatar_url, bio, province_id, role, level_id, username_changed_at, display_name_changed_at")
+      .select("username, display_name, avatar_url, bio, role, level_id, username_changed_at, display_name_changed_at")
       .eq("id", user.id).single(),
-    supabase.from("provinces").select("id, name_th").eq("is_active", true),
+    supabase.from("guild_members").select("guilds(name, slug)").eq("user_id", user.id).maybeSingle(),
   ]);
+  const guild: any = guildMem?.guilds ?? null;
 
   const now = Date.now();
   const nextDate = (iso: string | null) =>
@@ -110,17 +111,16 @@ export default async function MePage({ searchParams }: { searchParams: { error?:
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">จังหวัด</label>
-          <select
-            name="province_id"
-            defaultValue={profile?.province_id ?? ""}
-            className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary"
-          >
-            <option value="">— ไม่ระบุ —</option>
-            {(provinces ?? []).map((p) => (
-              <option key={p.id} value={p.id}>{p.name_th}</option>
-            ))}
-          </select>
+          <label className="mb-1 block text-sm font-medium">กิลด์</label>
+          {guild ? (
+            <p className="text-sm">
+              สังกัด <Link href={`/guilds/${guild.slug}`} className="font-medium text-primary hover:underline">⚔ {guild.name}</Link>
+            </p>
+          ) : (
+            <p className="text-sm text-on-surface-variant">
+              ยังไม่ได้เข้ากิลด์ — <Link href="/guilds" className="text-primary hover:underline">เลือกกิลด์</Link>
+            </p>
+          )}
         </div>
 
         <div>

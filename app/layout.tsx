@@ -29,7 +29,7 @@ export default async function RootLayout({
   if (user) {
     const { data } = await supabase
       .from("profiles")
-      .select("username, display_name, avatar_url, level_id, reputation, role")
+      .select("username, display_name, avatar_url, level_id, reputation, role, banned_until, disabled")
       .eq("id", user.id)
       .single();
     profile = data;
