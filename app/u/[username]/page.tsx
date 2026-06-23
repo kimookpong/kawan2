@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
 import { ModerationPanel } from "@/components/moderation-panel";
+import { JsonLd } from "@/components/seo/json-ld";
 
 export async function generateMetadata({ params }: { params: { username: string } }) {
   const supabase = createClient();
@@ -89,8 +90,27 @@ export default async function ProfilePage({
     ? Math.min(100, Math.round((profile.reputation / nextLevel.min_points) * 100))
     : 100;
 
+  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
+  const pName = profile.display_name || profile.username;
+
   return (
     <div className="w-full space-y-6">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          dateCreated: profile.created_at ?? undefined,
+          mainEntity: {
+            "@type": "Person",
+            name: pName,
+            alternateName: `@${profile.username}`,
+            description: profile.bio ?? undefined,
+            image: profile.avatar_url ?? undefined,
+            url: `${SITE}/u/${profile.username}`,
+          },
+        }}
+      />
+
       {searchParams.ok && (
         <p className="rounded border border-primary/30 bg-primary-container/5 px-4 py-2 text-sm text-primary">ดำเนินการเรียบร้อย</p>
       )}
