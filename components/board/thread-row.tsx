@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { LEVEL_STYLES } from "@/lib/constants";
+import { LevelBadge } from "@/components/user-badges";
+import { Avatar } from "@/components/avatar";
 
 type ThreadRowData = {
   id: number;
@@ -8,28 +9,25 @@ type ThreadRowData = {
   reply_count: number;
   view_count: number;
   created_at: string;
-  profiles?: { username: string; display_name: string | null; level_id: number } | null;
+  profiles?: { username: string; display_name: string | null; level_id: number; role?: string | null; avatar_url?: string | null } | null;
   categories?: { name_th: string; slug: string } | null;
 };
 
 export function ThreadRow({ thread }: { thread: ThreadRowData }) {
   const author = thread.profiles;
-  const lvl = author ? LEVEL_STYLES[author.level_id] : null;
 
   return (
     <Link
       href={`/board/thread/${thread.id}`}
       className="flex items-start gap-3 p-4 transition hover:bg-surface-container-low"
     >
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-on-primary">
-        {(author?.display_name || author?.username || "?").charAt(0).toUpperCase()}
-      </span>
+      <Avatar src={author?.avatar_url} name={author?.display_name || author?.username} role={author?.role} size={36} />
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {thread.categories && (
             <span className="chip bg-primary-container/10 text-primary">{thread.categories.name_th}</span>
           )}
-          {lvl && <span className={`chip ${lvl.cls}`}>{lvl.en}</span>}
+          {author && <LevelBadge levelId={author.level_id} />}
         </div>
         <h3 className="mt-1 truncate font-medium text-on-surface">{thread.title}</h3>
         <p className="text-xs text-on-surface-variant">

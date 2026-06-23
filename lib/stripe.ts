@@ -1,9 +1,16 @@
 import Stripe from "stripe";
 
-/** Stripe server client — ใช้ฝั่ง server เท่านั้น */
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  typescript: true,
-});
+/** สร้าง Stripe client แบบ lazy — จะ throw เฉพาะตอนเรียกใช้จริงถ้ายังไม่ตั้งคีย์ */
+let _stripe: Stripe | null = null;
+export function getStripe(): Stripe {
+  if (_stripe) return _stripe;
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error("ยังไม่ได้ตั้งค่า STRIPE_SECRET_KEY ใน .env.local");
+  }
+  _stripe = new Stripe(key, { typescript: true });
+  return _stripe;
+}
 
 /** map tier → Stripe Price ID (ตั้งใน .env.local) */
 export const TIER_PRICE: Record<"supporter" | "patron", string | undefined> = {

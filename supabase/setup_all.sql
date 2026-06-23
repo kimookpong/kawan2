@@ -1,9 +1,4 @@
--- ============================================================
--- Kawan2 — Setup รวดเดียว (migrations 0001–0008 + seed)
--- วางทั้งไฟล์นี้ใน Supabase SQL Editor แล้วกด Run ครั้งเดียว
--- สร้างเมื่อ: 2026-06-23
--- ============================================================
-
+-- Kawan2 — Setup รวดเดียว (migrations 0001–0011 + seed) — 2026-06-23
 
 -- >>>>>>>>>>>>>>>> 0001_schema.sql >>>>>>>>>>>>>>>>
 
@@ -496,7 +491,7 @@ create policy "news_insert" on public.news
 create policy "news_update" on public.news
   for update using (public.is_editor(auth.uid()));
 create policy "news_delete" on public.news
-  for delete using (public.is_editor(auth.uid()));
+  for delete using (public.is_admin(auth.uid()));
 
 -- ---------- user_badges ----------
 alter table public.user_badges enable row level security;
@@ -815,6 +810,146 @@ grant execute on function public.update_level(smallint, text, text, integer) to 
 grant execute on function public.recalc_all_levels() to authenticated;
 
 
+-- >>>>>>>>>>>>>>>> 0009_news_comments.sql >>>>>>>>>>>>>>>>
+
+-- ============================================================
+-- Kawan2 — คอมเมนต์ใต้ข่าว (news comments)
+-- 0009_news_comments.sql
+-- ============================================================
+
+create table if not exists public.news_comments (
+  id          bigserial primary key,
+  news_id     bigint not null references public.news(id) on delete cascade,
+  author_id   uuid not null references public.profiles(id) on delete cascade,
+  body        text not null,
+  status      text default 'published' check (status in ('published','hidden','deleted')),
+  created_at  timestamptz default now()
+);
+create index if not exists news_comments_news_idx on public.news_comments (news_id, created_at);
+
+alter table public.news_comments enable row level security;
+
+drop policy if exists "news_comments_select" on public.news_comments;
+create policy "news_comments_select" on public.news_comments
+  for select using (status = 'published' or author_id = auth.uid() or public.is_staff(auth.uid()));
+
+drop policy if exists "news_comments_insert" on public.news_comments;
+create policy "news_comments_insert" on public.news_comments
+  for insert with check (auth.uid() = author_id);
+
+drop policy if exists "news_comments_update" on public.news_comments;
+create policy "news_comments_update" on public.news_comments
+  for update using (auth.uid() = author_id or public.is_staff(auth.uid()));
+
+drop policy if exists "news_comments_delete" on public.news_comments;
+create policy "news_comments_delete" on public.news_comments
+  for delete using (auth.uid() = author_id or public.is_staff(auth.uid()));
+
+-- ให้ point เมื่อคอมเมนต์ข่าว (+3)
+create or replace function public.on_news_comment_insert()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  perform public.award_points(new.author_id, 3, 'news_comment', 'news', new.news_id);
+  return new;
+end; $$;
+
+drop trigger if exists on_news_comment on public.news_comments;
+create trigger on_news_comment
+  after insert on public.news_comments
+  for each row execute function public.on_news_comment_insert();
+
+
+-- >>>>>>>>>>>>>>>> 0010_mentions.sql >>>>>>>>>>>>>>>>
+
+-- ============================================================
+-- Kawan2 — แจ้งเตือนเมื่อถูก @mention ในกระทู้/ความเห็นข่าว
+-- 0010_mentions.sql
+-- ============================================================
+
+create or replace function public.notify_mentions()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare
+  m text[];
+  uname text;
+  uid uuid;
+  seen text[] := '{}';
+  payload jsonb;
+begin
+  for m in select regexp_matches(new.body, '@([A-Za-z0-9_]{3,30})', 'g') loop
+    uname := m[1];
+    if uname = any(seen) then continue; end if;
+    seen := array_append(seen, uname);
+
+    select id into uid from public.profiles where username = uname;
+    if uid is null or uid = new.author_id then continue; end if;
+
+    if TG_TABLE_NAME = 'posts' then
+      payload := jsonb_build_object('by', new.author_id, 'thread_id', new.thread_id, 'ref', 'thread');
+    elsif TG_TABLE_NAME = 'news_comments' then
+      payload := jsonb_build_object('by', new.author_id, 'news_id', new.news_id, 'ref', 'news');
+    else
+      payload := jsonb_build_object('by', new.author_id);
+    end if;
+
+    insert into public.notifications (user_id, type, payload) values (uid, 'mention', payload);
+  end loop;
+  return new;
+end; $$;
+
+drop trigger if exists on_post_mention on public.posts;
+create trigger on_post_mention after insert on public.posts
+  for each row execute function public.notify_mentions();
+
+drop trigger if exists on_news_comment_mention on public.news_comments;
+create trigger on_news_comment_mention after insert on public.news_comments
+  for each row execute function public.notify_mentions();
+
+
+-- >>>>>>>>>>>>>>>> 0011_name_cooldown.sql >>>>>>>>>>>>>>>>
+
+-- ============================================================
+-- Kawan2 — จำกัดการเปลี่ยน username / display_name ปีละครั้ง + admin reset
+-- 0011_name_cooldown.sql
+-- ============================================================
+
+alter table public.profiles
+  add column if not exists username_changed_at timestamptz,
+  add column if not exists display_name_changed_at timestamptz;
+
+create or replace function public.enforce_name_cooldown()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if new.username is distinct from old.username then
+    if old.username_changed_at is not null and old.username_changed_at > now() - interval '365 days' then
+      raise exception 'เปลี่ยนชื่อผู้ใช้ได้ปีละครั้ง (ครั้งถัดไปได้ %)',
+        to_char(old.username_changed_at + interval '365 days', 'DD/MM/YYYY');
+    end if;
+    new.username_changed_at := now();
+  end if;
+  if new.display_name is distinct from old.display_name then
+    if old.display_name_changed_at is not null and old.display_name_changed_at > now() - interval '365 days' then
+      raise exception 'เปลี่ยนชื่อที่แสดงได้ปีละครั้ง (ครั้งถัดไปได้ %)',
+        to_char(old.display_name_changed_at + interval '365 days', 'DD/MM/YYYY');
+    end if;
+    new.display_name_changed_at := now();
+  end if;
+  return new;
+end; $$;
+
+drop trigger if exists enforce_name_cooldown on public.profiles;
+create trigger enforce_name_cooldown before update on public.profiles
+  for each row execute function public.enforce_name_cooldown();
+
+create or replace function public.admin_reset_user_names(target uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin(auth.uid()) then raise exception 'forbidden: admin only'; end if;
+  update public.profiles set username_changed_at = null, display_name_changed_at = null where id = target;
+end; $$;
+
+grant execute on function public.admin_reset_user_names(uuid) to authenticated;
+
+
 -- >>>>>>>>>>>>>>>> seed.sql >>>>>>>>>>>>>>>>
 
 -- ============================================================
@@ -830,15 +965,16 @@ insert into public.provinces (name_th, name_en, slug) values
 on conflict (slug) do nothing;
 
 -- ---------- ระดับสมาชิก ----------
+-- บรรดาศักดิ์ขุนนางมลายูโบราณ (แหลมมลายู/ปาตานี) — สามัญชน → อัครมหาเสนาบดี
 insert into public.membership_levels (id, name_th, name_en, min_points, perks) values
-  (1, 'สัมฤทธิ์',   'Bronze',   0,
-     '{"post":true,"reply":true,"dm":true}'::jsonb),
-  (2, 'เงิน',       'Silver',   500,
-     '{"attach_file":true,"create_poll":true}'::jsonb),
-  (3, 'ทอง',        'Gold',     2000,
-     '{"pin_own":true,"custom_title":true}'::jsonb),
-  (4, 'แพลทินัม',   'Platinum', 5000,
-     '{"submit_news":true,"mod_lite":true,"special_badge":true}'::jsonb)
+  (1, 'รายัต',       'Rakyat',     0,     '{"post":true,"reply":true,"dm":true}'::jsonb),
+  (2, 'ฮูลูบาลัง',   'Hulubalang', 200,   '{}'::jsonb),
+  (3, 'เบินตารา',    'Bentara',    600,   '{}'::jsonb),
+  (4, 'ออรัง กายอ',  'Orang Kaya', 1200,  '{"attach_file":true}'::jsonb),
+  (5, 'ปังลีมา',     'Panglima',   2500,  '{}'::jsonb),
+  (6, 'เตอเมิงกุง',  'Temenggung', 4500,  '{}'::jsonb),
+  (7, 'ลักษมณา',     'Laksamana',  7000,  '{"submit_news":true}'::jsonb),
+  (8, 'เบินดาฮารา',  'Bendahara',  10000, '{"submit_news":true,"special_badge":true}'::jsonb)
 on conflict (id) do nothing;
 
 -- ---------- หมวดหมู่เว็บบอร์ด ----------

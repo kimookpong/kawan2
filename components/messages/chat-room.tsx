@@ -64,7 +64,7 @@ export function ChatRoom({
   }
 
   return (
-    <div className="mx-auto flex h-[75vh] max-w-2xl flex-col">
+    <div className="flex h-[75vh] w-full flex-col">
       <div className="card flex items-center gap-3 rounded-b-none p-4">
         <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-on-primary">
           {otherName.charAt(0).toUpperCase()}

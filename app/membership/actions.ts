@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
-import { stripe, TIER_PRICE } from "@/lib/stripe";
+import { getStripe, TIER_PRICE } from "@/lib/stripe";
 
 /** สร้าง Stripe Checkout Session แบบ subscription แล้ว redirect ไปหน้าจ่ายเงิน */
 export async function subscribe(formData: FormData) {
@@ -19,6 +19,7 @@ export async function subscribe(formData: FormData) {
   }
 
   const origin = headers().get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const stripe = getStripe();
 
   // หา/สร้าง Stripe customer ผูกกับ user
   const { data: profile } = await supabase
@@ -68,7 +69,7 @@ export async function openBillingPortal() {
   if (!profile?.stripe_customer_id) redirect("/membership");
 
   const origin = headers().get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const portal = await stripe.billingPortal.sessions.create({
+  const portal = await getStripe().billingPortal.sessions.create({
     customer: profile.stripe_customer_id,
     return_url: `${origin}/membership`,
   });

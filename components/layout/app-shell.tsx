@@ -21,7 +21,7 @@ import {
   Search,
   Crown,
 } from "lucide-react";
-import { LEVEL_STYLES } from "@/lib/constants";
+import { Avatar } from "@/components/avatar";
 import { signout } from "@/app/auth/actions";
 
 type ProfileLite = {
@@ -54,7 +54,6 @@ export function AppShell({
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const lvl = profile ? LEVEL_STYLES[profile.level_id] : null;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -141,23 +140,8 @@ export function AppShell({
                 >
                   <Bell className="h-5 w-5" />
                 </Link>
-                <Link
-                  href={`/u/${profile.username}`}
-                  className="ml-1 flex items-center gap-2 rounded-full border border-outline-variant py-1 pl-1 pr-3"
-                >
-                  <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-xs font-bold text-on-primary">
-                    {(profile.display_name || profile.username)
-                      .charAt(0)
-                      .toUpperCase()}
-                  </span>
-                  <span className="hidden text-sm font-medium md:inline">
-                    {profile.display_name || profile.username}
-                  </span>
-                  {lvl && (
-                    <span className={`chip hidden md:inline-flex ${lvl.cls}`}>
-                      {lvl.en}
-                    </span>
-                  )}
+                <Link href={`/u/${profile.username}`} className="ml-1 rounded-full" title={profile.display_name || profile.username}>
+                  <Avatar src={profile.avatar_url} name={profile.display_name || profile.username} role={profile.role} size={34} />
                 </Link>
                 <form action={signout}>
                   <button

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createThread } from "../actions";
-import { PROVINCES } from "@/lib/constants";
+import { BBCodeEditor } from "@/components/board/bbcode-editor";
 
 export default async function NewThreadPage({
   searchParams,
@@ -24,7 +24,7 @@ export default async function NewThreadPage({
     .eq("is_active", true);
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="w-full">
       <h1 className="mb-4 text-2xl font-bold text-primary">สร้างกระทู้ใหม่</h1>
 
       {searchParams.error && (
@@ -71,13 +71,10 @@ export default async function NewThreadPage({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">เนื้อหา (รองรับ Markdown)</label>
-          <textarea
-            name="body"
-            required
-            rows={10}
-            className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-          />
+          <label className="mb-1 block text-sm font-medium">เนื้อหา (รองรับ BBCode)</label>
+          <div className="overflow-hidden rounded border border-outline-variant">
+            <BBCodeEditor name="body" rows={12} placeholder="เขียนเนื้อหากระทู้... ใช้ปุ่มจัดรูปแบบ/แนบรูป/วิดีโอด้านบนได้" />
+          </div>
         </div>
 
         <div className="flex justify-end gap-2">

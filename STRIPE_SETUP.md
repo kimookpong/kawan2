@@ -1,6 +1,6 @@
 # Kawan2 — ระบบ Subscription ด้วย Stripe
 
-ระบบสมาชิกแบบเสียเงิน 2 ระดับ — **Supporter (฿49/เดือน)** และ **Patron (฿149/เดือน)** ผ่าน Stripe Checkout (subscription)
+ระบบสมาชิกแบบเสียเงิน 2 ระดับ — **Supporter (฿29/เดือน)** และ **Patron (฿99/เดือน)** ผ่าน Stripe Checkout (subscription)
 
 ---
 

@@ -2,7 +2,10 @@ import Link from "next/link";
 import { MapPin, Pin, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ProvinceFilter } from "@/components/province-filter";
-import { LEVEL_STYLES } from "@/lib/constants";
+import { LevelBadge } from "@/components/user-badges";
+import { Avatar } from "@/components/avatar";
+import { BannerCarousel, type Banner } from "@/components/home/banner-carousel";
+import { NEWS_FALLBACK_IMG } from "@/lib/constants";
 
 export const revalidate = 60; // ISR
 
@@ -30,12 +33,12 @@ export default async function HomePage() {
     supabase.from("posts").select("*", { count: "exact", head: true }),
     supabase.from("categories").select("id, name_th, slug, icon").eq("is_active", true).order("sort_order"),
     supabase.from("threads")
-      .select("id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, profiles(username, display_name, level_id)")
+      .select("id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, profiles(username, display_name, level_id, role, avatar_url)")
       .eq("status", "published").order("created_at", { ascending: false }).limit(60),
     supabase.from("threads")
-      .select("id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id), categories(name_th, slug)")
+      .select("id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)")
       .eq("status", "published").order("like_count", { ascending: false }).order("view_count", { ascending: false }).limit(6),
-    supabase.from("profiles").select("username, display_name, reputation, level_id").order("reputation", { ascending: false }).limit(8),
+    supabase.from("profiles").select("username, display_name, reputation, level_id, role, avatar_url").order("reputation", { ascending: false }).limit(8),
     supabase.from("events").select("id, title, location, cover_url, starts_at, provinces(name_th)")
       .gte("starts_at", new Date().toISOString()).order("starts_at").limit(4),
   ]);
@@ -53,44 +56,79 @@ export default async function HomePage() {
     threadsByCat.set(t.category_id, arr);
   });
 
+  // สไลด์ banner carousel
+  const banners: Banner[] = [
+    {
+      id: "welcome",
+      eyebrow: "ยินดีต้อนรับ",
+      title: "ชุมชนของชาวชายแดนใต้ — ปัตตานี นราธิวาส ยะลา",
+      subtitle: "ข่าวสาร กระดานสนทนา และพื้นที่แลกเปลี่ยนของคนในพื้นที่",
+      cta: { label: "เข้าร่วมสนทนา", href: "/board" },
+      theme: "green",
+      image: hero?.cover_url ?? null,
+    },
+    ...(hero
+      ? [{
+          id: "news",
+          eyebrow: hero.category ?? "ข่าวเด่น",
+          title: hero.title,
+          subtitle: hero.excerpt ?? undefined,
+          cta: { label: "อ่านต่อ", href: `/news/${hero.slug}` },
+          theme: "dark" as const,
+          image: hero.cover_url,
+        } as Banner]
+      : []),
+    {
+      id: "membership",
+      eyebrow: "JOIN · MEMBERSHIP",
+      title: "ร่วมสนับสนุนค่าเซิฟเวอร์",
+      subtitle: `ปัจจุบันมีสมาชิก ${(memberCount ?? 0).toLocaleString("th-TH")} คน · ${(threadCount ?? 0).toLocaleString("th-TH")} กระทู้ · ${(postCount ?? 0).toLocaleString("th-TH")} ความเห็น`,
+      cta: { label: "ดูแพ็กเกจสนับสนุน", href: "/membership" },
+      theme: "amber",
+    },
+  ];
+
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
-      {/* ===== 1) Stats strip ===== */}
-      <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Stat label="สมาชิก" value={memberCount ?? 0} accent />
-        <Stat label="กระทู้" value={threadCount ?? 0} />
-        <Stat label="ความเห็น" value={postCount ?? 0} />
-        <Stat label="จังหวัด" value={3} />
-      </section>
+    <div className="w-full space-y-8">
+      {/* ===== 1) Banner carousel ===== */}
+      <BannerCarousel banners={banners} />
 
       {/* ===== 2) News grid ===== */}
       {hero && (
         <section>
           <SectionHead title="ข่าวสารและเรื่องเด่น" href="/news" />
           <div className="grid gap-4 lg:grid-cols-3">
-            {/* hero ใหญ่ */}
-            <Link href={`/news/${hero.slug}`} className="group relative col-span-1 row-span-2 overflow-hidden rounded-lg bg-primary text-on-primary lg:col-span-2">
-              {hero.cover_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={hero.cover_url} alt="" className="h-56 w-full object-cover opacity-50 transition group-hover:scale-105 lg:h-full lg:min-h-[320px]" />
-              )}
-              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-primary/95 via-primary/40 to-transparent p-6">
+            {/* hero ใหญ่ (สูงคงที่) */}
+            <Link
+              href={`/news/${hero.slug}`}
+              className="group relative h-[300px] overflow-hidden rounded-xl bg-primary text-on-primary sm:h-[380px] lg:col-span-2"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={hero.cover_url || NEWS_FALLBACK_IMG} alt="" className="h-full w-full object-cover opacity-60 transition duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-primary via-primary/50 to-transparent p-6">
                 {hero.category && <span className="chip mb-2 w-fit bg-tertiary-container text-on-tertiary">{hero.category}</span>}
                 <h2 className="text-xl font-bold leading-snug md:text-2xl">{hero.title}</h2>
                 <p className="mt-1 line-clamp-2 max-w-xl text-sm text-on-primary/80">{hero.excerpt}</p>
               </div>
             </Link>
 
-            {/* การ์ดข่าวเล็ก 2 อันแรกข้างๆ */}
-            {otherNews.slice(0, 2).map((n: any) => (
-              <NewsCardSmall key={n.id} n={n} />
-            ))}
+            {/* คอลัมน์ข่าวเล็กด้านขวา */}
+            <div className="flex flex-col gap-3">
+              {otherNews.slice(0, 3).map((n: any) => (
+                <NewsMini key={n.id} n={n} />
+              ))}
+              {otherNews.length === 0 && (
+                <div className="card flex flex-1 items-center justify-center p-6 text-sm text-on-surface-variant">
+                  ยังไม่มีข่าวอื่น
+                </div>
+              )}
+            </div>
           </div>
 
           {/* แถวข่าวเพิ่ม */}
-          {otherNews.length > 2 && (
+          {otherNews.length > 3 && (
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {otherNews.slice(2, 6).map((n: any) => (
+              {otherNews.slice(3, 7).map((n: any) => (
                 <NewsCardSmall key={n.id} n={n} />
               ))}
             </div>
@@ -98,20 +136,24 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ===== 3) Province filter + Events ===== */}
-      <section className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold">เลือกพื้นที่ของคุณ</h2>
-          <ProvinceFilter />
-        </div>
-        {events && events.length > 0 && (
-          <div>
-            <SectionHead title="กิจกรรมที่กำลังจะถึง" href="/events" />
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {events.map((e: any) => <EventCard key={e.id} e={e} />)}
-            </div>
+      {/* ===== 3) กิจกรรมที่กำลังจะถึง ===== */}
+      <section>
+        <SectionHead title="กิจกรรมที่กำลังจะถึง" href="/events" />
+        {events && events.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {events.map((e: any) => <EventCard key={e.id} e={e} />)}
+          </div>
+        ) : (
+          <div className="card p-8 text-center text-sm text-on-surface-variant">
+            ยังไม่มีกิจกรรมที่กำลังจะถึง
           </div>
         )}
+      </section>
+
+      {/* ===== 4) เลือกพื้นที่ ===== */}
+      <section className="flex flex-wrap items-center gap-3 rounded-xl border border-outline-variant bg-surface-container-low p-4">
+        <span className="text-sm font-semibold text-on-surface">เลือกพื้นที่ของคุณ:</span>
+        <ProvinceFilter />
       </section>
 
       {/* ===== 4) Webboard รายหมวด ===== */}
@@ -154,12 +196,22 @@ export default async function HomePage() {
 
 /* ---------- presentational ---------- */
 
-function Stat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
+/** การ์ดข่าวเล็กแนวนอน (thumbnail ซ้าย + หัวข้อขวา) สำหรับคอลัมน์ข้าง hero */
+function NewsMini({ n }: { n: any }) {
   return (
-    <div className={`card p-4 ${accent ? "border-primary/30 bg-primary-container/5" : ""}`}>
-      <p className="text-2xl font-bold text-primary">{value.toLocaleString("th-TH")}</p>
-      <p className="text-xs text-on-surface-variant">{label}</p>
-    </div>
+    <Link
+      href={`/news/${n.slug}`}
+      className="card group flex flex-1 items-stretch gap-3 overflow-hidden p-2 transition duration-200 hover:-translate-y-0.5 hover:shadow-card"
+    >
+      <div className="h-full min-h-[64px] w-24 shrink-0 overflow-hidden rounded-lg bg-surface-container">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={n.cover_url || NEWS_FALLBACK_IMG} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col justify-center py-1">
+        {n.category && <span className="chip mb-1 w-fit bg-primary-container/10 text-primary">{n.category}</span>}
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-on-surface">{n.title}</h3>
+      </div>
+    </Link>
   );
 }
 
@@ -176,11 +228,11 @@ function SectionHead({ title, href }: { title: string; href: string }) {
 
 function NewsCardSmall({ n }: { n: any }) {
   return (
-    <Link href={`/news/${n.slug}`} className="card group overflow-hidden transition hover:shadow-card">
-      {n.cover_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={n.cover_url} alt="" className="h-32 w-full object-cover transition group-hover:scale-105" />
-      )}
+    <Link href={`/news/${n.slug}`} className="card group overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:shadow-card">
+      <div className="h-32 w-full overflow-hidden bg-surface-container">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={n.cover_url || NEWS_FALLBACK_IMG} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+      </div>
       <div className="p-3">
         {n.category && <span className="chip bg-primary-container/10 text-primary">{n.category}</span>}
         <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-on-surface">{n.title}</h3>
@@ -192,7 +244,7 @@ function NewsCardSmall({ n }: { n: any }) {
 function EventCard({ e }: { e: any }) {
   const d = new Date(e.starts_at);
   return (
-    <Link href="/events" className="card group flex overflow-hidden transition hover:shadow-card">
+    <Link href="/events" className="card group flex overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:shadow-card">
       <div className="grid w-16 shrink-0 place-items-center bg-primary text-on-primary">
         <div className="text-center leading-none">
           <p className="text-xl font-bold">{d.toLocaleDateString("th-TH", { day: "numeric" })}</p>
@@ -220,15 +272,14 @@ function CategoryBox({ cat, threads }: { cat: any; threads: any[] }) {
       <div className="divide-y divide-outline-variant">
         {threads.length > 0 ? (
           threads.map((t) => {
-            const lvl = LEVEL_STYLES[t.profiles?.level_id];
             return (
               <Link key={t.id} href={`/board/thread/${t.id}`} className="flex items-center gap-2 px-4 py-2.5 hover:bg-surface-container-low">
                 {t.is_pinned && <Pin className="h-4 w-4 shrink-0 text-tertiary-container" aria-label="ปักหมุด" />}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-on-surface">{t.title}</p>
-                  <p className="truncate text-xs text-on-surface-variant">
+                  <p className="flex items-center gap-1 truncate text-xs text-on-surface-variant">
                     {t.profiles?.display_name || t.profiles?.username}
-                    {lvl && <span className={`chip ml-1 ${lvl.cls}`}>{lvl.en}</span>}
+                    {t.profiles && <LevelBadge levelId={t.profiles.level_id} />}
                   </p>
                 </div>
                 <div className="shrink-0 text-right text-xs text-on-surface-variant">
@@ -246,14 +297,13 @@ function CategoryBox({ cat, threads }: { cat: any; threads: any[] }) {
 }
 
 function PopularRow({ t, rank }: { t: any; rank: number }) {
-  const lvl = LEVEL_STYLES[t.profiles?.level_id];
   return (
     <Link href={`/board/thread/${t.id}`} className="flex items-center gap-3 p-4 hover:bg-surface-container-low">
       <span className={`w-6 text-center text-lg font-bold ${rank <= 3 ? "text-tertiary-container" : "text-outline"}`}>{rank}</span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1">
           {t.categories && <span className="chip bg-primary-container/10 text-primary">{t.categories.name_th}</span>}
-          {lvl && <span className={`chip ${lvl.cls}`}>{lvl.en}</span>}
+          {t.profiles && <LevelBadge levelId={t.profiles.level_id} />}
         </div>
         <h3 className="mt-0.5 truncate font-medium text-on-surface">{t.title}</h3>
       </div>
@@ -267,16 +317,13 @@ function PopularRow({ t, rank }: { t: any; rank: number }) {
 }
 
 function MemberRow({ m, rank }: { m: any; rank: number }) {
-  const lvl = LEVEL_STYLES[m.level_id];
   return (
     <Link href={`/u/${m.username}`} className="flex items-center gap-3 p-3 hover:bg-surface-container-low">
       <span className={`w-5 text-center text-sm font-bold ${rank <= 3 ? "text-tertiary-container" : "text-outline"}`}>{rank}</span>
-      <span className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-bold text-on-primary">
-        {(m.display_name || m.username).charAt(0).toUpperCase()}
-      </span>
+      <Avatar src={m.avatar_url} name={m.display_name || m.username} role={m.role} size={32} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{m.display_name || m.username}</p>
-        {lvl && <span className={`chip ${lvl.cls}`}>{lvl.en}</span>}
+        <LevelBadge levelId={m.level_id} />
       </div>
       <span className="shrink-0 text-sm font-bold text-primary">{m.reputation.toLocaleString("th-TH")}</span>
     </Link>

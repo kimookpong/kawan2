@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { Avatar } from "@/components/avatar";
 
 export default async function MessagesPage() {
   const supabase = createClient();
@@ -33,7 +34,7 @@ export default async function MessagesPage() {
   );
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="w-full">
       <h1 className="mb-4 text-2xl font-bold text-primary">ข้อความ</h1>
       <div className="card divide-y divide-outline-variant">
         {sorted.length > 0 ? (
@@ -45,9 +46,7 @@ export default async function MessagesPage() {
                 href={`/messages/${m.conversation_id}`}
                 className="flex items-center gap-3 p-4 hover:bg-surface-container-low"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-primary text-on-primary">
-                  {(other?.display_name || other?.username || "?").charAt(0).toUpperCase()}
-                </span>
+                <Avatar src={other?.avatar_url} name={other?.display_name || other?.username} size={40} />
                 <div className="flex-1">
                   <p className="font-medium">{other?.display_name || other?.username || "ผู้ใช้"}</p>
                   <p className="text-xs text-on-surface-variant">

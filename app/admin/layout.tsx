@@ -27,7 +27,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-[200px_1fr]">
+    <div className="grid w-full gap-6 md:grid-cols-[220px_1fr]">
       <aside className="md:border-r md:border-outline-variant md:pr-4">
         <div className="mb-3 flex items-center gap-2 text-primary">
           <Shield className="h-5 w-5" />

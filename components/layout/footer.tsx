@@ -22,7 +22,7 @@ export function Footer() {
               <p className="text-xs font-bold tracking-widest text-emerald-400">TIER · 01</p>
               <h3 className="mt-2 text-lg font-bold">ผู้สนับสนุน</h3>
               <p className="mt-1 text-2xl font-extrabold">
-                ฿49 <span className="text-sm font-normal text-white/50">/เดือน</span>
+                ฿29 <span className="text-sm font-normal text-white/50">/เดือน</span>
               </p>
               <ul className="mt-4 space-y-2 text-sm text-white/80">
                 {["ปิดโฆษณา", "รับโบนัส EXP x1.5", "อัพโหลดรูปโปรไฟล์เอง", "ตราระดับสมาชิก"].map((f) => (
@@ -41,7 +41,7 @@ export function Footer() {
               <p className="text-xs font-bold tracking-widest text-amber-400">TIER · 02</p>
               <h3 className="mt-2 text-lg font-bold">ผู้อุปถัมภ์</h3>
               <p className="mt-1 text-2xl font-extrabold">
-                ฿149 <span className="text-sm font-normal text-white/50">/เดือน</span>
+                ฿99 <span className="text-sm font-normal text-white/50">/เดือน</span>
               </p>
               <ul className="mt-4 space-y-2 text-sm text-white/80">
                 {["ทุกสิทธิ์ของผู้สนับสนุน", "รับโบนัส EXP x2", "ส่งหลังไมค์ไม่อั้น", "ติดตามกระทู้ไม่อั้น"].map((f) => (
@@ -58,7 +58,7 @@ export function Footer() {
                 href="/membership"
                 className="rounded-lg bg-amber-400 px-5 py-3 text-center text-sm font-bold text-[#0f1b2e] transition hover:bg-amber-300"
               >
-                สมัคร Patron — ฿149
+                สมัคร Patron — ฿99
               </Link>
               <Link
                 href="/membership"

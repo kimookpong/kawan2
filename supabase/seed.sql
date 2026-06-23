@@ -11,15 +11,16 @@ insert into public.provinces (name_th, name_en, slug) values
 on conflict (slug) do nothing;
 
 -- ---------- ระดับสมาชิก ----------
+-- บรรดาศักดิ์ขุนนางมลายูโบราณ (แหลมมลายู/ปาตานี) — สามัญชน → อัครมหาเสนาบดี
 insert into public.membership_levels (id, name_th, name_en, min_points, perks) values
-  (1, 'สัมฤทธิ์',   'Bronze',   0,
-     '{"post":true,"reply":true,"dm":true}'::jsonb),
-  (2, 'เงิน',       'Silver',   500,
-     '{"attach_file":true,"create_poll":true}'::jsonb),
-  (3, 'ทอง',        'Gold',     2000,
-     '{"pin_own":true,"custom_title":true}'::jsonb),
-  (4, 'แพลทินัม',   'Platinum', 5000,
-     '{"submit_news":true,"mod_lite":true,"special_badge":true}'::jsonb)
+  (1, 'รายัต',       'Rakyat',     0,     '{"post":true,"reply":true,"dm":true}'::jsonb),
+  (2, 'ฮูลูบาลัง',   'Hulubalang', 200,   '{}'::jsonb),
+  (3, 'เบินตารา',    'Bentara',    600,   '{}'::jsonb),
+  (4, 'ออรัง กายอ',  'Orang Kaya', 1200,  '{"attach_file":true}'::jsonb),
+  (5, 'ปังลีมา',     'Panglima',   2500,  '{}'::jsonb),
+  (6, 'เตอเมิงกุง',  'Temenggung', 4500,  '{}'::jsonb),
+  (7, 'ลักษมณา',     'Laksamana',  7000,  '{"submit_news":true}'::jsonb),
+  (8, 'เบินดาฮารา',  'Bendahara',  10000, '{"submit_news":true,"special_badge":true}'::jsonb)
 on conflict (id) do nothing;
 
 -- ---------- หมวดหมู่เว็บบอร์ด ----------

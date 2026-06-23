@@ -22,3 +22,16 @@ export async function setUserRole(formData: FormData) {
   params.set(error ? "error" : "ok", error ? error.message : "1");
   redirect(`/admin/users?${params.toString()}`);
 }
+
+/** รีเซ็ตสิทธิ์เปลี่ยนชื่อ (username/display_name) ให้ผู้ใช้ — เฉพาะ admin */
+export async function resetUserNames(formData: FormData) {
+  const supabase = createClient();
+  const target = String(formData.get("target"));
+  const q = String(formData.get("q") || "");
+  const { error } = await supabase.rpc("admin_reset_user_names", { target });
+  revalidatePath("/admin/users");
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  params.set(error ? "error" : "ok", error ? error.message : "reset");
+  redirect(`/admin/users?${params.toString()}`);
+}

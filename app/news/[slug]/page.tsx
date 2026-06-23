@@ -1,31 +1,140 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Bookmark, Heart, MessageSquare, MoreHorizontal, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { createNewsComment } from "../actions";
+import { AuthorCard } from "@/components/board/author-card";
+import { BBCodeEditor } from "@/components/board/bbcode-editor";
+import { QuoteButton } from "@/components/board/quote-button";
+import { renderBBCode } from "@/lib/bbcode";
 
 export default async function NewsDetailPage({ params }: { params: { slug: string } }) {
   const supabase = createClient();
   const { data: news } = await supabase
     .from("news")
-    .select("title, body, cover_url, category, published_at, profiles(username, display_name)")
+    .select("id, title, body, cover_url, category, status, view_count, published_at, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at)")
     .eq("slug", params.slug)
-    .eq("status", "published")
     .single();
 
   if (!news) notFound();
-  const author: any = news.profiles;
+
+  const { data: comments } = await supabase
+    .from("news_comments")
+    .select("id, body, created_at, profiles(username, display_name, avatar_url, level_id, role, reputation)")
+    .eq("news_id", news.id)
+    .eq("status", "published")
+    .order("created_at");
+
+  const { data: { user } } = await supabase.auth.getUser();
+  let canEdit = false;
+  if (user) {
+    const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    canEdit = me?.role === "editor" || me?.role === "admin";
+  }
 
   return (
-    <article className="mx-auto max-w-3xl">
-      {news.category && <span className="chip bg-primary-container/10 text-primary">{news.category}</span>}
-      <h1 className="mt-2 text-3xl font-bold text-on-surface">{news.title}</h1>
-      <p className="mt-1 text-sm text-on-surface-variant">
-        โดย {author?.display_name || author?.username || "ทีมงาน"} ·{" "}
-        {news.published_at && new Date(news.published_at).toLocaleDateString("th-TH")}
-      </p>
-      {news.cover_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={news.cover_url} alt="" className="mt-4 w-full rounded-lg object-cover" />
+    <div className="w-full space-y-4">
+      {/* breadcrumb */}
+      <nav className="flex flex-wrap items-center gap-1 text-xs text-on-surface-variant">
+        <Link href="/" className="hover:text-primary">หน้าแรก</Link><span>›</span>
+        <Link href="/news" className="hover:text-primary">ข่าวสาร</Link><span>›</span>
+        {news.category && <><span className="text-on-surface-variant">{news.category}</span><span>›</span></>}
+        <span className="truncate text-on-surface">{news.title}</span>
+      </nav>
+
+      {news.status !== "published" && (
+        <p className="rounded border border-amber-400/50 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          ข่าวนี้เป็น “{news.status === "draft" ? "ฉบับร่าง" : news.status}” — ยังไม่แสดงต่อสาธารณะ (เห็นเฉพาะบรรณาธิการ/แอดมิน)
+        </p>
       )}
-      <div className="prose mt-6 max-w-none whitespace-pre-wrap text-on-surface">{news.body}</div>
-    </article>
+
+      {/* header */}
+      <div className="flex items-start justify-between gap-3">
+        <h1 className="text-2xl font-bold text-on-surface">{news.title}</h1>
+        <div className="flex shrink-0 gap-2">
+          {canEdit && (
+            <Link href={`/news/${params.slug}/edit`} className="btn-outline gap-1"><Pencil className="h-4 w-4" /> แก้ไข</Link>
+          )}
+          <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
+          <a href="#comments" className="btn-primary gap-1"><MessageSquare className="h-4 w-4" /> แสดงความเห็น</a>
+        </div>
+      </div>
+
+      {/* เนื้อหาข่าว (สไตล์กระทู้) */}
+      <article className="card flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
+        <AuthorCard author={news.profiles as any} />
+        <div className="min-w-0 flex-1 border-t border-outline-variant pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
+            {news.category && <span className="chip bg-primary-container/10 text-primary">{news.category}</span>}
+            <span>
+              เผยแพร่เมื่อ {news.published_at && new Date(news.published_at).toLocaleString("th-TH")}
+              {typeof news.view_count === "number" ? ` · ${news.view_count} อ่าน` : ""}
+            </span>
+          </div>
+
+          {news.cover_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={news.cover_url} alt="" className="mt-3 w-full max-w-[640px] rounded-lg object-cover" />
+          )}
+
+          <div className="bbcode mt-4 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(news.body) }} />
+
+          <div className="mt-5 flex items-center gap-4 border-t border-outline-variant pt-3 text-sm text-on-surface-variant">
+            <span className="inline-flex items-center gap-1"><Heart className="h-4 w-4" /> ถูกใจ</span>
+            <a href="#comments" className="inline-flex items-center gap-1 hover:text-primary">
+              <MessageSquare className="h-4 w-4" /> ความเห็น ({comments?.length ?? 0})
+            </a>
+            <button className="ml-auto"><MoreHorizontal className="h-4 w-4" /></button>
+          </div>
+        </div>
+      </article>
+
+      {/* ความคิดเห็น */}
+      <h2 id="comments" className="scroll-mt-20 border-b border-outline-variant pb-2 text-lg font-semibold">
+        ความคิดเห็น ({comments?.length ?? 0})
+      </h2>
+
+      <div className="space-y-3">
+        {(comments ?? []).map((c: any, i: number) => (
+          <div key={c.id} className="card flex flex-col gap-4 p-4 sm:flex-row">
+            <AuthorCard author={c.profiles} compact />
+            <div className="min-w-0 flex-1 border-t border-outline-variant pt-3 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
+              <div className="flex items-center justify-between text-xs text-on-surface-variant">
+                <span>{new Date(c.created_at).toLocaleString("th-TH")}</span>
+                <span className="font-medium">#{i + 1}</span>
+              </div>
+              <div className="bbcode mt-2 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(c.body) }} />
+              <div className="mt-3 flex items-center gap-4 text-xs text-on-surface-variant">
+                <button className="inline-flex items-center gap-1 hover:text-primary"><Heart className="h-3.5 w-3.5" /> ถูกใจ</button>
+                <QuoteButton author={c.profiles?.display_name || c.profiles?.username || "สมาชิก"} body={c.body} />
+              </div>
+            </div>
+          </div>
+        ))}
+        {(!comments || comments.length === 0) && (
+          <p className="card p-6 text-center text-sm text-on-surface-variant">ยังไม่มีความคิดเห็น เป็นคนแรกที่แสดงความเห็น</p>
+        )}
+      </div>
+
+      {/* ฟอร์มความเห็น */}
+      <div className="scroll-mt-20">
+        {user ? (
+          <form action={createNewsComment} className="card overflow-hidden">
+            <div className="bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary">แสดงความคิดเห็น</div>
+            <input type="hidden" name="news_id" value={news.id} />
+            <input type="hidden" name="slug" value={params.slug} />
+            <BBCodeEditor placeholder="แสดงความคิดเห็นต่อข่าวนี้... รองรับ BBCode" rows={5} />
+            <div className="flex items-center justify-between border-t border-outline-variant px-4 py-2.5">
+              <span className="text-xs text-on-surface-variant">แสดงความเห็นในนาม สมาชิก</span>
+              <button className="btn-primary">ส่งความคิดเห็น</button>
+            </div>
+          </form>
+        ) : (
+          <p className="card p-4 text-center text-sm text-on-surface-variant">
+            กรุณา<Link href={`/auth/login?redirect=/news/${params.slug}`} className="text-primary hover:underline"> เข้าสู่ระบบ </Link>เพื่อแสดงความเห็น
+          </p>
+        )}
+      </div>
+    </div>
   );
 }

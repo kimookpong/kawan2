@@ -75,7 +75,7 @@ create policy "news_insert" on public.news
 create policy "news_update" on public.news
   for update using (public.is_editor(auth.uid()));
 create policy "news_delete" on public.news
-  for delete using (public.is_editor(auth.uid()));
+  for delete using (public.is_admin(auth.uid()));
 
 -- ---------- user_badges ----------
 alter table public.user_badges enable row level security;

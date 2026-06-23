@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
   const { data: threads } = await supabase
     .from("threads")
-    .select("id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id), categories(name_th, slug)")
+    .select("id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)")
     .eq("category_id", category.id)
     .eq("status", "published")
     .order("is_pinned", { ascending: false })
@@ -27,7 +27,7 @@ export default async function CategoryPage({ params }: { params: { category: str
     .limit(50);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4">
+    <div className="w-full space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-primary">{category.name_th}</h1>

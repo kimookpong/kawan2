@@ -5,13 +5,13 @@ import { subscribe, openBillingPortal } from "./actions";
 const TIERS = {
   supporter: {
     name: "ผู้สนับสนุน",
-    price: "฿49",
+    price: "฿29",
     accent: "emerald",
     features: ["ปิดโฆษณา", "รับโบนัส EXP x1.5", "อัพโหลดรูปโปรไฟล์เอง", "ตราระดับสมาชิก"],
   },
   patron: {
     name: "ผู้อุปถัมภ์",
-    price: "฿149",
+    price: "฿99",
     accent: "amber",
     features: ["ทุกสิทธิ์ของผู้สนับสนุน", "รับโบนัส EXP x2", "ส่งหลังไมค์ไม่อั้น", "ติดตามกระทู้ไม่อั้น"],
   },
@@ -40,7 +40,7 @@ export default async function MembershipPage({
   const isMember = tier !== "free";
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="w-full space-y-6">
       <div className="text-center">
         <p className="text-xs font-bold tracking-widest text-emerald-600">JOIN · MEMBERSHIP</p>
         <h1 className="mt-2 text-3xl font-bold text-primary">ร่วมสนับสนุนค่าเซิฟเวอร์</h1>

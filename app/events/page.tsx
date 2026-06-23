@@ -13,7 +13,7 @@ export default async function EventsPage() {
     .limit(30);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="w-full space-y-6">
       <h1 className="text-2xl font-bold text-primary">ปฏิทินกิจกรรม</h1>
 
       {events && events.length > 0 ? (

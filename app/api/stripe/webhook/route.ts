@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type Stripe from "stripe";
-import { stripe, priceToTier } from "@/lib/stripe";
+import { getStripe, priceToTier } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // ต้องใช้ raw body เพื่อ verify signature
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, sig, secret);
+    event = getStripe().webhooks.constructEvent(body, sig, secret);
   } catch (err: any) {
     return NextResponse.json({ error: `Webhook signature failed: ${err.message}` }, { status: 400 });
   }

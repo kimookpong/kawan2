@@ -22,7 +22,7 @@ export default async function NotificationsPage() {
     .limit(50);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="w-full space-y-4">
       <h1 className="text-2xl font-bold text-primary">การแจ้งเตือน</h1>
       <div className="card divide-y divide-outline-variant">
         {(notifs ?? []).map((n) => (

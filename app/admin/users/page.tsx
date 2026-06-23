@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { Search, CheckCircle2, AlertCircle } from "lucide-react";
+import { Search, CheckCircle2, AlertCircle, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { setUserRole } from "../actions";
-import { ROLES, ROLE_LABELS, LEVEL_STYLES } from "@/lib/constants";
+import { setUserRole, resetUserNames } from "../actions";
+import { ROLES, ROLE_LABELS } from "@/lib/constants";
+import { LevelBadge } from "@/components/user-badges";
+import { Avatar } from "@/components/avatar";
 
 export default async function AdminUsersPage({
   searchParams,
@@ -17,7 +19,7 @@ export default async function AdminUsersPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, username, display_name, role, level_id, reputation, created_at, provinces(name_th)")
+    .select("id, username, display_name, role, level_id, reputation, avatar_url, created_at, provinces(name_th)")
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -69,16 +71,13 @@ export default async function AdminUsersPage({
           </thead>
           <tbody className="divide-y divide-outline-variant">
             {(users ?? []).map((u: any) => {
-              const lvl = LEVEL_STYLES[u.level_id];
-              const role = ROLE_LABELS[u.role] ?? ROLE_LABELS.user;
+              const role = ROLE_LABELS[u.role] ?? ROLE_LABELS.member;
               const isSelf = u.id === user?.id;
               return (
                 <tr key={u.id} className="hover:bg-surface-container-low">
                   <td className="px-4 py-3">
                     <Link href={`/u/${u.username}`} className="flex items-center gap-2">
-                      <span className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-bold text-on-primary">
-                        {(u.display_name || u.username).charAt(0).toUpperCase()}
-                      </span>
+                      <Avatar src={u.avatar_url} name={u.display_name || u.username} role={u.role} size={32} />
                       <span>
                         <span className="block font-medium text-on-surface">{u.display_name || u.username}</span>
                         <span className="block text-xs text-on-surface-variant">@{u.username}</span>
@@ -87,33 +86,47 @@ export default async function AdminUsersPage({
                   </td>
                   <td className="px-4 py-3 text-on-surface-variant">{u.provinces?.name_th ?? "—"}</td>
                   <td className="px-4 py-3">
-                    {u.reputation.toLocaleString("th-TH")}
-                    {lvl && <span className={`chip ml-2 ${lvl.cls}`}>{lvl.en}</span>}
+                    <span className="inline-flex items-center gap-2">
+                      {u.reputation.toLocaleString("th-TH")}
+                      <LevelBadge levelId={u.level_id} />
+                    </span>
                   </td>
                   <td className="px-4 py-3">
                     <span className={`chip ${role.cls}`}>{role.label}</span>
                   </td>
                   <td className="px-4 py-3">
-                    {isSelf ? (
-                      <span className="text-xs text-on-surface-variant">(บัญชีคุณ)</span>
-                    ) : (
-                      <form action={setUserRole} className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {isSelf ? (
+                        <span className="text-xs text-on-surface-variant">(บัญชีคุณ)</span>
+                      ) : (
+                        <form action={setUserRole} className="flex items-center gap-2">
+                          <input type="hidden" name="target" value={u.id} />
+                          <input type="hidden" name="q" value={q} />
+                          <select
+                            name="role"
+                            defaultValue={u.role}
+                            className="rounded border border-outline-variant px-2 py-1.5 text-sm outline-none focus:border-primary"
+                          >
+                            {ROLES.map((r) => (
+                              <option key={r} value={r}>{ROLE_LABELS[r].label}</option>
+                            ))}
+                          </select>
+                          <button className="rounded bg-primary px-3 py-1.5 text-xs font-medium text-on-primary hover:opacity-90">
+                            บันทึก
+                          </button>
+                        </form>
+                      )}
+                      <form action={resetUserNames}>
                         <input type="hidden" name="target" value={u.id} />
                         <input type="hidden" name="q" value={q} />
-                        <select
-                          name="role"
-                          defaultValue={u.role}
-                          className="rounded border border-outline-variant px-2 py-1.5 text-sm outline-none focus:border-primary"
+                        <button
+                          title="รีเซ็ตสิทธิ์เปลี่ยนชื่อ (username/ชื่อที่แสดง) ให้ผู้ใช้นี้"
+                          className="inline-flex items-center gap-1 rounded border border-outline-variant px-2.5 py-1.5 text-xs text-on-surface-variant hover:bg-surface-container hover:text-primary"
                         >
-                          {ROLES.map((r) => (
-                            <option key={r} value={r}>{ROLE_LABELS[r].label}</option>
-                          ))}
-                        </select>
-                        <button className="rounded bg-primary px-3 py-1.5 text-xs font-medium text-on-primary hover:opacity-90">
-                          บันทึก
+                          <RotateCcw className="h-3.5 w-3.5" /> รีเซ็ตชื่อ
                         </button>
                       </form>
-                    )}
+                    </div>
                   </td>
                 </tr>
               );
