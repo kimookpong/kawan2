@@ -319,9 +319,9 @@ function NewsMini({ n }: { n: any }) {
   return (
     <Link
       href={`/news/${n.slug}`}
-      className="card group flex flex-1 items-stretch gap-3 overflow-hidden p-2 transition duration-200 hover:-translate-y-0.5 hover:shadow-card"
+      className="card group flex items-start gap-3 overflow-hidden p-2 transition duration-200 hover:-translate-y-0.5 hover:shadow-card"
     >
-      <div className="h-full min-h-[64px] w-24 shrink-0 overflow-hidden rounded-lg bg-surface-container">
+      <div className="h-20 w-24 shrink-0 overflow-hidden rounded-lg bg-surface-container">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={n.cover_url || NEWS_FALLBACK_IMG}
@@ -329,7 +329,7 @@ function NewsMini({ n }: { n: any }) {
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
       </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-center py-1">
+      <div className="flex min-w-0 flex-1 flex-col justify-start py-0.5">
         {n.category && (
           <span className="chip mb-1 w-fit bg-primary-container/10 text-primary">
             {n.category}
