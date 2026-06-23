@@ -10,6 +10,11 @@ const TYPE_LABEL: Record<string, string> = {
   ban: "บัญชีของคุณถูกระงับการใช้งาน",
 };
 
+export const metadata = {
+  title: "การแจ้งเตือน",
+  robots: { index: false, follow: false },
+};
+
 export default async function NotificationsPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

@@ -5,9 +5,22 @@ import { Footer } from "@/components/layout/footer";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Kawan2 | ชุมชนชายแดนใต้",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app"),
+  title: {
+    default: "Kawan2 | ชุมชนชายแดนใต้",
+    template: "%s | Kawan2",
+  },
   description:
     "ศูนย์กลางข่าวสาร กระดานสนทนา และชุมชนของ 3 จังหวัดชายแดนใต้ — ปัตตานี นราธิวาส ยะลา",
+  applicationName: "Kawan2",
+  openGraph: {
+    type: "website",
+    siteName: "Kawan2",
+    locale: "th_TH",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
   icons: {
     icon: "/image.png",
     shortcut: "/image.png",

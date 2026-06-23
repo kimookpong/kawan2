@@ -20,7 +20,7 @@ export const NAV_ITEMS = [
   { href: "/board", label: "กระดานสนทนา" },
   { href: "/events", label: "ปฏิทินกิจกรรม" },
   { href: "/marketplace", label: "ตลาดซื้อขาย" },
-  { href: "/leaderboard", label: "หอเกียรติยศ" },
+  { href: "/members", label: "ค้นหาสมาชิก" },
 ];
 
 export const ROLES = ["member", "editor", "admin"] as const;

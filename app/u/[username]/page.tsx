@@ -6,6 +6,29 @@ import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
 import { ModerationPanel } from "@/components/moderation-panel";
 
+export async function generateMetadata({ params }: { params: { username: string } }) {
+  const supabase = createClient();
+  const { data: p } = await supabase
+    .from("profiles")
+    .select("username, display_name, bio, avatar_url")
+    .eq("username", params.username)
+    .single();
+  if (!p) return { title: "ไม่พบสมาชิก" };
+  const name = p.display_name || p.username;
+  const desc = (p.bio ?? `โปรไฟล์ของ ${name} บน Kawan2`).slice(0, 160);
+  return {
+    title: `${name} (@${p.username})`,
+    description: desc,
+    alternates: { canonical: `/u/${params.username}` },
+    openGraph: {
+      type: "profile",
+      title: `${name} (@${p.username})`,
+      description: desc,
+      images: p.avatar_url ? [p.avatar_url] : undefined,
+    },
+  };
+}
+
 export default async function ProfilePage({
   params,
   searchParams,

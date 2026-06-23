@@ -4,6 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
 
+export const metadata = {
+  title: "กิลด์",
+  description: "กิลด์และกลุ่มชุมชนของชาวชายแดนใต้",
+};
+
 export default async function GuildsPage() {
   const supabase = createClient();
   const { data: guilds } = await supabase

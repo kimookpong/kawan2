@@ -1,9 +1,25 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Shield, Users, AlertCircle, LogOut, UserPlus } from "lucide-react";
+import { Shield, Users, AlertCircle, LogOut, UserPlus, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "@/components/avatar";
-import { joinGuild, leaveGuild } from "../actions";
+import { joinGuild, leaveGuild, renameGuild } from "../actions";
+
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const supabase = createClient();
+  const { data: g } = await supabase
+    .from("guilds")
+    .select("name, description")
+    .eq("slug", params.slug)
+    .single();
+  if (!g) return { title: "ไม่พบกิลด์" };
+  return {
+    title: g.name,
+    description: g.description ?? undefined,
+    alternates: { canonical: `/guilds/${params.slug}` },
+    openGraph: { title: g.name, description: g.description ?? undefined },
+  };
+}
 
 export default async function GuildPage({
   params,
@@ -15,7 +31,7 @@ export default async function GuildPage({
   const supabase = createClient();
   const { data: guild } = await supabase
     .from("guilds")
-    .select("id, name, slug, description, emblem_url, is_official, member_count, xp, created_at, owner_id, profiles(username, display_name)")
+    .select("id, name, slug, description, emblem_url, is_official, member_count, xp, created_at, owner_id, name_changed_at, profiles(username, display_name)")
     .eq("slug", params.slug)
     .single();
 
@@ -31,16 +47,30 @@ export default async function GuildPage({
 
   const { data: { user } } = await supabase.auth.getUser();
   let myGuildId: number | null = null;
+  let isAdmin = false;
   if (user) {
-    const { data: mem } = await supabase.from("guild_members").select("guild_id").eq("user_id", user.id).maybeSingle();
+    const [{ data: mem }, { data: me }] = await Promise.all([
+      supabase.from("guild_members").select("guild_id").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("role").eq("id", user.id).single(),
+    ]);
     myGuildId = mem?.guild_id ?? null;
+    isAdmin = me?.role === "admin";
   }
   const isMember = myGuildId === guild.id;
   const inOtherGuild = myGuildId !== null && !isMember;
   const owner: any = guild.profiles;
 
+  // สิทธิ์แก้ไขชื่อ: หัวหน้ากิลด์เปลี่ยนได้ปีละครั้ง · แอดมินเปลี่ยนได้ตลอด
+  const isOwner = !!user && user.id === guild.owner_id;
+  const canEditName = isAdmin || isOwner;
+  const yearMs = 365 * 86400000;
+  const lastChange = (guild as any).name_changed_at ? new Date((guild as any).name_changed_at) : null;
+  const ownerOnCooldown = !isAdmin && isOwner && lastChange !== null && Date.now() - lastChange.getTime() < yearMs;
+  const nextEligible = lastChange ? new Date(lastChange.getTime() + yearMs) : null;
+  const canEditNameNow = isAdmin || (isOwner && !ownerOnCooldown);
+
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-5">
+    <div className="w-full space-y-5">
       {searchParams.error && (
         <p className="flex items-center gap-2 rounded border border-error-container bg-error-container px-3 py-2 text-sm text-on-error-container">
           <AlertCircle className="h-4 w-4" /> {searchParams.error}
@@ -62,6 +92,39 @@ export default async function GuildPage({
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-xl font-bold text-on-surface sm:text-2xl">{guild.name}</h1>
               {guild.is_official && <span className="chip bg-amber-100 text-amber-800">ทางการ</span>}
+              {canEditName && (
+                canEditNameNow ? (
+                  <details className="group">
+                    <summary className="flex cursor-pointer list-none items-center gap-1 rounded-full border border-outline-variant px-2.5 py-1 text-xs text-on-surface-variant hover:bg-surface-container-low">
+                      <Pencil className="h-3 w-3" /> แก้ไขชื่อ
+                    </summary>
+                    <form action={renameGuild} className="mt-2 flex flex-wrap items-center gap-2">
+                      <input type="hidden" name="slug" value={guild.slug} />
+                      <input type="hidden" name="guild_id" value={guild.id} />
+                      <input
+                        type="text"
+                        name="name"
+                        defaultValue={guild.name}
+                        required
+                        minLength={2}
+                        maxLength={50}
+                        className="rounded-lg border border-outline-variant bg-surface-container-low px-3 py-1.5 text-sm outline-none focus:border-primary"
+                      />
+                      <button className="btn-primary px-4 py-1.5 text-sm">บันทึก</button>
+                      <span className="w-full text-xs text-on-surface-variant">
+                        {isAdmin
+                          ? "แอดมิน: แก้ไขได้ตลอด"
+                          : "หัวหน้ากิลด์เปลี่ยนชื่อได้ปีละครั้ง"}
+                      </span>
+                    </form>
+                  </details>
+                ) : (
+                  <span className="text-xs text-on-surface-variant">
+                    เปลี่ยนชื่อได้อีกครั้งหลัง{" "}
+                    {nextEligible?.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" })}
+                  </span>
+                )
+              )}
             </div>
             <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-on-surface-variant">
               <span className="inline-flex items-center gap-1"><Users className="h-4 w-4" /> {guild.member_count} สมาชิก</span>

@@ -3,6 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export const revalidate = 120;
 
+export const metadata = {
+  title: "ปฏิทินกิจกรรม",
+  description: "ปฏิทินกิจกรรมและงานในพื้นที่ 3 จังหวัดชายแดนใต้",
+};
+
 export default async function EventsPage() {
   const supabase = createClient();
   const { data: events } = await supabase

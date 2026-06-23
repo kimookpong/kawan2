@@ -6,6 +6,21 @@ import { ThreadListItem } from "@/components/board/thread-list-item";
 
 export const revalidate = 30;
 
+export async function generateMetadata({ params }: { params: { category: string } }) {
+  const supabase = createClient();
+  const { data: c } = await supabase
+    .from("categories")
+    .select("name_th, description")
+    .eq("slug", params.category)
+    .single();
+  if (!c) return { title: "ไม่พบหมวด" };
+  return {
+    title: c.name_th,
+    description: c.description ?? undefined,
+    alternates: { canonical: `/board/${params.category}` },
+  };
+}
+
 export default async function CategoryPage({ params }: { params: { category: string } }) {
   const supabase = createClient();
 

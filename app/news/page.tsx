@@ -5,6 +5,11 @@ import { NEWS_FALLBACK_IMG } from "@/lib/constants";
 
 export const revalidate = 60;
 
+export const metadata = {
+  title: "ข่าวสารภูมิภาค",
+  description: "ข่าวสารและเรื่องเด่นของ 3 จังหวัดชายแดนใต้ — ปัตตานี นราธิวาส ยะลา",
+};
+
 export default async function NewsPage() {
   const supabase = createClient();
   const { data: news } = await supabase

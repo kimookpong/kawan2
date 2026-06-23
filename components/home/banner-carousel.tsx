@@ -65,9 +65,9 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
                 )}
                 <div className={`absolute inset-0 ${t.overlay}`} />
                 <div className="relative flex h-full max-w-2xl flex-col justify-center gap-2 p-6 sm:p-10">
-                  {b.eyebrow && <p className={`text-xs font-bold tracking-widest ${t.eyebrow}`}>{b.eyebrow}</p>}
-                  <h2 className="text-xl font-bold leading-snug sm:text-2xl md:text-3xl">{b.title}</h2>
-                  {b.subtitle && <p className="line-clamp-2 text-sm opacity-80">{b.subtitle}</p>}
+                  {b.eyebrow && <p className={`text-[11px] font-bold tracking-widest ${t.eyebrow}`}>{b.eyebrow}</p>}
+                  <h2 className="text-base font-bold leading-snug sm:text-lg md:text-xl">{b.title}</h2>
+                  {b.subtitle && <p className="line-clamp-2 text-xs opacity-80 sm:text-sm">{b.subtitle}</p>}
                   {b.cta && (
                     <Link
                       href={b.cta.href}

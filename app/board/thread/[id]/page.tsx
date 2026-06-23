@@ -8,6 +8,23 @@ import { BBCodeEditor } from "@/components/board/bbcode-editor";
 import { QuoteButton } from "@/components/board/quote-button";
 import { renderBBCode } from "@/lib/bbcode";
 
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const supabase = createClient();
+  const { data: t } = await supabase
+    .from("threads")
+    .select("title, body, categories(name_th)")
+    .eq("id", Number(params.id))
+    .single();
+  if (!t) return { title: "ไม่พบกระทู้" };
+  const desc = (t.body ?? "").replace(/\[[^\]]*\]/g, "").replace(/\s+/g, " ").trim().slice(0, 160);
+  return {
+    title: t.title,
+    description: desc || undefined,
+    alternates: { canonical: `/board/thread/${params.id}` },
+    openGraph: { type: "article", title: t.title, description: desc || undefined },
+  };
+}
+
 export default async function ThreadPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
   const threadId = Number(params.id);

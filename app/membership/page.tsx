@@ -1,20 +1,13 @@
-import { Check, Crown, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Check, Crown, AlertCircle, CheckCircle2, PenLine, MessageSquare, Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { MEMBERSHIP_TIERS, tierFeatures } from "@/lib/membership";
 import { subscribe, openBillingPortal } from "./actions";
 
-const TIERS = {
-  supporter: {
-    name: "ผู้สนับสนุน",
-    price: "฿29",
-    accent: "emerald",
-    features: ["ปิดโฆษณา", "รับโบนัส EXP x1.5", "อัพโหลดรูปโปรไฟล์เอง", "ตราระดับสมาชิก"],
-  },
-  patron: {
-    name: "ผู้อุปถัมภ์",
-    price: "฿99",
-    accent: "amber",
-    features: ["ทุกสิทธิ์ของผู้สนับสนุน", "รับโบนัส EXP x2", "ส่งหลังไมค์ไม่อั้น", "ติดตามกระทู้ไม่อั้น"],
-  },
+const TIERS = MEMBERSHIP_TIERS;
+
+export const metadata = {
+  title: "สนับสนุนเรา",
+  description: "ร่วมสนับสนุนค่าเซิฟเวอร์ — รับ EXP เพิ่ม ปิดโฆษณา และสิทธิพิเศษอื่นๆ",
 };
 
 export default async function MembershipPage({
@@ -84,11 +77,13 @@ export default async function MembershipPage({
         </div>
       )}
 
-      <div className="grid gap-5 md:grid-cols-2">
-        {(["supporter", "patron"] as const).map((key) => {
+      <div className="grid gap-5 md:grid-cols-3">
+        {(["free", "supporter", "patron"] as const).map((key) => {
           const t = TIERS[key];
           const popular = key === "patron";
+          const isFree = key === "free";
           const current = tier === key;
+          const accent = isFree ? "text-on-surface-variant" : popular ? "text-amber-600" : "text-emerald-600";
           return (
             <div
               key={key}
@@ -99,37 +94,65 @@ export default async function MembershipPage({
                   POPULAR
                 </span>
               )}
-              <p className={`text-xs font-bold tracking-widest ${popular ? "text-amber-600" : "text-emerald-600"}`}>
-                TIER · {key === "supporter" ? "01" : "02"}
+              <p className={`text-xs font-bold tracking-widest ${accent}`}>
+                {isFree ? "TIER · เริ่มต้น" : `TIER · ${key === "supporter" ? "01" : "02"}`}
               </p>
               <h2 className="mt-2 text-xl font-bold text-on-surface">{t.name}</h2>
               <p className="mt-1 text-3xl font-extrabold text-on-surface">
                 {t.price} <span className="text-sm font-normal text-on-surface-variant">/เดือน</span>
               </p>
               <ul className="mt-4 space-y-2 text-sm text-on-surface">
-                {t.features.map((f) => (
+                {tierFeatures(t).map((f) => (
                   <li key={f} className="flex items-center gap-2">
-                    <Check className={`h-4 w-4 shrink-0 ${popular ? "text-amber-500" : "text-emerald-500"}`} /> {f}
+                    <Check className={`h-4 w-4 shrink-0 ${isFree ? "text-on-surface-variant" : popular ? "text-amber-500" : "text-emerald-500"}`} /> {f}
                   </li>
                 ))}
               </ul>
 
-              <form action={subscribe} className="mt-6">
-                <input type="hidden" name="tier" value={key} />
-                <button
-                  disabled={current}
-                  className={`w-full rounded-lg px-5 py-3 text-sm font-bold transition disabled:opacity-50 ${
-                    popular
-                      ? "bg-amber-400 text-[#0f1b2e] hover:bg-amber-300"
-                      : "border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                  }`}
-                >
-                  {current ? "แพ็กเกจปัจจุบัน" : `สมัคร ${key === "patron" ? "Patron" : "Supporter"} — ${t.price}`}
-                </button>
-              </form>
+              {isFree ? (
+                <div className="mt-6 w-full rounded-lg border border-outline-variant px-5 py-3 text-center text-sm font-bold text-on-surface-variant">
+                  {current ? "ระดับปัจจุบัน" : "ระดับเริ่มต้น"}
+                </div>
+              ) : (
+                <form action={subscribe} className="mt-6">
+                  <input type="hidden" name="tier" value={key} />
+                  <button
+                    disabled={current}
+                    className={`w-full rounded-lg px-5 py-3 text-sm font-bold transition disabled:opacity-50 ${
+                      popular
+                        ? "bg-amber-400 text-[#0f1b2e] hover:bg-amber-300"
+                        : "border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                    }`}
+                  >
+                    {current ? "แพ็กเกจปัจจุบัน" : `สมัคร ${key === "patron" ? "Patron" : "Supporter"} — ${t.price}`}
+                  </button>
+                </form>
+              )}
             </div>
           );
         })}
+      </div>
+
+      {/* วิธีรับ EXP */}
+      <div className="card p-6">
+        <h2 className="text-lg font-bold text-on-surface">วิธีรับ EXP</h2>
+        <p className="mt-1 text-sm text-on-surface-variant">
+          สะสม EXP เพื่อเลื่อนระดับ — สมาชิกที่สนับสนุนจะได้รับตัวคูณ EXP เพิ่ม
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {[
+            { Icon: PenLine, label: "ตั้งกระทู้ใหม่" },
+            { Icon: MessageSquare, label: "แสดงความคิดเห็น" },
+            { Icon: Heart, label: "ได้รับไลก์" },
+          ].map(({ Icon, label }) => (
+            <div key={label} className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface-container-low p-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary-container/10 text-primary">
+                <Icon className="h-4 w-4" />
+              </span>
+              <span className="text-sm font-medium text-on-surface">{label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <p className="text-center text-xs text-on-surface-variant">

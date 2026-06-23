@@ -5,6 +5,11 @@ import { ThreadListItem } from "@/components/board/thread-list-item";
 
 export const revalidate = 60;
 
+export const metadata = {
+  title: "กระดานสนทนา",
+  description: "กระดานสนทนาและเว็บบอร์ดของชุมชนชายแดนใต้",
+};
+
 export default async function BoardPage() {
   const supabase = createClient();
   const [{ data: categories }, { data: recentThreads }] = await Promise.all([

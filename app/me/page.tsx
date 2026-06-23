@@ -29,6 +29,11 @@ async function updateProfile(formData: FormData) {
   redirect(`/me?${error ? "error=" + encodeURIComponent(error.message) : "ok=1"}`);
 }
 
+export const metadata = {
+  title: "โปรไฟล์ของฉัน",
+  robots: { index: false, follow: false },
+};
+
 export default async function MePage({ searchParams }: { searchParams: { error?: string; ok?: string } }) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

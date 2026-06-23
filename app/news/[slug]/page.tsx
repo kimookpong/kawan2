@@ -8,6 +8,37 @@ import { BBCodeEditor } from "@/components/board/bbcode-editor";
 import { QuoteButton } from "@/components/board/quote-button";
 import { renderBBCode } from "@/lib/bbcode";
 
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const supabase = createClient();
+  const { data: n } = await supabase
+    .from("news")
+    .select("title, body, cover_url, category, status, published_at")
+    .eq("slug", params.slug)
+    .single();
+  if (!n) return { title: "ไม่พบข่าว" };
+  const desc = (n.body ?? "").replace(/\[[^\]]*\]/g, "").replace(/\s+/g, " ").trim().slice(0, 160);
+  return {
+    title: n.title,
+    description: desc || undefined,
+    alternates: { canonical: `/news/${params.slug}` },
+    openGraph: {
+      type: "article",
+      title: n.title,
+      description: desc || undefined,
+      images: n.cover_url ? [n.cover_url] : undefined,
+      publishedTime: n.published_at ?? undefined,
+      section: n.category ?? undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: n.title,
+      description: desc || undefined,
+      images: n.cover_url ? [n.cover_url] : undefined,
+    },
+    robots: n.status === "published" ? undefined : { index: false, follow: false },
+  };
+}
+
 export default async function NewsDetailPage({ params }: { params: { slug: string } }) {
   const supabase = createClient();
   const { data: news } = await supabase

@@ -12,7 +12,7 @@ import {
   MessagesSquare,
   CalendarDays,
   Flag,
-  Trophy,
+  Users,
   MessageCircle,
   Bell,
   Shield,
@@ -42,7 +42,7 @@ const NAV = [
   { href: "/board", label: "กระดานสนทนา", Icon: MessagesSquare },
   { href: "/events", label: "ปฏิทินกิจกรรม", Icon: CalendarDays },
   { href: "/guilds", label: "กิลด์", Icon: Flag },
-  { href: "/leaderboard", label: "หอเกียรติยศ", Icon: Trophy },
+  { href: "/members", label: "ค้นหาสมาชิก", Icon: Users },
 ];
 
 export function AppShell({
