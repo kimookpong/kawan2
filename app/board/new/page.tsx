@@ -1,0 +1,89 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { createThread } from "../actions";
+import { PROVINCES } from "@/lib/constants";
+
+export default async function NewThreadPage({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/auth/login?redirect=/board/new");
+
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("id, name_th")
+    .eq("is_active", true)
+    .order("sort_order");
+
+  const { data: provinces } = await supabase
+    .from("provinces")
+    .select("id, name_th, slug")
+    .eq("is_active", true);
+
+  return (
+    <div className="mx-auto max-w-2xl">
+      <h1 className="mb-4 text-2xl font-bold text-primary">สร้างกระทู้ใหม่</h1>
+
+      {searchParams.error && (
+        <p className="mb-4 rounded border border-error-container bg-error-container px-3 py-2 text-sm text-on-error-container">
+          {searchParams.error}
+        </p>
+      )}
+
+      <form action={createThread} className="card space-y-4 p-6">
+        <div>
+          <label className="mb-1 block text-sm font-medium">หัวข้อ</label>
+          <input
+            name="title"
+            required
+            className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm font-medium">หมวดหมู่</label>
+            <select
+              name="category_id"
+              required
+              className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary"
+            >
+              {(categories ?? []).map((c) => (
+                <option key={c.id} value={c.id}>{c.name_th}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">จังหวัด (ไม่บังคับ)</label>
+            <select
+              name="province_id"
+              className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary"
+            >
+              <option value="">— ไม่ระบุ —</option>
+              {(provinces ?? []).map((p) => (
+                <option key={p.id} value={p.id}>{p.name_th}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium">เนื้อหา (รองรับ Markdown)</label>
+          <textarea
+            name="body"
+            required
+            rows={10}
+            className="w-full rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <button type="submit" className="btn-primary">เผยแพร่กระทู้</button>
+        </div>
+      </form>
+    </div>
+  );
+}

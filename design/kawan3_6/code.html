@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pattani Heritage Trail - kawan3</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f3f3f4",
+                        "primary-fixed": "#b0f0d6",
+                        "on-tertiary-fixed-variant": "#763300",
+                        "on-primary-fixed": "#002117",
+                        "inverse-primary": "#95d3ba",
+                        "outline-variant": "#bfc9c3",
+                        "tertiary-container": "#733100",
+                        "primary": "#003527",
+                        "outline": "#707974",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#064e3b",
+                        "surface-dim": "#dadada",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-secondary-fixed-variant": "#444749",
+                        "tertiary-fixed-dim": "#ffb68e",
+                        "tertiary": "#502000",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-tertiary-fixed": "#331200",
+                        "surface-tint": "#2b6954",
+                        "secondary-fixed": "#e1e2e4",
+                        "primary-fixed-dim": "#95d3ba",
+                        "on-secondary-container": "#606365",
+                        "surface": "#f9f9f9",
+                        "surface-container": "#eeeeee",
+                        "on-primary-fixed-variant": "#0b513d",
+                        "surface-container-high": "#e8e8e8",
+                        "on-background": "#1a1c1c",
+                        "secondary-fixed-dim": "#c5c6c8",
+                        "error-container": "#ffdad6",
+                        "secondary": "#5c5f60",
+                        "inverse-on-surface": "#f0f1f1",
+                        "background": "#f9f9f9",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#80bea6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f9f9f9",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#dee0e2",
+                        "on-tertiary-container": "#ff985a",
+                        "tertiary-fixed": "#ffdbca",
+                        "error": "#ba1a1a",
+                        "on-surface": "#1a1c1c",
+                        "inverse-surface": "#2f3131",
+                        "on-surface-variant": "#404944"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-xs": "0.25rem",
+                        "stack-sm": "0.5rem",
+                        "stack-lg": "2rem",
+                        "stack-md": "1rem",
+                        "margin-mobile": "1rem",
+                        "gutter": "1.5rem",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Be Vietnam Pro"],
+                        "label-bold": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', 'Sarabun', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .content-card {
+            border: 1px solid #E5E7EB;
+            background-color: #ffffff;
+            transition: box-shadow 0.2s ease;
+        }
+        .content-card:hover {
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.05);
+        }
+        .rich-text-editor:focus-within {
+            border-color: #003527;
+            box-shadow: 0 0 0 2px rgba(0, 53, 39, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 flex justify-between items-center px-gutter py-2 w-full max-w-container-max mx-auto bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-stack-md">
+<span class="text-headline-md font-black text-primary">kawan3</span>
+<div class="hidden md:flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-outline mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-64" placeholder="ค้นหากระดานสนทนา..." type="text"/>
+</div>
+</div>
+<nav class="hidden md:flex gap-stack-md items-center">
+<a class="text-on-surface-variant hover:text-primary font-label-bold text-label-bold transition-colors" href="#">หน้าหลัก</a>
+<a class="text-on-surface-variant hover:text-primary font-label-bold text-label-bold transition-colors" href="#">ข่าวสาร</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-bold text-label-bold" href="#">บอร์ด</a>
+<a class="text-on-surface-variant hover:text-primary font-label-bold text-label-bold transition-colors" href="#">กิจกรรม</a>
+<a class="text-on-surface-variant hover:text-primary font-label-bold text-label-bold transition-colors" href="#">ตลาดนัด</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<button class="hidden sm:flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded font-label-bold text-label-bold hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span> สร้างโพสต์
+            </button>
+<div class="flex gap-stack-sm text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-2 rounded-full">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-2 rounded-full">mail</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-2 rounded-full">account_circle</span>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter px-gutter py-stack-lg">
+<!-- SideNavBar (Hidden on Mobile) -->
+<aside class="hidden lg:flex lg:col-span-3 flex-col gap-stack-md sticky top-[72px] h-fit">
+<div class="bg-surface-container-low p-margin-mobile rounded-xl border border-outline-variant">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">P</div>
+<div>
+<p class="text-label-bold font-label-bold text-primary">จังหวัด</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">ข้อมูลระดับภูมิภาค</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 bg-primary-container text-on-primary-container font-bold rounded-lg transition-all scale-95" href="#">
+<span class="material-symbols-outlined">location_on</span>
+<span class="text-label-bold font-label-bold">ปัตตานี</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">location_on</span>
+<span class="text-label-bold font-label-bold">ยะลา</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">location_on</span>
+<span class="text-label-bold font-label-bold">นราธิวาส</span>
+</a>
+<div class="h-px bg-outline-variant my-2"></div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="text-label-bold font-label-bold">กำลังมาแรง</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="text-label-bold font-label-bold">สถิติ</span>
+</a>
+</nav>
+<button class="w-full mt-6 bg-tertiary text-on-tertiary py-3 rounded-lg font-label-bold text-label-bold hover:opacity-90 transition-opacity">
+                    เข้าร่วมชุมชน
+                </button>
+</div>
+<div class="p-margin-mobile flex flex-col gap-2">
+<a class="flex items-center gap-2 text-body-sm text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span> ช่วยเหลือ
+                </a>
+<a class="flex items-center gap-2 text-body-sm text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined text-[18px]">security</span> ความเป็นส่วนตัว
+                </a>
+</div>
+</aside>
+<!-- Thread Content -->
+<div class="lg:col-span-9 flex flex-col gap-stack-md">
+<!-- Main Post Card -->
+<article class="content-card rounded-lg overflow-hidden">
+<div class="p-6">
+<nav class="flex items-center gap-2 text-body-sm text-on-surface-variant mb-4">
+<span>บอร์ด</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>วัฒนธรรมและการท่องเที่ยว</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">มรดกปัตตานี</span>
+</nav>
+<h1 class="text-headline-lg font-headline-lg text-primary mb-6">Pattani Heritage Trail: แนะนำเส้นทางเดินเที่ยวเมืองเก่า</h1>
+<!-- Author Meta -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-6 mb-6">
+<div class="flex items-center gap-4">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="A professional close-up portrait of a Thai man in his 30s with a friendly expression, wearing a stylish modern batik shirt. He is outdoors in a sun-drenched courtyard with traditional wooden Pattani architecture in the blurred background. The lighting is warm and natural, following a bright, clean, community-centric aesthetic with professional depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW0FH14jRnXUNwDR4QhcKj1Hz-DBRoj7N8cTHetSZ3KxOnIirJKVypJ4a7yFZaqhUaXeB63iniON5YYcFb-GX-IK1QUOWLApIGsZlWbxNznZBlYysABinY1peVzMQc4TOn3P7jIFCNTgb22RGm3L58dLkMW0uaYjYYdY2pnV0tkVcQZjrkU6wMz4BQbmwq8EToWpXAdAFYFO2k2o_Jgfick2RzQxczGVzT1IW3_nHD9qJE9n0s1Le6_EV1vkHMa04oSmTxHcsA-eWY"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-bold text-body-lg">Anas Suleiman</span>
+<span class="px-2 py-0.5 bg-primary-container text-on-primary-container text-[10px] font-bold rounded uppercase tracking-wider">ระดับ 15 - ผู้เชี่ยวชาญ</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">โพสต์เมื่อ 24 ต.ค. 2023 • ใช้เวลาอ่าน 12 นาที</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors"><span class="material-symbols-outlined text-outline">share</span></button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors"><span class="material-symbols-outlined text-outline">bookmark</span></button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors"><span class="material-symbols-outlined text-outline">more_vert</span></button>
+</div>
+</div>
+<!-- Post Body -->
+<div class="prose max-w-none text-body-lg space-y-6 text-on-surface">
+<p>เมืองเก่าปัตตานีไม่ได้มีแค่ประวัติศาสตร์ที่จับต้องไม่ได้ แต่ยังมีสถาปัตยกรรมที่บอกเล่าเรื่องราวความหลากหลายทางวัฒนธรรมได้อย่างลงตัว วันนี้ผมอยากจะพาทุกคนไปสำรวจเส้นทางเดินเท้าสั้นๆ แต่เต็มไปด้วยเรื่องราวในย่านเมืองเก่าปัตตานีครับ</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+<div class="flex flex-col gap-2">
+<img class="rounded-lg w-full h-64 object-cover" data-alt="A wide-angle professional photograph of the historic wooden houses along the Pattani riverfront. The buildings feature intricate Sino-Portuguese and Malay architectural elements. The sky is a clear morning blue, reflecting off the calm water. The style is clean, editorial, and documentary, emphasizing regional beauty and stability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8REcOjOpA2QwHxHUI6RxLqtKFBXBGjct7Dk8MFoiOiXF4qHHpU2OSBc9I142ZFGMxk1w-3fSKZ7Ts1eTg0eSZGMJJGbaPH8r7JCj9sAUU6yJq2FusahZE9jd9zBOm1qlEkPuWdt_nmzZjg4o_8xc6vp2WrDa8pwqov60c28Wk1ikOH-FVHJZ8nbK2CGlDz3-q794dP5yI_dEJnaKj4at98LzK00r-QgFF7GpULGIvu_wsLD3SK4F0Pko8pKGUMnpKAkHj2MIsNete"/>
+<span class="text-body-sm italic text-on-surface-variant">บรรยากาศย่านเมืองเก่าริมน้ำปัตตานี</span>
+</div>
+<div class="flex flex-col gap-2">
+<img class="rounded-lg w-full h-64 object-cover" data-alt="A high-detail shot of a traditional hand-painted ceramic tile found in an old Pattani merchant home. The tile has intricate floral patterns in deep green and terracotta orange. The lighting is soft and directional, highlighting the texture and heritage of the artifact. Professional corporate-cultural aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKerC_UKDj-hDawt0K0Ncz9swRDSITKYgsXy1q7jWc2XC5VwFNp5iQgX9iVK6rVfmnflHQ0AWj9kEoVKqmK6KyI1Q9nviR4C-4lrr8v8JhxKQo8Xf5abJ6hWNMcV-EKFL1jXIDmdGoB2_G1YTwolIRqalkBBm0_ozqWmXre2GZ7DhiopzYYoNJ8QGcOPSNKm0VB17vNQXlv-smZGGXoIKBOHzK5-WIFwtk_LemskBEc1RP3prjP-nBgqoaHRmXa07PtkUpA3bUb7m_"/>
+<span class="text-body-sm italic text-on-surface-variant">รายละเอียดลวดลายกระเบื้องโบราณ</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md text-primary">จุดเริ่มต้น: มัสยิดกรือเซะ</h3>
+<p>เราเริ่มกันที่มัสยิดกรือเซะ (Krue Se Mosque) สถาปัตยกรรมก่ออิฐแดงที่แสดงถึงเทคนิคการก่อสร้างสมัยอยุธยาตอนปลาย ผสมผสานศิลปะตะวันออกกลาง แนะนำให้มาช่วงเช้าครับ แสงแดดจะตกกระทบอิฐแดงได้สวยงามมาก</p>
+<p>จากนั้นเดินต่อไปยังย่านตลาดเก่าเพื่อสัมผัสวิถีชีวิตคนในพื้นที่ ลองแวะชิม "ขนมอาเกาะ" ร้านคุณยายหลังมัสยิด ซึ่งยังคงใช้วิธีอบด้วยถ่านแบบดั้งเดิม ทำให้มีกลิ่นหอมและรสชาติที่หาที่ไหนไม่ได้อีกแล้ว</p>
+<div class="bg-surface-container-low p-6 rounded-lg border-l-4 border-tertiary">
+<p class="font-bold text-tertiary mb-2">Tips สำหรับนักเดินเที่ยว:</p>
+<ul class="list-disc list-inside space-y-2 text-body-md">
+<li>ควรเริ่มเดินตั้งแต่ 08:00 น. เพื่อเลี่ยงอากาศร้อนช่วงเที่ยง</li>
+<li>เตรียมกล้องถ่ายรูปให้พร้อม เพราะมุมถ่ายรูปเยอะมาก</li>
+<li>อย่าลืมทักทายคนในพื้นที่ พวกเขาเป็นมิตรและยินดีให้ข้อมูลมากครับ</li>
+</ul>
+</div>
+</div>
+<!-- Interactions -->
+<div class="mt-10 pt-6 border-t border-outline-variant flex items-center gap-6">
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined group-hover:text-tertiary transition-colors" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-bold text-label-bold">1.2k ถูกใจ</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">chat_bubble</span>
+<span class="font-label-bold text-label-bold">48 ความคิดเห็น</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">visibility</span>
+<span class="font-label-bold text-label-bold">5.4k เข้าชม</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Comments Section -->
+<section class="mt-8">
+<h2 class="text-headline-md font-headline-md text-primary mb-6">บทสนทนา (48)</h2>
+<div class="flex flex-col gap-4">
+<!-- Comment 1 -->
+<div class="content-card p-6 rounded-lg">
+<div class="flex gap-4">
+<img class="w-10 h-10 rounded-full object-cover shrink-0" data-alt="A profile photo of a smiling woman in her late 20s wearing a modern headscarf with subtle floral patterns. She is indoors in a well-lit modern workspace with books in the background. High-quality lighting, professional, clean corporate-cultural infusion." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1fy5g-X3LhSMfOe2xLtNM0P_zRGqLFqYju7FdWxfPCqipymm8L668l8QnURzqGd6fITQ_Jz3cy1j3Z2LtOaGhcSCWLRwp0wL-IBMeKDAeENGRqoOF4BtyPU67klZqe7J_8z8GNMsLHQzK2OiOc_7C55hRLSLij-7oqLdWBx_jwP0BLcpkJzwz9pDsZsh0dNzjAvz2IDCWqlrbqZDHTzoN4cbuD8SVRaCOihcCj4aNPNdXXjf52QTS7at5I0Ys2PdgAG0FXkDYU0CE"/>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-bold text-body-md">Mariam J.</span>
+<span class="px-2 py-0.5 bg-surface-variant text-on-surface-variant text-[9px] font-bold rounded">ระดับ 8 - สมาชิกประจำ</span>
+<span class="text-body-sm text-outline ml-auto">2 ชั่วโมงที่แล้ว</span>
+</div>
+<p class="text-body-md text-on-surface-variant mb-4">ขอบคุณสำหรับข้อมูลครับ เคยไปมาครั้งหนึ่งแต่ไม่ได้ไปโซนริมน้ำ เดี๋ยวอาทิตย์หน้าจะลองไปตามรอยครับ!</p>
+<div class="flex items-center gap-4">
+<button class="text-label-bold font-label-bold text-primary hover:underline">ตอบกลับ</button>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] cursor-pointer">thumb_up</span>
+<span class="text-body-sm">12</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Comment 2 -->
+<div class="content-card p-6 rounded-lg ml-8 md:ml-12 border-l-4 border-primary-container">
+<div class="flex gap-4">
+<img class="w-10 h-10 rounded-full object-cover shrink-0" data-alt="A profile picture of a cheerful young man in his early 20s, wearing a casual polo shirt. He has a camera strap around his neck. Bright natural lighting, modern minimalist background, professional portrait photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB__CgUMgqjFCACTd6K52k-DLmyxHYsNw0ZmCitYdOvvCKzxibUuv9dU4349pcAGVUVCkjnlmko60P0ObYDmeeIRS_1mauvqPBmuAda3Y2ac6hX5CqizNZ7sEImXVqcHGsPVX25doe6DhXTRMHstV_p6MGWYLfiZywu3WrQYxjBTxiKp8fn475jfULswpQfGZPifADbwYZL1l6xkJoPoZ-ttbAbkNZAlbsnFI91BCHf1-ns4oNn6kSQwWtlxpRw5Sdx2pErF1_UcBp1"/>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-bold text-body-md">Tawatchai L.</span>
+<span class="px-2 py-0.5 bg-surface-variant text-on-surface-variant text-[9px] font-bold rounded">ระดับ 3 - สมาชิกใหม่</span>
+<span class="text-body-sm text-outline ml-auto">1 ชั่วโมงที่แล้ว</span>
+</div>
+<p class="text-body-md text-on-surface-variant mb-4">ตรงร้านขนมอาเกาะแนะนำให้ไปช่วงก่อน 10 โมงนะครับ ไม่งั้นหมดแน่นอน ผมพลาดมา 2 รอบแล้ว ฮือออ</p>
+<div class="flex items-center gap-4">
+<button class="text-label-bold font-label-bold text-primary hover:underline">ตอบกลับ</button>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] cursor-pointer">thumb_up</span>
+<span class="text-body-sm">5</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Reply - Rich Text Editor -->
+<div class="mt-8 content-card rounded-lg overflow-hidden border-2 border-primary-container">
+<div class="bg-surface-container-low px-4 py-2 border-b border-outline-variant flex gap-4">
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-[20px]">format_bold</span></button>
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-[20px]">format_italic</span></button>
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-[20px]">format_list_bulleted</span></button>
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-[20px]">image</span></button>
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-[20px]">link</span></button>
+</div>
+<div class="p-4">
+<label class="sr-only" for="reply">ตอบกลับด่วน</label>
+<textarea class="w-full border-none focus:ring-0 text-body-md p-0 bg-transparent resize-none" id="reply" placeholder="เขียนข้อความตอบกลับของคุณที่นี่..." rows="4"></textarea>
+</div>
+<div class="px-4 py-3 bg-surface-container-lowest flex justify-between items-center">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full border border-outline-variant" data-alt="A generic avatar of a smiling user in a light blue background for kawan3 community portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDXHZHYJjq3XlgbQ--pF_X4wdchO6cr99Ut5Z9W-vA32bZdVhMrg0CGnQT64RMcdQwQrysx9lfzlNsaeFzbJ6Qm8QJf5zfQpos5nRrdL9cWKoQZu_tbzdtBFhRRohCh4xqB_TXJd5smVDLbg6D0KfnSR4CU-oSc05d_VYSErmFd8Vfj9ppbGr5FBvjE-yVx4C0xc5vMmQBx3rIZvyPZxjR10Ww7uXFUHUOVmQM8fOHDObzTYUXIuWE25yziHJwn4sm7QZUdYXEwfr2"/>
+<span class="text-body-sm text-on-surface-variant">ตอบกลับในนาม <strong>สมาชิก</strong></span>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded font-label-bold text-label-bold hover:opacity-90 active:scale-95 transition-all">
+                            ส่งข้อความ
+                        </button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-stack-lg px-gutter grid grid-cols-1 md:grid-cols-4 gap-stack-lg bg-primary text-on-primary mt-stack-lg">
+<div class="flex flex-col gap-stack-md">
+<span class="text-headline-md font-bold">kawan3</span>
+<p class="text-body-sm opacity-80">เสริมสร้างพลังแก่จังหวัดชายแดนใต้ผ่านชุมชนและวัฒนธรรม</p>
+<div class="flex gap-4 mt-2">
+<span class="material-symbols-outlined cursor-pointer hover:text-tertiary-fixed transition-colors">face_nod</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-tertiary-fixed transition-colors">share_reviews</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-tertiary-fixed transition-colors">public</span>
+</div>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold mb-4 uppercase tracking-wider">ลิงก์ด่วน</h4>
+<ul class="flex flex-col gap-2">
+<li><a class="text-on-primary opacity-80 hover:opacity-100 hover:text-tertiary-fixed transition-colors text-body-sm" href="#">เกี่ยวกับเรา</a></li>
+<li><a class="text-on-primary opacity-80 hover:opacity-100 hover:text-tertiary-fixed transition-colors text-body-sm" href="#">ติดต่อเรา</a></li>
+<li><a class="text-on-primary opacity-80 hover:opacity-100 hover:text-tertiary-fixed transition-colors text-body-sm" href="#">มรดกทางวัฒนธรรม</a></li>
+<li><a class="text-on-primary opacity-80 hover:opacity-100 hover:text-tertiary-fixed transition-colors text-body-sm" href="#">ข้อกำหนดการใช้งาน</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold mb-4 uppercase tracking-wider">จังหวัด</h4>
+<ul class="flex flex-col gap-2">
+<li><a class="text-on-primary opacity-80 hover:opacity-100 text-body-sm" href="#">ปัตตานี</a></li>
+<li><a class="text-on-primary opacity-80 hover:opacity-100 text-body-sm" href="#">ยะลา</a></li>
+<li><a class="text-on-primary opacity-80 hover:opacity-100 text-body-sm" href="#">นราธิวาส</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold mb-4 uppercase tracking-wider">สมัครสมาชิกข่าวสาร</h4>
+<p class="text-body-sm opacity-80 mb-4">รับข่าวสารมรดกทางวัฒนธรรมล่าสุดส่งตรงถึงคุณ</p>
+<div class="flex overflow-hidden rounded">
+<input class="bg-primary-container border-none text-white text-body-sm px-3 py-2 w-full focus:ring-1 focus:ring-primary-fixed" placeholder="อีเมล" type="email"/>
+<button class="bg-primary-fixed text-on-primary-fixed px-3 font-bold text-label-bold">เข้าร่วม</button>
+</div>
+</div>
+<div class="md:col-span-4 border-t border-primary-container pt-8 text-center">
+<p class="text-body-sm opacity-60">© 2024 kawan3. เสริมสร้างพลังแก่จังหวัดชายแดนภาคใต้</p>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for the reply text area
+        const replyArea = document.getElementById('reply');
+        replyArea.addEventListener('focus', () => {
+            replyArea.parentElement.parentElement.classList.add('scale-[1.01]');
+            replyArea.parentElement.parentElement.classList.add('shadow-lg');
+        });
+        replyArea.addEventListener('blur', () => {
+            replyArea.parentElement.parentElement.classList.remove('scale-[1.01]');
+            replyArea.parentElement.parentElement.classList.remove('shadow-lg');
+        });
+
+        // Toggle like button state
+        document.querySelectorAll('.group').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (icon && icon.textContent === 'favorite') {
+                    const isFilled = icon.style.fontVariationSettings.includes("'FILL' 1");
+                    icon.style.fontVariationSettings = isFilled ? "'FILL' 0" : "'FILL' 1";
+                    this.classList.toggle('text-tertiary');
+                }
+            });
+        });
+    </script>
+</body></html>

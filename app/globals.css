@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #1a1c1c;
+  /* line-height โปร่งเพื่อรองรับสระ/วรรณยุกต์ไทย */
+  line-height: 1.6;
+}
+
+/* การ์ดมาตรฐานตาม design system */
+@layer components {
+  .card {
+    @apply rounded-lg border border-outline-variant bg-surface-container-lowest;
+  }
+  .chip {
+    @apply inline-flex items-center rounded px-2 py-0.5 text-xs font-bold;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded bg-primary px-4 py-2 text-sm font-medium text-on-primary transition hover:opacity-90;
+  }
+  .btn-accent {
+    @apply inline-flex items-center justify-center rounded bg-tertiary-container px-4 py-2 text-sm font-medium text-on-tertiary transition hover:opacity-90;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded border border-primary px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary/5;
+  }
+}
