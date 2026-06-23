@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, CalendarDays, Eye, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { NEWS_FALLBACK_IMG } from "@/lib/constants";
 
@@ -14,7 +14,7 @@ export default async function NewsPage() {
   const supabase = createClient();
   const { data: news } = await supabase
     .from("news")
-    .select("id, title, slug, excerpt, cover_url, category, published_at")
+    .select("id, title, slug, excerpt, cover_url, category, published_at, view_count, news_comments(count)")
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(30);
@@ -38,17 +38,34 @@ export default async function NewsPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {(news ?? []).map((n) => (
-          <Link key={n.id} href={`/news/${n.slug}`} className="card overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:shadow-card">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={n.cover_url || NEWS_FALLBACK_IMG} alt="" className="h-40 w-full object-cover" />
-            <div className="p-4">
-              {n.category && <span className="chip bg-primary-container/10 text-primary">{n.category}</span>}
-              <h2 className="mt-2 font-semibold text-on-surface">{n.title}</h2>
-              <p className="mt-1 line-clamp-2 text-sm text-on-surface-variant">{n.excerpt}</p>
-            </div>
-          </Link>
-        ))}
+        {(news ?? []).map((n: any) => {
+          const commentCount = n.news_comments?.[0]?.count ?? 0;
+          return (
+            <Link key={n.id} href={`/news/${n.slug}`} className="card flex flex-col overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:shadow-card">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={n.cover_url || NEWS_FALLBACK_IMG} alt="" className="h-40 w-full object-cover" />
+              <div className="flex flex-1 flex-col p-4">
+                {n.category && <span className="chip bg-primary-container/10 text-primary">{n.category}</span>}
+                <h2 className="mt-2 font-semibold text-on-surface">{n.title}</h2>
+                <p className="mt-1 line-clamp-2 text-sm text-on-surface-variant">{n.excerpt}</p>
+                <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-outline-variant pt-3 text-xs text-on-surface-variant">
+                  {n.published_at && (
+                    <span className="inline-flex items-center gap-1">
+                      <CalendarDays className="h-3.5 w-3.5" />
+                      {new Date(n.published_at).toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "2-digit" })}
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1">
+                    <Eye className="h-3.5 w-3.5" /> {(n.view_count ?? 0).toLocaleString("th-TH")}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <MessageSquare className="h-3.5 w-3.5" /> {commentCount.toLocaleString("th-TH")}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
         {(!news || news.length === 0) && (
           <p className="text-sm text-on-surface-variant">ยังไม่มีข่าวที่เผยแพร่</p>
         )}

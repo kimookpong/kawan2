@@ -68,6 +68,39 @@ export async function setThreadPin(formData: FormData) {
   revalidatePath("/");
 }
 
+/** กดถูกใจ/ยกเลิกถูกใจ กระทู้หลัก */
+export async function reactThread(formData: FormData) {
+  const id = Number(formData.get("thread_id"));
+  await toggleLike("thread", id);
+  revalidatePath(`/board/thread/${id}`);
+}
+
+/** กดถูกใจ/ยกเลิกถูกใจ ความเห็น */
+export async function reactPost(formData: FormData) {
+  const postId = Number(formData.get("post_id"));
+  const threadId = Number(formData.get("thread_id"));
+  await toggleLike("post", postId);
+  revalidatePath(`/board/thread/${threadId}`);
+}
+
+/** รายงานเนื้อหา (ใช้กับ useFormState) */
+export async function reportAction(
+  _prev: { ok?: boolean; error?: string } | null,
+  formData: FormData,
+): Promise<{ ok?: boolean; error?: string }> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "กรุณาเข้าสู่ระบบก่อนรายงาน" };
+
+  const { error } = await supabase.rpc("submit_report", {
+    p_target_type: String(formData.get("target_type") || ""),
+    p_target_id: Number(formData.get("target_id")),
+    p_reason: String(formData.get("reason") || ""),
+  });
+  if (error) return { error: error.message };
+  return { ok: true };
+}
+
 export async function toggleLike(targetType: "thread" | "post", targetId: number) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

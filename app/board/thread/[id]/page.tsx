@@ -2,13 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Bookmark, Heart, Lock, CornerUpLeft, MoreHorizontal, Pin, PinOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { createReply, setThreadPin } from "@/app/board/actions";
+import { createReply, setThreadPin, reactThread, reactPost } from "@/app/board/actions";
 import { AuthorCard } from "@/components/board/author-card";
 import { BBCodeEditor } from "@/components/board/bbcode-editor";
 import { QuoteButton } from "@/components/board/quote-button";
 import { renderBBCode } from "@/lib/bbcode";
 import { JsonLd } from "@/components/seo/json-ld";
 import { ShareButtons } from "@/components/share-buttons";
+import { ReportButton } from "@/components/report-button";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = createClient();
@@ -49,9 +50,22 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
   const { data: { user } } = await supabase.auth.getUser();
   let isAdmin = false;
+  let likedThread = false;
+  let likedPosts = new Set<number>();
   if (user) {
-    const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    const postIds = (posts ?? []).map((p: any) => p.id);
+    const [{ data: me }, { data: tReact }, { data: pReacts }] = await Promise.all([
+      supabase.from("profiles").select("role").eq("id", user.id).single(),
+      supabase.from("reactions").select("id")
+        .eq("user_id", user.id).eq("type", "like").eq("target_type", "thread").eq("target_id", threadId).maybeSingle(),
+      postIds.length
+        ? supabase.from("reactions").select("target_id")
+            .eq("user_id", user.id).eq("type", "like").eq("target_type", "post").in("target_id", postIds)
+        : Promise.resolve({ data: [] as any[] }),
+    ]);
     isAdmin = me?.role === "admin";
+    likedThread = !!tReact;
+    likedPosts = new Set((pReacts ?? []).map((r: any) => r.target_id));
   }
   const cat: any = thread.categories;
   const tAuthor: any = thread.profiles;
@@ -96,13 +110,8 @@ export default async function ThreadPage({ params }: { params: { id: string } })
         <span className="truncate text-on-surface">{thread.title}</span>
       </nav>
 
-      {/* header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <h1 className="flex items-start gap-2 text-xl font-bold text-on-surface sm:text-2xl">
-          {thread.is_pinned && <Pin className="mt-1 h-5 w-5 shrink-0 text-tertiary-container" />}
-          {thread.title}
-        </h1>
-        <div className="flex shrink-0 flex-wrap gap-2">
+      {/* header actions */}
+      <div className="flex flex-wrap justify-end gap-2">
           {isAdmin && (
             <form action={setThreadPin}>
               <input type="hidden" name="thread_id" value={threadId} />
@@ -114,7 +123,6 @@ export default async function ThreadPage({ params }: { params: { id: string } })
           )}
           <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
           <a href="#reply" className="btn-primary gap-1"><CornerUpLeft className="h-4 w-4" /> ตอบกระทู้</a>
-        </div>
       </div>
 
       <ShareButtons title={thread.title} />
