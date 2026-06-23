@@ -3,6 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { createThread } from "../actions";
 import { BBCodeEditor } from "@/components/board/bbcode-editor";
 
+export const metadata = {
+  title: "ตั้งกระทู้ใหม่",
+  robots: { index: false, follow: false },
+};
+
 export default async function NewThreadPage({
   searchParams,
 }: {

@@ -4,6 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 import { createNews } from "../admin-actions";
 import { NewsForm } from "@/components/news/news-form";
 
+export const metadata = {
+  title: "เพิ่มข่าว",
+  robots: { index: false, follow: false },
+};
+
 export default async function NewNewsPage({ searchParams }: { searchParams: { error?: string } }) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

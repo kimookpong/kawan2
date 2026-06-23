@@ -7,6 +7,8 @@ import { AuthorCard } from "@/components/board/author-card";
 import { BBCodeEditor } from "@/components/board/bbcode-editor";
 import { QuoteButton } from "@/components/board/quote-button";
 import { renderBBCode } from "@/lib/bbcode";
+import { JsonLd } from "@/components/seo/json-ld";
+import { ShareButtons } from "@/components/share-buttons";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const supabase = createClient();
@@ -63,8 +65,38 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
     canEdit = me?.role === "editor" || me?.role === "admin";
   }
 
+  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
+  const author: any = news.profiles;
+  const plain = (news.body ?? "").replace(/\[[^\]]*\]/g, "").replace(/\s+/g, " ").trim();
+
   return (
     <div className="w-full space-y-4">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          headline: news.title,
+          description: plain.slice(0, 200) || undefined,
+          image: news.cover_url ? [news.cover_url] : undefined,
+          datePublished: news.published_at ?? undefined,
+          articleSection: news.category ?? undefined,
+          author: author ? { "@type": "Person", name: author.display_name || author.username } : undefined,
+          publisher: { "@type": "Organization", name: "Kawan2", logo: { "@type": "ImageObject", url: `${SITE}/image.png` } },
+          mainEntityOfPage: `${SITE}/news/${params.slug}`,
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "หน้าแรก", item: SITE },
+            { "@type": "ListItem", position: 2, name: "ข่าวสาร", item: `${SITE}/news` },
+            { "@type": "ListItem", position: 3, name: news.title, item: `${SITE}/news/${params.slug}` },
+          ],
+        }}
+      />
+
       {/* breadcrumb */}
       <nav className="flex flex-wrap items-center gap-1 text-xs text-on-surface-variant">
         <Link href="/" className="hover:text-primary">หน้าแรก</Link><span>›</span>
@@ -90,6 +122,8 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
           <a href="#comments" className="btn-primary gap-1"><MessageSquare className="h-4 w-4" /> แสดงความเห็น</a>
         </div>
       </div>
+
+      <ShareButtons title={news.title} />
 
       {/* เนื้อหาข่าว (สไตล์กระทู้) */}
       <article className="card flex flex-col gap-4 p-4 sm:flex-row sm:p-5">

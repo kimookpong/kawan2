@@ -4,6 +4,11 @@ import { Shield, Users, LayoutDashboard, Gauge } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 /** ป้องกันโซน /admin — เฉพาะ role = admin เท่านั้น */
+export const metadata = {
+  title: "ผู้ดูแลระบบ",
+  robots: { index: false, follow: false },
+};
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

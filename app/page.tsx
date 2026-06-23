@@ -13,6 +13,9 @@ import { Avatar } from "@/components/avatar";
 import { BannerCarousel, type Banner } from "@/components/home/banner-carousel";
 import { ThreadListItem } from "@/components/board/thread-list-item";
 import { NEWS_FALLBACK_IMG } from "@/lib/constants";
+import { JsonLd } from "@/components/seo/json-ld";
+
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
 
 export const revalidate = 60; // ISR
 
@@ -139,6 +142,29 @@ export default async function HomePage() {
 
   return (
     <div className="w-full space-y-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": `${SITE}/#organization`,
+              name: "Kawan2",
+              url: SITE,
+              logo: `${SITE}/image.png`,
+            },
+            {
+              "@type": "WebSite",
+              "@id": `${SITE}/#website`,
+              name: "Kawan2",
+              url: SITE,
+              inLanguage: "th-TH",
+              publisher: { "@id": `${SITE}/#organization` },
+            },
+          ],
+        }}
+      />
+
       {/* ===== 1) Banner carousel ===== */}
       <BannerCarousel banners={banners} />
 

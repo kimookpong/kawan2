@@ -3,6 +3,11 @@ import { AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createGuild } from "../actions";
 
+export const metadata = {
+  title: "สร้างกิลด์",
+  robots: { index: false, follow: false },
+};
+
 export default async function NewGuildPage({ searchParams }: { searchParams: { error?: string } }) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

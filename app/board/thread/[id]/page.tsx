@@ -7,6 +7,8 @@ import { AuthorCard } from "@/components/board/author-card";
 import { BBCodeEditor } from "@/components/board/bbcode-editor";
 import { QuoteButton } from "@/components/board/quote-button";
 import { renderBBCode } from "@/lib/bbcode";
+import { JsonLd } from "@/components/seo/json-ld";
+import { ShareButtons } from "@/components/share-buttons";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = createClient();
@@ -52,9 +54,40 @@ export default async function ThreadPage({ params }: { params: { id: string } })
     isAdmin = me?.role === "admin";
   }
   const cat: any = thread.categories;
+  const tAuthor: any = thread.profiles;
+  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
+  const tPlain = (thread.body ?? "").replace(/\[[^\]]*\]/g, "").replace(/\s+/g, " ").trim();
 
   return (
     <div className="w-full space-y-4">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "DiscussionForumPosting",
+          headline: thread.title,
+          text: tPlain.slice(0, 300) || undefined,
+          datePublished: thread.created_at ?? undefined,
+          author: tAuthor ? { "@type": "Person", name: tAuthor.display_name || tAuthor.username } : undefined,
+          interactionStatistic: [
+            { "@type": "InteractionCounter", interactionType: "https://schema.org/LikeAction", userInteractionCount: thread.like_count ?? 0 },
+            { "@type": "InteractionCounter", interactionType: "https://schema.org/CommentAction", userInteractionCount: thread.reply_count ?? 0 },
+          ],
+          mainEntityOfPage: `${SITE}/board/thread/${threadId}`,
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "หน้าแรก", item: SITE },
+            { "@type": "ListItem", position: 2, name: "บอร์ด", item: `${SITE}/board` },
+            ...(cat ? [{ "@type": "ListItem", position: 3, name: cat.name_th, item: `${SITE}/board/${cat.slug}` }] : []),
+            { "@type": "ListItem", position: cat ? 4 : 3, name: thread.title, item: `${SITE}/board/thread/${threadId}` },
+          ],
+        }}
+      />
+
       {/* breadcrumb */}
       <nav className="flex flex-wrap items-center gap-1 text-xs text-on-surface-variant">
         <Link href="/" className="hover:text-primary">หน้าแรก</Link><span>›</span>
@@ -83,6 +116,8 @@ export default async function ThreadPage({ params }: { params: { id: string } })
           <a href="#reply" className="btn-primary gap-1"><CornerUpLeft className="h-4 w-4" /> ตอบกระทู้</a>
         </div>
       </div>
+
+      <ShareButtons title={thread.title} />
 
       {/* กระทู้หลัก */}
       <article className="card flex flex-col gap-4 p-4 sm:flex-row sm:p-5">

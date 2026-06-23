@@ -2,6 +2,11 @@ import Link from "next/link";
 import { login } from "../actions";
 import { GoogleButton, OrDivider } from "@/components/auth/google-button";
 
+export const metadata = {
+  title: "เข้าสู่ระบบ",
+  robots: { index: false, follow: false },
+};
+
 export default function LoginPage({
   searchParams,
 }: {

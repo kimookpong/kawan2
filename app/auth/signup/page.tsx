@@ -2,6 +2,11 @@ import Link from "next/link";
 import { signup } from "../actions";
 import { GoogleButton, OrDivider } from "@/components/auth/google-button";
 
+export const metadata = {
+  title: "สมัครสมาชิก",
+  robots: { index: false, follow: false },
+};
+
 export default function SignupPage({
   searchParams,
 }: {
