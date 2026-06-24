@@ -280,7 +280,7 @@ export default async function HomePage() {
 
       {/* ===== 5) กระทู้ยอดนิยม + สมาชิกเด่น ===== */}
       <section className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="min-w-0 lg:col-span-2">
           <SectionHead title="กระทู้ยอดนิยมประจำสัปดาห์" href="/board" />
           <div className="card divide-y divide-outline-variant">
             {(popular ?? []).length > 0 ? (
@@ -293,7 +293,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <aside>
+        <aside className="min-w-0">
           <SectionHead title="สมาชิกเด่นประจำสัปดาห์" href="/members" />
           <div className="card divide-y divide-outline-variant">
             {(topMembers ?? []).length > 0 ? (
