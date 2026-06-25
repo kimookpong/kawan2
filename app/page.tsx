@@ -190,7 +190,7 @@ export default async function HomePage() {
                     {hero.category}
                   </span>
                 )}
-                <h2 className="text-xl font-bold leading-snug md:text-2xl">
+                <h2 className="font-bold leading-snug md:text-xl">
                   {hero.title}
                 </h2>
                 <p className="mt-1 line-clamp-2 max-w-xl text-sm text-on-primary/80">

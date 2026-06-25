@@ -14,7 +14,10 @@ export type Banner = {
   theme: "green" | "amber" | "dark";
 };
 
-const THEME: Record<Banner["theme"], { wrap: string; overlay: string; eyebrow: string; cta: string }> = {
+const THEME: Record<
+  Banner["theme"],
+  { wrap: string; overlay: string; eyebrow: string; cta: string }
+> = {
   green: {
     wrap: "bg-primary text-on-primary",
     overlay: "bg-gradient-to-r from-primary via-primary/80 to-primary/30",
@@ -29,7 +32,8 @@ const THEME: Record<Banner["theme"], { wrap: string; overlay: string; eyebrow: s
   },
   dark: {
     wrap: "bg-inverse-surface text-inverse-on-surface",
-    overlay: "bg-gradient-to-r from-inverse-surface via-inverse-surface/80 to-inverse-surface/30",
+    overlay:
+      "bg-gradient-to-r from-inverse-surface via-inverse-surface/80 to-inverse-surface/30",
     eyebrow: "text-inverse-primary",
     cta: "bg-inverse-primary text-primary hover:opacity-90",
   },
@@ -61,13 +65,29 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
               <div className="relative h-[200px] sm:h-[240px]">
                 {b.image && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={b.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                  <img
+                    src={b.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
                 )}
                 <div className={`absolute inset-0 ${t.overlay}`} />
                 <div className="relative flex h-full max-w-2xl flex-col justify-center gap-2 p-6 sm:p-10">
-                  {b.eyebrow && <p className={`text-[11px] font-bold tracking-widest ${t.eyebrow}`}>{b.eyebrow}</p>}
-                  <h2 className="text-base font-bold leading-snug sm:text-lg md:text-xl">{b.title}</h2>
-                  {b.subtitle && <p className="line-clamp-2 text-xs opacity-80 sm:text-sm">{b.subtitle}</p>}
+                  {b.eyebrow && (
+                    <p
+                      className={`text-[11px] font-bold tracking-widest ${t.eyebrow}`}
+                    >
+                      {b.eyebrow}
+                    </p>
+                  )}
+                  <h2 className="text-base font-bold leading-snug md:text-lg">
+                    {b.title}
+                  </h2>
+                  {b.subtitle && (
+                    <p className="line-clamp-2 text-xs opacity-80 sm:text-sm">
+                      {b.subtitle}
+                    </p>
+                  )}
                   {b.cta && (
                     <Link
                       href={b.cta.href}
