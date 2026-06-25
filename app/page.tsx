@@ -335,7 +335,7 @@ function NewsMini({ n }: { n: any }) {
             {n.category}
           </span>
         )}
-        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-on-surface">
+        <h3 className="line-clamp-2 text-sm font-medium leading-snug text-on-surface">
           {n.title}
         </h3>
       </div>
@@ -377,7 +377,7 @@ function NewsCardSmall({ n }: { n: any }) {
             {n.category}
           </span>
         )}
-        <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-on-surface">
+        <h3 className="mt-1 line-clamp-2 text-sm font-medium text-on-surface">
           {n.title}
         </h3>
       </div>
@@ -403,7 +403,7 @@ function EventCard({ e }: { e: any }) {
         </div>
       </div>
       <div className="min-w-0 p-3">
-        <h3 className="line-clamp-2 text-sm font-semibold text-on-surface">
+        <h3 className="line-clamp-2 text-sm font-medium text-on-surface">
           {e.title}
         </h3>
         <p className="mt-1 flex items-center gap-1 truncate text-xs text-on-surface-variant">
@@ -493,7 +493,7 @@ function PopularRow({ t }: { t: any }) {
       <div className="min-w-0 flex-1">
         <Link
           href={`/board/thread/${t.id}`}
-          className="block truncate text-on-surface hover:text-primary"
+          className="block truncate font-medium text-on-surface text-sm hover:text-primary"
         >
           {t.title}
         </Link>

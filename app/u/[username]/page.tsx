@@ -7,7 +7,11 @@ import { Avatar } from "@/components/avatar";
 import { ModerationPanel } from "@/components/moderation-panel";
 import { JsonLd } from "@/components/seo/json-ld";
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { username: string };
+}) {
   const supabase = createClient();
   const { data: p } = await supabase
     .from("profiles")
@@ -41,23 +45,33 @@ export default async function ProfilePage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, username, display_name, avatar_url, bio, reputation, level_id, role, disabled, banned_until, created_at, provinces(name_th)")
+    .select(
+      "id, username, display_name, avatar_url, bio, reputation, level_id, role, disabled, banned_until, created_at, provinces(name_th)",
+    )
     .eq("username", params.username)
     .single();
 
   if (!profile) notFound();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const isSelf = user?.id === profile.id;
 
   // สิทธิ์ของผู้ชม (เจ้าหน้าที่)
   let viewerRole: string | null = null;
   if (user && !isSelf) {
-    const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    const { data: me } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
     viewerRole = me?.role ?? null;
   }
   const isStaff = viewerRole === "admin" || viewerRole === "editor";
-  const isBanned = profile.banned_until ? new Date(profile.banned_until).getTime() > Date.now() : false;
+  const isBanned = profile.banned_until
+    ? new Date(profile.banned_until).getTime() > Date.now()
+    : false;
 
   const [
     { count: threadCount },
@@ -67,16 +81,41 @@ export default async function ProfilePage({
     { data: recentThreads },
     { data: recentPosts },
   ] = await Promise.all([
-    supabase.from("threads").select("*", { count: "exact", head: true }).eq("author_id", profile.id),
-    supabase.from("posts").select("*", { count: "exact", head: true }).eq("author_id", profile.id),
-    supabase.from("user_badges").select("badges(name_th, icon, description)").eq("user_id", profile.id),
-    supabase.from("membership_levels").select("min_points, name_th").gt("min_points", profile.reputation).order("min_points").limit(1).maybeSingle(),
-    supabase.from("threads")
-      .select("id, title, created_at, reply_count, like_count, view_count, categories(name_th, slug)")
-      .eq("author_id", profile.id).eq("status", "published").order("created_at", { ascending: false }).limit(10),
-    supabase.from("posts")
+    supabase
+      .from("threads")
+      .select("*", { count: "exact", head: true })
+      .eq("author_id", profile.id),
+    supabase
+      .from("posts")
+      .select("*", { count: "exact", head: true })
+      .eq("author_id", profile.id),
+    supabase
+      .from("user_badges")
+      .select("badges(name_th, icon, description)")
+      .eq("user_id", profile.id),
+    supabase
+      .from("membership_levels")
+      .select("min_points, name_th")
+      .gt("min_points", profile.reputation)
+      .order("min_points")
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("threads")
+      .select(
+        "id, title, created_at, reply_count, like_count, view_count, categories(name_th, slug)",
+      )
+      .eq("author_id", profile.id)
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(10),
+    supabase
+      .from("posts")
       .select("id, body, created_at, thread_id, threads(id, title)")
-      .eq("author_id", profile.id).eq("status", "published").order("created_at", { ascending: false }).limit(10),
+      .eq("author_id", profile.id)
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(10),
   ]);
 
   const { data: guildMem } = await supabase
@@ -87,7 +126,10 @@ export default async function ProfilePage({
   const guild: any = guildMem?.guilds ?? null;
 
   const progress = nextLevel
-    ? Math.min(100, Math.round((profile.reputation / nextLevel.min_points) * 100))
+    ? Math.min(
+        100,
+        Math.round((profile.reputation / nextLevel.min_points) * 100),
+      )
     : 100;
 
   const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
@@ -112,10 +154,14 @@ export default async function ProfilePage({
       />
 
       {searchParams.ok && (
-        <p className="rounded border border-primary/30 bg-primary-container/5 px-4 py-2 text-sm text-primary">ดำเนินการเรียบร้อย</p>
+        <p className="rounded border border-primary/30 bg-primary-container/5 px-4 py-2 text-sm text-primary">
+          ดำเนินการเรียบร้อย
+        </p>
       )}
       {searchParams.error && (
-        <p className="rounded border border-error-container bg-error-container px-4 py-2 text-sm text-on-error-container">{searchParams.error}</p>
+        <p className="rounded border border-error-container bg-error-container px-4 py-2 text-sm text-on-error-container">
+          {searchParams.error}
+        </p>
       )}
 
       {/* สถานะถูกระงับ/ปิดบัญชี */}
@@ -146,35 +192,71 @@ export default async function ProfilePage({
         <div className="px-6 pb-6">
           <div className="-mt-10 flex flex-wrap items-end gap-4">
             <span className="rounded-full ring-4 ring-surface-container-lowest">
-              <Avatar src={profile.avatar_url} name={profile.display_name || profile.username} role={profile.role} size={80} />
+              <Avatar
+                src={profile.avatar_url}
+                name={profile.display_name || profile.username}
+                role={profile.role}
+                size={80}
+              />
             </span>
             <div className="flex-1">
-              <h1 className="text-xl font-bold">{profile.display_name || profile.username}</h1>
+              <h1 className="text-xl font-bold">
+                {profile.display_name || profile.username}
+              </h1>
               <p className="text-sm text-on-surface-variant">
                 @{profile.username}
-                {guild && <> · <Link href={`/guilds/${guild.slug}`} className="text-primary hover:underline">⚔ {guild.name}</Link></>}
+                {guild && (
+                  <>
+                    {" "}
+                    ·{" "}
+                    <Link
+                      href={`/guilds/${guild.slug}`}
+                      className="text-primary hover:underline"
+                    >
+                      ⚔ {guild.name}
+                    </Link>
+                  </>
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2">
               <LevelBadge levelId={profile.level_id} showTier />
               {isSelf ? (
-                <Link href="/me" className="btn-outline">แก้ไขโปรไฟล์</Link>
+                <Link href="/me" className="btn-outline">
+                  แก้ไขโปรไฟล์
+                </Link>
               ) : (
-                <Link href={`/messages/new?to=${profile.id}`} className="btn-accent">ส่งข้อความ</Link>
+                <Link
+                  href={`/messages/new?to=${profile.id}`}
+                  className="btn-accent"
+                >
+                  ส่งข้อความ
+                </Link>
               )}
             </div>
           </div>
 
-          {profile.bio && <p className="mt-4 text-sm text-on-surface">{profile.bio}</p>}
+          {profile.bio && (
+            <p className="mt-4 text-sm text-on-surface">{profile.bio}</p>
+          )}
 
           {/* progress level */}
           <div className="mt-4">
             <div className="flex justify-between text-xs text-on-surface-variant">
-              <span>คะแนนสะสม {profile.reputation.toLocaleString("th-TH")}</span>
-              {nextLevel && <span>ถัดไป: {nextLevel.name_th} ({nextLevel.min_points})</span>}
+              <span>
+                คะแนนสะสม {profile.reputation.toLocaleString("th-TH")}
+              </span>
+              {nextLevel && (
+                <span>
+                  ถัดไป: {nextLevel.name_th} ({nextLevel.min_points})
+                </span>
+              )}
             </div>
             <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-container">
-              <div className="h-full bg-tertiary-container" style={{ width: `${progress}%` }} />
+              <div
+                className="h-full bg-tertiary-container"
+                style={{ width: `${progress}%` }}
+              />
             </div>
           </div>
         </div>
@@ -198,17 +280,33 @@ export default async function ProfilePage({
           <div className="card divide-y divide-outline-variant">
             {(recentThreads ?? []).length > 0 ? (
               (recentThreads ?? []).map((t: any) => (
-                <Link key={t.id} href={`/board/thread/${t.id}`} className="block p-4 hover:bg-surface-container-low">
+                <Link
+                  key={t.id}
+                  href={`/board/thread/${t.id}`}
+                  className="block p-4 hover:bg-surface-container-low"
+                >
                   <div className="flex items-center gap-2">
-                    {t.categories && <span className="chip bg-primary-container/10 text-primary">{t.categories.name_th}</span>}
-                    <span className="text-xs text-on-surface-variant">{new Date(t.created_at).toLocaleDateString("th-TH")}</span>
+                    {t.categories && (
+                      <span className="chip bg-primary-container/10 text-primary">
+                        {t.categories.name_th}
+                      </span>
+                    )}
+                    <span className="text-xs text-on-surface-variant">
+                      {new Date(t.created_at).toLocaleDateString("th-TH")}
+                    </span>
                   </div>
-                  <p className="mt-1 truncate font-medium text-on-surface">{t.title}</p>
-                  <p className="text-xs text-on-surface-variant">💬 {t.reply_count} · ❤ {t.like_count} · 👁 {t.view_count}</p>
+                  <p className="mt-1 truncate font-medium text-on-surface text-sm">
+                    {t.title}
+                  </p>
+                  <p className="text-xs text-on-surface-variant">
+                    💬 {t.reply_count} · ❤ {t.like_count} · 👁 {t.view_count}
+                  </p>
                 </Link>
               ))
             ) : (
-              <p className="p-6 text-center text-sm text-on-surface-variant">ยังไม่มีกระทู้</p>
+              <p className="p-6 text-center text-sm text-on-surface-variant">
+                ยังไม่มีกระทู้
+              </p>
             )}
           </div>
         </section>
@@ -221,18 +319,27 @@ export default async function ProfilePage({
           <div className="card divide-y divide-outline-variant">
             {(recentPosts ?? []).length > 0 ? (
               (recentPosts ?? []).map((p: any) => (
-                <Link key={p.id} href={`/board/thread/${p.thread_id}`} className="block p-4 hover:bg-surface-container-low">
+                <Link
+                  key={p.id}
+                  href={`/board/thread/${p.thread_id}`}
+                  className="block p-4 hover:bg-surface-container-low"
+                >
                   <p className="text-xs text-on-surface-variant">
-                    ตอบในกระทู้ · {new Date(p.created_at).toLocaleDateString("th-TH")}
+                    ตอบในกระทู้ ·{" "}
+                    {new Date(p.created_at).toLocaleDateString("th-TH")}
                   </p>
-                  <p className="truncate text-sm font-medium text-primary">{p.threads?.title ?? "(กระทู้ถูกลบ)"}</p>
+                  <p className="truncate text-sm font-medium text-primary">
+                    {p.threads?.title ?? "(กระทู้ถูกลบ)"}
+                  </p>
                   <p className="mt-1 line-clamp-2 text-sm text-on-surface-variant">
                     {p.body.replace(/\[[^\]]*\]/g, "").slice(0, 160)}
                   </p>
                 </Link>
               ))
             ) : (
-              <p className="p-6 text-center text-sm text-on-surface-variant">ยังไม่มีความเห็น</p>
+              <p className="p-6 text-center text-sm text-on-surface-variant">
+                ยังไม่มีความเห็น
+              </p>
             )}
           </div>
         </section>
@@ -246,11 +353,15 @@ export default async function ProfilePage({
             <div key={i} className="card p-4 text-center">
               <Award className="mx-auto h-7 w-7 text-tertiary-container" />
               <p className="mt-1 text-sm font-medium">{b.badges?.name_th}</p>
-              <p className="text-xs text-on-surface-variant">{b.badges?.description}</p>
+              <p className="text-xs text-on-surface-variant">
+                {b.badges?.description}
+              </p>
             </div>
           ))}
           {(!badges || badges.length === 0) && (
-            <p className="text-sm text-on-surface-variant">ยังไม่มีเหรียญรางวัล</p>
+            <p className="text-sm text-on-surface-variant">
+              ยังไม่มีเหรียญรางวัล
+            </p>
           )}
         </div>
       </section>
@@ -261,7 +372,9 @@ export default async function ProfilePage({
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="card p-4 text-center">
-      <p className="text-xl font-bold text-primary sm:text-2xl">{value.toLocaleString("th-TH")}</p>
+      <p className="text-xl font-bold text-primary sm:text-2xl">
+        {value.toLocaleString("th-TH")}
+      </p>
       <p className="text-xs text-on-surface-variant">{label}</p>
     </div>
   );

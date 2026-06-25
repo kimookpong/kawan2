@@ -54,7 +54,9 @@ export function ThreadListItem({
               {t.categories.name_th}
             </span>
           )}
-          <p className="truncate font-medium text-on-surface">{t.title}</p>
+          <p className="truncate font-medium text-on-surface text-sm">
+            {t.title}
+          </p>
         </div>
         <p className="truncate text-xs text-on-surface-variant">
           {author} · {when} น.
