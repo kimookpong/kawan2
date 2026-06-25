@@ -97,7 +97,7 @@ export function AppShell({
     <div className="min-h-screen">
       {/* ===== Top bar ===== */}
       <header className="sticky top-0 z-40 border-b border-outline-variant bg-surface-container-lowest">
-        <div className="flex items-center gap-3 px-4 py-3">
+        <div className="mx-auto flex max-w-container w-full items-center gap-3 px-4 py-3">
           {/* hamburger (mobile) */}
           <button
             onClick={() => setOpen(true)}
@@ -181,7 +181,7 @@ export function AppShell({
       )}
 
       {/* ===== body: sidebar + main ===== */}
-      <div className="mx-auto flex w-full">
+      <div className="mx-auto flex w-full max-w-container">
         {/* desktop sidebar */}
         <aside className="sticky top-[61px] hidden h-[calc(100vh-61px)] w-60 shrink-0 overflow-y-auto border-r border-outline-variant p-4 lg:block">
           <NavLinks />

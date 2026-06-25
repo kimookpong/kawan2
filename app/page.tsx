@@ -239,7 +239,38 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* ===== 4) ห้องสนทนาแยกหมวด ===== */}
+      {/* ===== 4) กระทู้ยอดนิยม + สมาชิกเด่น ===== */}
+      <section className="grid gap-6 lg:grid-cols-3">
+        <div className="min-w-0 lg:col-span-2">
+          <SectionHead title="กระทู้ยอดนิยมประจำสัปดาห์" href="/board" />
+          <div className="card divide-y divide-outline-variant">
+            {(popular ?? []).length > 0 ? (
+              (popular ?? []).map((t: any) => <PopularRow key={t.id} t={t} />)
+            ) : (
+              <p className="p-6 text-center text-sm text-on-surface-variant">
+                ยังไม่มีกระทู้
+              </p>
+            )}
+          </div>
+        </div>
+
+        <aside className="min-w-0">
+          <SectionHead title="สมาชิกเด่นประจำสัปดาห์" href="/members" />
+          <div className="card divide-y divide-outline-variant">
+            {(topMembers ?? []).length > 0 ? (
+              (topMembers ?? []).map((m: any, i: number) => (
+                <MemberRow key={m.username} m={m} rank={i + 1} />
+              ))
+            ) : (
+              <p className="p-6 text-center text-sm text-on-surface-variant">
+                ยังไม่มีสมาชิก
+              </p>
+            )}
+          </div>
+        </aside>
+      </section>
+
+      {/* ===== 5) ห้องสนทนาแยกหมวด ===== */}
       <section>
         <SectionHead title="ห้องสนทนา" href="/board" />
         <div className="grid gap-4 lg:grid-cols-2">
@@ -276,37 +307,6 @@ export default async function HomePage() {
             );
           })}
         </div>
-      </section>
-
-      {/* ===== 5) กระทู้ยอดนิยม + สมาชิกเด่น ===== */}
-      <section className="grid gap-6 lg:grid-cols-3">
-        <div className="min-w-0 lg:col-span-2">
-          <SectionHead title="กระทู้ยอดนิยมประจำสัปดาห์" href="/board" />
-          <div className="card divide-y divide-outline-variant">
-            {(popular ?? []).length > 0 ? (
-              (popular ?? []).map((t: any) => <PopularRow key={t.id} t={t} />)
-            ) : (
-              <p className="p-6 text-center text-sm text-on-surface-variant">
-                ยังไม่มีกระทู้
-              </p>
-            )}
-          </div>
-        </div>
-
-        <aside className="min-w-0">
-          <SectionHead title="สมาชิกเด่นประจำสัปดาห์" href="/members" />
-          <div className="card divide-y divide-outline-variant">
-            {(topMembers ?? []).length > 0 ? (
-              (topMembers ?? []).map((m: any, i: number) => (
-                <MemberRow key={m.username} m={m} rank={i + 1} />
-              ))
-            ) : (
-              <p className="p-6 text-center text-sm text-on-surface-variant">
-                ยังไม่มีสมาชิก
-              </p>
-            )}
-          </div>
-        </aside>
       </section>
     </div>
   );
