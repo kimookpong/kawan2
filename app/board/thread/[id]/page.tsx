@@ -34,8 +34,10 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
   const { data: thread } = await supabase
     .from("threads")
-    .select("id, title, body, like_count, reply_count, view_count, created_at, is_locked, is_pinned, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at), categories(name_th, slug)")
+    .select("id, title, body, like_count, reply_count, view_count, created_at, is_locked, is_pinned, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, bio, threads(count), posts(count)), categories(name_th, slug)")
     .eq("id", threadId)
+    .eq("profiles.threads.status", "published")
+    .eq("profiles.posts.status", "published")
     .single();
 
   if (!thread) notFound();
@@ -43,9 +45,11 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
   const { data: posts } = await supabase
     .from("posts")
-    .select("id, body, like_count, created_at, profiles(username, display_name, avatar_url, level_id, role, reputation)")
+    .select("id, body, like_count, created_at, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, bio, threads(count), posts(count))")
     .eq("thread_id", threadId)
     .eq("status", "published")
+    .eq("profiles.threads.status", "published")
+    .eq("profiles.posts.status", "published")
     .order("created_at");
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -128,9 +132,9 @@ export default async function ThreadPage({ params }: { params: { id: string } })
       <ShareButtons title={thread.title} />
 
       {/* กระทู้หลัก */}
-      <article className="card flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
+      <article className="card flex flex-col sm:flex-row overflow-hidden">
         <AuthorCard author={thread.profiles as any} />
-        <div className="min-w-0 flex-1 border-t border-outline-variant pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+        <div className="min-w-0 flex-1 p-4 sm:p-5">
           <h1 className="flex items-start gap-2 text-xl font-bold text-on-surface sm:text-2xl">
             {thread.is_pinned && <Pin className="mt-1 h-5 w-5 shrink-0 text-tertiary-container" />}
             {thread.title}
@@ -161,9 +165,9 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
       <div className="space-y-3">
         {(posts ?? []).map((p: any, i: number) => (
-          <div key={p.id} className="card flex flex-col gap-4 p-4 sm:flex-row">
+          <div key={p.id} className="card flex flex-col sm:flex-row overflow-hidden">
             <AuthorCard author={p.profiles} compact />
-            <div className="min-w-0 flex-1 border-t border-outline-variant pt-3 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
+            <div className="min-w-0 flex-1 p-4">
               <div className="flex items-center justify-between text-xs text-on-surface-variant">
                 <span>{new Date(p.created_at).toLocaleString("th-TH")}</span>
                 <span className="font-medium">#{i + 1}</span>

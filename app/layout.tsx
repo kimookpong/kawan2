@@ -6,7 +6,9 @@ import { Footer } from "@/components/layout/footer";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app",
+  ),
   title: {
     default: "Kawan2 | ชุมชนชายแดนใต้",
     template: "%s | Kawan2",
@@ -43,7 +45,9 @@ export default async function RootLayout({
   if (user) {
     const { data } = await supabase
       .from("profiles")
-      .select("username, display_name, avatar_url, level_id, reputation, role, banned_until, disabled")
+      .select(
+        "username, display_name, avatar_url, level_id, reputation, role, banned_until, disabled",
+      )
       .eq("id", user.id)
       .single();
     profile = data;
@@ -53,7 +57,11 @@ export default async function RootLayout({
     <html lang="th">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;900&family=Sarabun:wght@400;500;700&display=swap"
           rel="stylesheet"
@@ -61,7 +69,7 @@ export default async function RootLayout({
       </head>
       <body className="font-sans">
         <AppShell user={user} profile={profile}>
-          <div className="min-h-[70vh] px-4 py-6 md:px-6">{children}</div>
+          <div className="min-h-[70vh] px-4 md:px-6">{children}</div>
           <Footer />
         </AppShell>
         <Analytics />

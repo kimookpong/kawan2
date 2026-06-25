@@ -46,17 +46,21 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
   const supabase = createClient();
   const { data: news } = await supabase
     .from("news")
-    .select("id, title, body, cover_url, category, status, view_count, published_at, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at)")
+    .select("id, title, body, cover_url, category, status, view_count, published_at, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, threads(count), posts(count))")
     .eq("slug", params.slug)
+    .eq("profiles.threads.status", "published")
+    .eq("profiles.posts.status", "published")
     .single();
 
   if (!news) notFound();
 
   const { data: comments } = await supabase
     .from("news_comments")
-    .select("id, body, created_at, profiles(username, display_name, avatar_url, level_id, role, reputation)")
+    .select("id, body, created_at, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, threads(count), posts(count))")
     .eq("news_id", news.id)
     .eq("status", "published")
+    .eq("profiles.threads.status", "published")
+    .eq("profiles.posts.status", "published")
     .order("created_at");
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -124,9 +128,9 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
       <ShareButtons title={news.title} />
 
       {/* เนื้อหาข่าว (สไตล์กระทู้) */}
-      <article className="card flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
+      <article className="card flex flex-col sm:flex-row overflow-hidden">
         <AuthorCard author={news.profiles as any} />
-        <div className="min-w-0 flex-1 border-t border-outline-variant pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+        <div className="min-w-0 flex-1 p-4 sm:p-5">
           <h1 className="text-xl font-bold text-on-surface sm:text-2xl">{news.title}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
             {news.category && <span className="chip bg-primary-container/10 text-primary">{news.category}</span>}
@@ -161,9 +165,9 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
 
       <div className="space-y-3">
         {(comments ?? []).map((c: any, i: number) => (
-          <div key={c.id} className="card flex flex-col gap-4 p-4 sm:flex-row">
+          <div key={c.id} className="card flex flex-col sm:flex-row overflow-hidden">
             <AuthorCard author={c.profiles} compact />
-            <div className="min-w-0 flex-1 border-t border-outline-variant pt-3 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
+            <div className="min-w-0 flex-1 p-4">
               <div className="flex items-center justify-between text-xs text-on-surface-variant">
                 <span>{new Date(c.created_at).toLocaleString("th-TH")}</span>
                 <span className="font-medium">#{i + 1}</span>
