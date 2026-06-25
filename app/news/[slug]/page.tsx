@@ -116,16 +116,17 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
         </p>
       )}
 
-      {/* header actions */}
-      <div className="flex flex-wrap justify-end gap-2">
-        {canEdit && (
-          <Link href={`/news/${params.slug}/edit`} className="btn-outline gap-1"><Pencil className="h-4 w-4" /> แก้ไข</Link>
-        )}
-        <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
-        <a href="#comments" className="btn-primary gap-1"><MessageSquare className="h-4 w-4" /> แสดงความเห็น</a>
+      {/* header actions & share */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <ShareButtons title={news.title} />
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          {canEdit && (
+            <Link href={`/news/${params.slug}/edit`} className="btn-outline gap-1"><Pencil className="h-4 w-4" /> แก้ไข</Link>
+          )}
+          <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
+          <a href="#comments" className="btn-primary gap-1"><MessageSquare className="h-4 w-4" /> แสดงความเห็น</a>
+        </div>
       </div>
-
-      <ShareButtons title={news.title} />
 
       {/* เนื้อหาข่าว (สไตล์กระทู้) */}
       <article className="card flex flex-col sm:flex-row overflow-hidden">

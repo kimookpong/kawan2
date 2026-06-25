@@ -114,8 +114,10 @@ export default async function ThreadPage({ params }: { params: { id: string } })
         <span className="truncate text-on-surface">{thread.title}</span>
       </nav>
 
-      {/* header actions */}
-      <div className="flex flex-wrap justify-end gap-2">
+      {/* header actions & share */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <ShareButtons title={thread.title} />
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           {isAdmin && (
             <form action={setThreadPin}>
               <input type="hidden" name="thread_id" value={threadId} />
@@ -127,9 +129,8 @@ export default async function ThreadPage({ params }: { params: { id: string } })
           )}
           <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
           <a href="#reply" className="btn-primary gap-1"><CornerUpLeft className="h-4 w-4" /> ตอบกระทู้</a>
+        </div>
       </div>
-
-      <ShareButtons title={thread.title} />
 
       {/* กระทู้หลัก */}
       <article className="card flex flex-col sm:flex-row overflow-hidden">

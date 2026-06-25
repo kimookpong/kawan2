@@ -69,7 +69,7 @@ export default async function RootLayout({
       </head>
       <body className="font-sans">
         <AppShell user={user} profile={profile}>
-          <div className="min-h-[70vh] px-4 md:px-6">{children}</div>
+          <div className="min-h-[70vh] px-4 md:px-6 pt-2">{children}</div>
           <Footer />
         </AppShell>
         <Analytics />
