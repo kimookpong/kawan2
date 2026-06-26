@@ -108,22 +108,21 @@ export function AppShell({
           </button>
 
           {/* logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center" aria-label="Kawan2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/image.png" alt="Kawan2" className="h-8 w-8 rounded" />
-            <span className="text-xl font-black text-primary">
-              kawan<span className="text-tertiary-container">2</span>
-            </span>
+            <img src="/image2.png" alt="Kawan2" className="h-9 w-auto" />
           </Link>
 
           {/* search (desktop) */}
-          <div className="relative ml-4 hidden max-w-md flex-1 md:block">
+          <form action="/search" method="get" className="relative ml-4 hidden max-w-md flex-1 md:block">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-on-surface-variant" />
             <input
+              type="search"
+              name="q"
               placeholder="ค้นหากระทู้ ข่าว หรือสมาชิก..."
               className="w-full rounded-full border border-outline-variant bg-surface-container-low py-2 pl-9 pr-3 text-sm outline-none focus:border-primary"
             />
-          </div>
+          </form>
 
           <div className="ml-auto flex items-center gap-1">
             {user && profile ? (
