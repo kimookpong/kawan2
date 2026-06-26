@@ -113,7 +113,7 @@ export function AppShell({
           {/* logo */}
           <Link href="/" className="flex items-center" aria-label="Kawan2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/image2.png" alt="Kawan2" className="h-9 w-auto" />
+            <img src="/image2.png" alt="Kawan2" className="h-6 w-auto" />
           </Link>
 
           {/* search (desktop) */}
