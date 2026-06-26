@@ -71,7 +71,7 @@ export default async function HomePage() {
       .gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString())
       .order("like_count", { ascending: false })
       .order("view_count", { ascending: false })
-      .limit(12),
+      .limit(8),
     supabase
       .from("weekly_top_members")
       .select(
@@ -243,7 +243,7 @@ export default async function HomePage() {
         <div className="min-w-0 lg:col-span-2">
           <SectionHead title="กระทู้ยอดนิยมประจำสัปดาห์" href="/board" />
           {(popular ?? []).length > 0 ? (
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
               {(popular ?? []).map((t: any) => (
                 <PopularCard key={t.id} t={t} />
               ))}
