@@ -22,7 +22,7 @@ const getCachedLevels = cache(async () => {
   const supabase = createClient();
   const { data } = await supabase
     .from("membership_levels")
-    .select("id, name_th, name_en, min_points")
+    .select("id, name_th, name_en, min_points, color")
     .order("id");
   return data || [];
 });
@@ -54,13 +54,18 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
 
   const levelName = currentLevel ? currentLevel.name_th : "รายัต";
   const levelId = author.level_id;
+  const levelColor = (currentLevel as { color?: string } | undefined)?.color || "#475569";
+  const levelBadgeStyle = {
+    backgroundColor: `${levelColor}1A`,
+    color: levelColor,
+    borderColor: `${levelColor}40`,
+  } as const;
 
   // ตั้งค่าดีไซน์และธีมของการ์ดแยกตามระดับชั้น (Tier)
   let cardBg = "bg-surface dark:bg-surface-container-low";
   let headerBg = "bg-surface-container-lowest border-t border-emerald-600/30";
   let headerIcon = null;
   let avatarBorder = "border-emerald-600 dark:border-emerald-500";
-  let badgeClass = "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50";
   let badgeIcon = <Shield className="w-3.5 h-3.5 text-slate-500" />;
   let progressColor = "bg-slate-500 dark:bg-slate-400";
   let nameClass = "text-on-surface font-semibold";
@@ -78,7 +83,6 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
       </div>
     );
     avatarBorder = "border-amber-500";
-    badgeClass = "bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-100/50 dark:border-purple-900/50";
     badgeIcon = <Timer className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />;
     progressColor = "bg-purple-500";
     nameClass = "text-amber-600 dark:text-amber-500 font-bold";
@@ -93,7 +97,6 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
       </div>
     );
     avatarBorder = "border-emerald-600 dark:border-emerald-500";
-    badgeClass = "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-100/50 dark:border-emerald-900/50";
     badgeIcon = <Timer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />;
     progressColor = "bg-emerald-500";
     nameClass = "text-on-surface font-semibold";
@@ -178,7 +181,10 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
             )}
           </div>
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-            <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${badgeClass}`}>
+            <span
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full border"
+              style={levelBadgeStyle}
+            >
               {levelName} · LV {author.level_id}
             </span>
             <span className="text-[10px] text-on-surface-variant font-medium">
@@ -228,7 +234,10 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
           </Link>
 
           {/* ป้ายระดับ */}
-          <div className={`mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide ${badgeClass}`}>
+          <div
+            className="mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide border"
+            style={levelBadgeStyle}
+          >
             {badgeIcon}
             <span>{levelName} · LV {author.level_id}</span>
           </div>

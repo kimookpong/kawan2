@@ -3,7 +3,7 @@ import { Search, Ban } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
-import { levelNameClass } from "@/lib/constants";
+import { levelNameStyle } from "@/lib/constants";
 
 export const revalidate = 0;
 
@@ -93,7 +93,7 @@ export default async function MembersPage({
               size={40}
             />
             <div className="flex-1 min-w-0">
-              <p className={`truncate font-medium ${levelNameClass(p.level_id)}`}>{p.display_name || p.username}</p>
+              <p className="truncate font-medium" style={levelNameStyle(p.level_id)}>{p.display_name || p.username}</p>
               <div className="flex items-center gap-2">
                 <span className="truncate text-xs text-on-surface-variant">
                   @{p.username}

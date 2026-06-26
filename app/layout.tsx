@@ -53,9 +53,22 @@ export default async function RootLayout({
     profile = data;
   }
 
+  // สีประจำระดับสมาชิก (แอดมินเลือกได้) → ฉีดเป็น CSS variables ใช้ทั้งระบบ
+  const { data: levelColors } = await supabase
+    .from("membership_levels")
+    .select("id, color")
+    .order("id");
+  const levelVars =
+    ":root{" +
+    (levelColors ?? [])
+      .map((l: any) => `--lvl-${l.id}:${l.color || "#64748b"};`)
+      .join("") +
+    "}";
+
   return (
     <html lang="th">
       <head>
+        <style dangerouslySetInnerHTML={{ __html: levelVars }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

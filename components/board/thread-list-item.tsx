@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Flame, Pin, MessageCircle, Eye } from "lucide-react";
-import { levelNameClass } from "@/lib/constants";
+import { levelNameStyle } from "@/lib/constants";
 
 type Data = {
   id: number;
@@ -60,7 +60,7 @@ export function ThreadListItem({
           </p>
         </div>
         <p className="truncate text-xs text-on-surface-variant">
-          <span className={`font-medium ${levelNameClass(t.profiles?.level_id)}`}>{author}</span> · {when} น.
+          <span className="font-medium" style={levelNameStyle(t.profiles?.level_id)}>{author}</span> · {when} น.
         </p>
       </div>
 

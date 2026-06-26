@@ -11,8 +11,12 @@ export function LevelBadge({
 }) {
   const lvl = LEVEL_STYLES[levelId];
   if (!lvl) return null;
+  const c = `var(--lvl-${levelId}, #64748b)`;
   return (
-    <span className={`chip ${lvl.cls}`}>
+    <span
+      className="chip font-medium"
+      style={{ color: c, backgroundColor: `color-mix(in srgb, ${c} 14%, transparent)` }}
+    >
       {showTier ? `ระดับ ${levelId} · ${lvl.label}` : lvl.label}
     </span>
   );

@@ -3,7 +3,6 @@ import {
   MapPin,
   Pin,
   ArrowRight,
-  Flame,
   MessageCircle,
   Eye,
 } from "lucide-react";
@@ -12,7 +11,7 @@ import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
 import { BannerCarousel, type Banner } from "@/components/home/banner-carousel";
 import { ThreadListItem } from "@/components/board/thread-list-item";
-import { NEWS_FALLBACK_IMG, levelNameClass } from "@/lib/constants";
+import { NEWS_FALLBACK_IMG, levelNameStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
@@ -66,13 +65,13 @@ export default async function HomePage() {
     supabase
       .from("threads")
       .select(
-        "id, title, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)",
+        "id, title, body, like_count, reply_count, view_count, created_at, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)",
       )
       .eq("status", "published")
       .gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString())
       .order("like_count", { ascending: false })
       .order("view_count", { ascending: false })
-      .limit(10),
+      .limit(12),
     supabase
       .from("weekly_top_members")
       .select(
@@ -243,15 +242,17 @@ export default async function HomePage() {
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="min-w-0 lg:col-span-2">
           <SectionHead title="กระทู้ยอดนิยมประจำสัปดาห์" href="/board" />
-          <div className="card divide-y divide-outline-variant">
-            {(popular ?? []).length > 0 ? (
-              (popular ?? []).map((t: any) => <PopularRow key={t.id} t={t} />)
-            ) : (
-              <p className="p-6 text-center text-sm text-on-surface-variant">
-                ยังไม่มีกระทู้
-              </p>
-            )}
-          </div>
+          {(popular ?? []).length > 0 ? (
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+              {(popular ?? []).map((t: any) => (
+                <PopularCard key={t.id} t={t} />
+              ))}
+            </div>
+          ) : (
+            <p className="card p-6 text-center text-sm text-on-surface-variant">
+              ยังไม่มีกระทู้
+            </p>
+          )}
         </div>
 
         <aside className="min-w-0">
@@ -476,66 +477,51 @@ function CategoryBox({ cat, threads }: { cat: any; threads: any[] }) {
   );
 }
 
-function PopularRow({ t }: { t: any }) {
-  const author = t.profiles?.display_name || t.profiles?.username;
-  const dateStr =
-    t.created_at &&
-    new Date(t.created_at).toLocaleString("th-TH", {
-      day: "numeric",
-      month: "short",
-      year: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    }) + " น.";
+function extractCoverFromBody(body: string | null | undefined): string | null {
+  if (!body) return null;
+  const m = body.match(/\[img\]\s*(https?:\/\/[^\s\[\]]+)\s*\[\/img\]/i);
+  return m ? m[1] : null;
+}
+
+function PopularCard({ t }: { t: any }) {
+  const cover = extractCoverFromBody(t.body);
   return (
-    <div className="flex items-center gap-3 px-3 py-2 hover:bg-surface-container-low">
-      <Flame className="h-5 w-5 shrink-0 text-orange-500" />
-      <div className="min-w-0 flex-1">
-        <Link
-          href={`/board/thread/${t.id}`}
-          className="block truncate font-medium text-on-surface text-sm hover:text-primary"
-        >
-          {t.title}
-        </Link>
-        <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs text-on-surface-variant">
-          {t.profiles ? (
-            <Link
-              href={`/u/${t.profiles.username}`}
-              className={`font-medium hover:underline ${levelNameClass(t.profiles.level_id)}`}
-            >
-              {author}
-            </Link>
-          ) : (
-            <span>ไม่ทราบผู้เขียน</span>
-          )}
+    <Link
+      href={`/board/thread/${t.id}`}
+      className="group flex items-stretch gap-3 rounded-xl bg-surface-container-low p-2 transition hover:bg-surface-container"
+    >
+      <div className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-lg bg-surface-container">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={cover ?? "/wallpaper.png"}
+          alt={t.title}
+          className="h-full w-full object-cover transition group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+        <div className="min-w-0">
           {t.categories && (
-            <>
-              <span aria-hidden>·</span>
-              <Link
-                href={`/board/${t.categories.slug}`}
-                className="hover:text-primary hover:underline"
-              >
-                {t.categories.name_th}
-              </Link>
-            </>
+            <p className="truncate text-[11px] text-on-surface-variant">
+              {t.categories.name_th}
+            </p>
           )}
-          {dateStr && (
-            <>
-              <span aria-hidden>·</span>
-              <span>{dateStr}</span>
-            </>
-          )}
-        </p>
+          <p className="mt-0.5 line-clamp-2 text-sm font-medium text-on-surface group-hover:text-primary">
+            {t.title}
+          </p>
+        </div>
+        <div className="mt-2 flex items-center gap-3 text-[11px] text-on-surface-variant">
+          <span className="flex items-center gap-1">
+            <MessageCircle className="h-3.5 w-3.5" />
+            {t.reply_count ?? 0}
+          </span>
+          <span className="flex items-center gap-1">
+            <Eye className="h-3.5 w-3.5" />
+            {t.view_count ?? 0}
+          </span>
+        </div>
       </div>
-      <div className="flex shrink-0 flex-col items-end gap-1 text-xs text-on-surface-variant">
-        <span className="flex items-center gap-1.5">
-          <MessageCircle className="h-4 w-4" /> {t.reply_count}
-        </span>
-        <span className="flex items-center gap-1.5">
-          <Eye className="h-4 w-4" /> {t.view_count}
-        </span>
-      </div>
-    </div>
+    </Link>
   );
 }
 
@@ -557,9 +543,7 @@ function MemberRow({ m, rank }: { m: any; rank: number }) {
         size={32}
       />
       <div className="min-w-0 flex-1">
-        <p
-          className={`truncate text-sm font-medium ${levelNameClass(m.level_id)}`}
-        >
+        <p className="truncate text-sm font-medium" style={levelNameStyle(m.level_id)}>
           {m.display_name || m.username}
         </p>
         <LevelBadge levelId={m.level_id} />

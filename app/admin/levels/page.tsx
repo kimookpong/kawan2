@@ -12,6 +12,7 @@ async function saveLevel(formData: FormData) {
     p_name_th: String(formData.get("name_th")),
     p_name_en: String(formData.get("name_en")),
     p_min_points: Number(formData.get("min_points")),
+    p_color: String(formData.get("color") || ""),
   });
   revalidatePath("/admin/levels");
   redirect(`/admin/levels?${error ? "error=" + encodeURIComponent(error.message) : "ok=1"}`);
@@ -25,7 +26,7 @@ export default async function AdminLevelsPage({
   const supabase = createClient();
   const { data: levels } = await supabase
     .from("membership_levels")
-    .select("id, name_th, name_en, min_points")
+    .select("id, name_th, name_en, min_points, color")
     .order("id");
 
   return (
@@ -61,6 +62,15 @@ export default async function AdminLevelsPage({
             <Field label="ชื่อ (ไทย)" name="name_th" defaultValue={l.name_th} className="min-w-[140px] flex-1" />
             <Field label="ชื่อ (อังกฤษ)" name="name_en" defaultValue={l.name_en} className="min-w-[120px] flex-1" />
             <Field label="คะแนนขั้นต่ำ" name="min_points" type="number" defaultValue={String(l.min_points)} className="w-32" />
+            <label className="block">
+              <span className="mb-1 block text-xs text-on-surface-variant">สี (RGB)</span>
+              <input
+                name="color"
+                type="color"
+                defaultValue={l.color || "#64748b"}
+                className="h-10 w-14 cursor-pointer rounded border border-outline-variant bg-surface-container-low p-1"
+              />
+            </label>
             <button className="btn-primary">บันทึก</button>
           </form>
         ))}

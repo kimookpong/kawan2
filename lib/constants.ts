@@ -26,9 +26,9 @@ export const LEVEL_STYLES: Record<number, { label: string; en: string; cls: stri
   20: { label: "เสรี มหาราชา", en: "SERI MAHARAJA", cls: "bg-gradient-to-r from-amber-400 to-yellow-500 text-[#0f1b2e]", name: "text-amber-600" },
 };
 
-/** คืน class สีข้อความของชื่อสมาชิกตามระดับ (ใช้ระบายสีชื่อในหน้า news/webboard) */
-export function levelNameClass(levelId?: number | null): string {
-  return (levelId && LEVEL_STYLES[levelId]?.name) || "text-on-surface";
+/** คืน inline style สีข้อความของชื่อสมาชิกตามระดับ (สีมาจาก CSS var ที่ฉีดใน layout — แอดมินแก้ได้) */
+export function levelNameStyle(levelId?: number | null): { color?: string } {
+  return levelId ? { color: `var(--lvl-${levelId}, currentColor)` } : {};
 }
 
 export const NAV_ITEMS = [

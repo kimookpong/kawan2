@@ -3,7 +3,7 @@ import { Search, MessageCircle, Eye, Newspaper, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "@/components/avatar";
 import { LevelBadge } from "@/components/user-badges";
-import { NEWS_FALLBACK_IMG, levelNameClass } from "@/lib/constants";
+import { NEWS_FALLBACK_IMG, levelNameStyle } from "@/lib/constants";
 
 export const revalidate = 0;
 
@@ -191,7 +191,7 @@ export default async function SearchPage({
                   size={40}
                 />
                 <div className="min-w-0 flex-1">
-                  <p className={`truncate font-medium ${levelNameClass(p.level_id)}`}>
+                  <p className="truncate font-medium" style={levelNameStyle(p.level_id)}>
                     {p.display_name || p.username}
                   </p>
                   <div className="flex items-center gap-2">
