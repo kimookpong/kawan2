@@ -16,17 +16,17 @@ export default async function BoardPage() {
     supabase.from("categories").select("id, name_th, slug, description").eq("is_active", true).order("sort_order"),
     supabase.from("threads")
       .select("id, title, category_id, reply_count, view_count, created_at, is_pinned, profiles(username, display_name), categories(name_th, slug)")
-      .eq("status", "published").order("created_at", { ascending: false }).limit(80),
+      .eq("status", "published").order("created_at", { ascending: false }).limit(400),
   ]);
 
-  // จัดกลุ่มตามหมวด (ปักหมุดขึ้นก่อน, สูงสุด 6 ต่อหมวด)
+  // จัดกลุ่มตามหมวด (ปักหมุดขึ้นก่อน, สูงสุด 20 ต่อหมวด)
   const byCat = new Map<number, any[]>();
   (recentThreads ?? [])
     .slice()
     .sort((a: any, b: any) => Number(b.is_pinned) - Number(a.is_pinned))
     .forEach((t: any) => {
       const arr = byCat.get(t.category_id) ?? [];
-      if (arr.length < 6) arr.push(t);
+      if (arr.length < 20) arr.push(t);
       byCat.set(t.category_id, arr);
     });
 
@@ -46,7 +46,7 @@ export default async function BoardPage() {
                 <Link href={`/board/${c.slug}`} className="font-semibold text-primary hover:underline">{c.name_th}</Link>
                 <Link href={`/board/${c.slug}`} className="text-xs text-primary hover:underline">ดูทั้งหมด →</Link>
               </div>
-              <div className="divide-y divide-outline-variant">
+              <div className="max-h-[30rem] divide-y divide-outline-variant overflow-y-auto">
                 {list.length > 0 ? (
                   list.map((t: any) => <ThreadListItem key={t.id} t={t} hideCategory />)
                 ) : (

@@ -20,8 +20,10 @@ import {
   Plus,
   Search,
   Crown,
+  UserRound,
 } from "lucide-react";
 import { Avatar } from "@/components/avatar";
+import { LevelBadge } from "@/components/user-badges";
 import { signout } from "@/app/auth/actions";
 
 type ProfileLite = {
@@ -55,6 +57,7 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -126,45 +129,77 @@ export function AppShell({
 
           <div className="ml-auto flex items-center gap-1">
             {user && profile ? (
-              <>
-                <Link
-                  href="/messages"
-                  className="rounded p-2 text-on-surface-variant hover:bg-surface-container hover:text-primary"
-                  title="ข้อความ"
+              <div className="relative">
+                <button
+                  onClick={() => setMenuOpen((v) => !v)}
+                  className="flex rounded-full ring-2 ring-transparent transition hover:ring-outline-variant"
+                  aria-label="เมนูผู้ใช้"
+                  aria-expanded={menuOpen}
                 >
-                  <MessageCircle className="h-5 w-5" />
-                </Link>
-                <Link
-                  href="/notifications"
-                  className="rounded p-2 text-on-surface-variant hover:bg-surface-container hover:text-primary"
-                  title="แจ้งเตือน"
-                >
-                  <Bell className="h-5 w-5" />
-                </Link>
-                <Link href={`/u/${profile.username}`} className="ml-1 rounded-full" title={profile.display_name || profile.username}>
-                  <Avatar src={profile.avatar_url} name={profile.display_name || profile.username} role={profile.role} size={34} />
-                </Link>
-                <form action={signout}>
-                  <button
-                    className="rounded p-2 text-on-surface-variant hover:bg-surface-container hover:text-primary"
-                    title="ออกจากระบบ"
-                  >
-                    <LogOut className="h-5 w-5" />
-                  </button>
-                </form>
-              </>
+                  <Avatar src={profile.avatar_url} name={profile.display_name || profile.username} role={profile.role} size={36} />
+                </button>
+
+                {menuOpen && (
+                  <>
+                    {/* backdrop ปิดเมนูเมื่อคลิกข้างนอก */}
+                    <button
+                      aria-hidden
+                      onClick={() => setMenuOpen(false)}
+                      className="fixed inset-0 z-40 cursor-default"
+                    />
+                    <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-xl border border-outline-variant bg-surface shadow-card">
+                      {/* ข้อมูลผู้ใช้ */}
+                      <Link
+                        href={`/u/${profile.username}`}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-3 border-b border-outline-variant p-3 hover:bg-surface-container-low"
+                      >
+                        <Avatar src={profile.avatar_url} name={profile.display_name || profile.username} role={profile.role} size={44} />
+                        <div className="min-w-0">
+                          <p className="truncate font-semibold text-on-surface">{profile.display_name || profile.username}</p>
+                          <p className="truncate text-xs text-on-surface-variant">@{profile.username}</p>
+                          <div className="mt-1 flex items-center gap-2">
+                            <LevelBadge levelId={profile.level_id} />
+                            <span className="text-[11px] text-on-surface-variant">
+                              {(profile.reputation ?? 0).toLocaleString("th-TH")} คะแนน
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+
+                      {/* เมนู */}
+                      <nav className="py-1 text-sm">
+                        {[
+                          { href: `/u/${profile.username}`, Icon: UserRound, label: "โปรไฟล์ของฉัน" },
+                          { href: "/messages", Icon: MessageCircle, label: "ข้อความ" },
+                          { href: "/notifications", Icon: Bell, label: "การแจ้งเตือน" },
+                          ...(profile.role === "admin" ? [{ href: "/admin", Icon: Shield, label: "แผงผู้ดูแล" }] : []),
+                          { href: "/membership", Icon: Crown, label: "สนับสนุนเรา" },
+                        ].map(({ href, Icon, label }) => (
+                          <Link
+                            key={href}
+                            href={href}
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 text-on-surface hover:bg-surface-container-low"
+                          >
+                            <Icon className="h-4 w-4 text-on-surface-variant" /> {label}
+                          </Link>
+                        ))}
+                      </nav>
+
+                      <form action={signout} className="border-t border-outline-variant">
+                        <button className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-error hover:bg-error-container">
+                          <LogOut className="h-4 w-4" /> ออกจากระบบ
+                        </button>
+                      </form>
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
-              <>
-                <Link href="/auth/login" className="btn-outline">
-                  เข้าสู่ระบบ
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="btn-accent hidden sm:inline-flex"
-                >
-                  สมัครสมาชิก
-                </Link>
-              </>
+              <Link href="/auth/login" className="btn-outline">
+                เข้าสู่ระบบ
+              </Link>
             )}
           </div>
         </div>

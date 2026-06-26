@@ -62,7 +62,7 @@ export default async function HomePage() {
       )
       .eq("status", "published")
       .order("created_at", { ascending: false })
-      .limit(60),
+      .limit(400),
     supabase
       .from("threads")
       .select(
@@ -102,7 +102,7 @@ export default async function HomePage() {
     .sort((a: any, b: any) => Number(b.is_pinned) - Number(a.is_pinned))
     .forEach((t: any) => {
       const arr = threadsByCat.get(t.category_id) ?? [];
-      if (arr.length < 5) arr.push(t);
+      if (arr.length < 20) arr.push(t);
       threadsByCat.set(t.category_id, arr);
     });
 
@@ -292,7 +292,7 @@ export default async function HomePage() {
                     ดูทั้งหมด →
                   </Link>
                 </div>
-                <div className="divide-y divide-outline-variant">
+                <div className="max-h-[30rem] divide-y divide-outline-variant overflow-y-auto">
                   {list.length > 0 ? (
                     list.map((t: any) => (
                       <ThreadListItem key={t.id} t={t} hideCategory />

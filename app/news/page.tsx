@@ -1,23 +1,37 @@
 import Link from "next/link";
-import { Plus, CalendarDays, Eye, MessageSquare } from "lucide-react";
+import { Plus, CalendarDays, Eye, MessageSquare, ChevronLeft, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { NEWS_FALLBACK_IMG } from "@/lib/constants";
 
 export const revalidate = 60;
+
+const PAGE_SIZE = 9;
 
 export const metadata = {
   title: "ข่าวสารภูมิภาค",
   description: "ข่าวสารและเรื่องเด่นของ 3 จังหวัดชายแดนใต้ — ปัตตานี นราธิวาส ยะลา",
 };
 
-export default async function NewsPage() {
+export default async function NewsPage({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
   const supabase = createClient();
-  const { data: news } = await supabase
+
+  const page = Math.max(1, Number(searchParams.page) || 1);
+  const from = (page - 1) * PAGE_SIZE;
+
+  const { data: news, count } = await supabase
     .from("news")
-    .select("id, title, slug, excerpt, cover_url, category, published_at, view_count, news_comments(count)")
+    .select("id, title, slug, excerpt, cover_url, category, published_at, view_count, news_comments(count)", { count: "exact" })
     .eq("status", "published")
     .order("published_at", { ascending: false })
-    .limit(30);
+    .range(from, from + PAGE_SIZE - 1);
+
+  const total = count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const pageHref = (p: number) => `/news${p > 1 ? `?page=${p}` : ""}`;
 
   const { data: { user } } = await supabase.auth.getUser();
   let canWrite = false;
@@ -76,6 +90,47 @@ export default async function NewsPage() {
           <p className="text-sm text-on-surface-variant">ยังไม่มีข่าวที่เผยแพร่</p>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <nav className="flex items-center justify-center gap-1.5 pt-2">
+          {page > 1 ? (
+            <Link href={pageHref(page - 1)} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant px-3 py-1.5 text-sm text-on-surface-variant hover:bg-surface-container-low">
+              <ChevronLeft className="h-4 w-4" /> ก่อนหน้า
+            </Link>
+          ) : (
+            <span className="inline-flex items-center gap-1 rounded-lg border border-outline-variant px-3 py-1.5 text-sm text-on-surface-variant opacity-40">
+              <ChevronLeft className="h-4 w-4" /> ก่อนหน้า
+            </span>
+          )}
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1)
+            .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 2)
+            .map((p, idx, arr) => (
+              <span key={p} className="flex items-center">
+                {idx > 0 && arr[idx - 1] !== p - 1 && (
+                  <span className="px-1 text-on-surface-variant">…</span>
+                )}
+                {p === page ? (
+                  <span className="grid h-9 min-w-9 place-items-center rounded-lg bg-primary px-2 text-sm font-bold text-on-primary">{p}</span>
+                ) : (
+                  <Link href={pageHref(p)} className="grid h-9 min-w-9 place-items-center rounded-lg border border-outline-variant px-2 text-sm text-on-surface-variant hover:bg-surface-container-low">
+                    {p}
+                  </Link>
+                )}
+              </span>
+            ))}
+
+          {page < totalPages ? (
+            <Link href={pageHref(page + 1)} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant px-3 py-1.5 text-sm text-on-surface-variant hover:bg-surface-container-low">
+              ถัดไป <ChevronRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <span className="inline-flex items-center gap-1 rounded-lg border border-outline-variant px-3 py-1.5 text-sm text-on-surface-variant opacity-40">
+              ถัดไป <ChevronRight className="h-4 w-4" />
+            </span>
+          )}
+        </nav>
+      )}
     </div>
   );
 }
