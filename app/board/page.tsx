@@ -15,7 +15,7 @@ export default async function BoardPage() {
   const [{ data: categories }, { data: recentThreads }] = await Promise.all([
     supabase.from("categories").select("id, name_th, slug, description").eq("is_active", true).order("sort_order"),
     supabase.from("threads")
-      .select("id, title, category_id, reply_count, view_count, created_at, is_pinned, profiles(username, display_name), categories(name_th, slug)")
+      .select("id, title, category_id, reply_count, view_count, created_at, is_pinned, profiles(username, display_name, level_id), categories(name_th, slug)")
       .eq("status", "published").order("created_at", { ascending: false }).limit(400),
   ]);
 

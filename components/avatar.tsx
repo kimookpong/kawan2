@@ -1,5 +1,11 @@
 /** ไอคอน shield-user (สไตล์ lucide) — ใช้ทั้ง admin/editor */
-function ShieldUser({ size = 16, className = "" }: { size?: number; className?: string }) {
+function ShieldUser({
+  size = 16,
+  className = "",
+}: {
+  size?: number;
+  className?: string;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -44,8 +50,8 @@ export function Avatar({
     role === "admin"
       ? "ring-[3px] ring-amber-400"
       : role === "editor"
-      ? "ring-[3px] ring-[#8a5a2b]"
-      : "";
+        ? "ring-[3px] ring-[#8a5a2b]"
+        : "";
 
   return (
     <span
@@ -58,7 +64,7 @@ export function Avatar({
       >
         {src ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt={name ?? ""} className="h-full w-full object-cover" />
+          <img src={src} alt={name ?? ""} className="h-full w-full" />
         ) : (
           initial
         )}

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { LevelBadge } from "@/components/user-badges";
 
 async function saveLevel(formData: FormData) {
   "use server";
@@ -55,6 +56,7 @@ export default async function AdminLevelsPage({
               <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-sm font-bold text-on-primary">
                 {l.id}
               </span>
+              <LevelBadge levelId={l.id} />
             </div>
             <Field label="ชื่อ (ไทย)" name="name_th" defaultValue={l.name_th} className="min-w-[140px] flex-1" />
             <Field label="ชื่อ (อังกฤษ)" name="name_en" defaultValue={l.name_en} className="min-w-[120px] flex-1" />

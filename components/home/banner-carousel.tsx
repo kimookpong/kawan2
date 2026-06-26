@@ -68,7 +68,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
                   <img
                     src={b.image}
                     alt=""
-                    className="absolute inset-0 h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full"
                   />
                 )}
                 <div className={`absolute inset-0 ${t.overlay}`} />

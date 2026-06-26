@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Flame, Pin, MessageCircle, Eye } from "lucide-react";
+import { levelNameClass } from "@/lib/constants";
 
 type Data = {
   id: number;
@@ -8,7 +9,7 @@ type Data = {
   view_count: number;
   created_at: string;
   is_pinned?: boolean;
-  profiles?: { username: string; display_name: string | null } | null;
+  profiles?: { username: string; display_name: string | null; level_id?: number } | null;
   categories?: { name_th: string; slug: string } | null;
 };
 
@@ -59,7 +60,7 @@ export function ThreadListItem({
           </p>
         </div>
         <p className="truncate text-xs text-on-surface-variant">
-          {author} · {when} น.
+          <span className={`font-medium ${levelNameClass(t.profiles?.level_id)}`}>{author}</span> · {when} น.
         </p>
       </div>
 

@@ -12,7 +12,7 @@ import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
 import { BannerCarousel, type Banner } from "@/components/home/banner-carousel";
 import { ThreadListItem } from "@/components/board/thread-list-item";
-import { NEWS_FALLBACK_IMG } from "@/lib/constants";
+import { NEWS_FALLBACK_IMG, levelNameClass } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
@@ -182,7 +182,7 @@ export default async function HomePage() {
               <img
                 src={hero.cover_url || NEWS_FALLBACK_IMG}
                 alt=""
-                className="h-full w-full object-cover opacity-60 transition duration-500 group-hover:scale-105"
+                className="h-full w-full opacity-60 transition duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-primary via-primary/50 to-transparent p-6">
                 {hero.category && (
@@ -326,7 +326,7 @@ function NewsMini({ n }: { n: any }) {
         <img
           src={n.cover_url || NEWS_FALLBACK_IMG}
           alt=""
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          className="h-full w-full transition duration-300 group-hover:scale-105"
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col justify-start py-0.5">
@@ -368,7 +368,7 @@ function NewsCardSmall({ n }: { n: any }) {
         <img
           src={n.cover_url || NEWS_FALLBACK_IMG}
           alt=""
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          className="h-full w-full transition duration-300 group-hover:scale-105"
         />
       </div>
       <div className="p-3">
@@ -501,7 +501,7 @@ function PopularRow({ t }: { t: any }) {
           {t.profiles ? (
             <Link
               href={`/u/${t.profiles.username}`}
-              className="font-medium hover:text-primary hover:underline"
+              className={`font-medium hover:underline ${levelNameClass(t.profiles.level_id)}`}
             >
               {author}
             </Link>
@@ -557,7 +557,9 @@ function MemberRow({ m, rank }: { m: any; rank: number }) {
         size={32}
       />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">
+        <p
+          className={`truncate text-sm font-medium ${levelNameClass(m.level_id)}`}
+        >
           {m.display_name || m.username}
         </p>
         <LevelBadge levelId={m.level_id} />
