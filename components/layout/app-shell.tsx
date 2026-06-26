@@ -100,7 +100,7 @@ export function AppShell({
     <div className="min-h-screen">
       {/* ===== Top bar ===== */}
       <header className="sticky top-0 z-40 border-b border-outline-variant bg-surface-container-lowest">
-        <div className="mx-auto flex max-w-container w-full items-center gap-3 px-4 py-3">
+        <div className="mx-auto flex max-w-container w-full items-center gap-3 p-2">
           {/* hamburger (mobile) */}
           <button
             onClick={() => setOpen(true)}
