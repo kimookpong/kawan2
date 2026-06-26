@@ -2,7 +2,15 @@ import Link from "next/link";
 import { cache } from "react";
 import { Avatar } from "@/components/avatar";
 import { createClient } from "@/lib/supabase/server";
-import { Crown, Handshake, Shield, Timer, Check } from "lucide-react";
+import {
+  Crown,
+  Handshake,
+  Shield,
+  Timer,
+  Check,
+  Star,
+  Clock,
+} from "lucide-react";
 
 export type Author = {
   username: string;
@@ -28,16 +36,23 @@ const getCachedLevels = cache(async () => {
 });
 
 /** การ์ดผู้เขียน — คอลัมน์ซ้ายของกระทู้/ความเห็น (สไตล์ webboard พรีเมียม) */
-export async function AuthorCard({ author, compact = false }: { author: Author | null; compact?: boolean }) {
+export async function AuthorCard({
+  author,
+  compact = false,
+}: {
+  author: Author | null;
+  compact?: boolean;
+}) {
   if (!author) return null;
   const name = author.display_name || author.username;
 
   // ดึงข้อมูลระดับทั้งหมดและคำนวณความก้าวหน้า
   const levels = await getCachedLevels();
   const currentRep = author.reputation ?? 0;
-  
-  const currentLevel = levels.find(l => l.id === author.level_id) || levels[0];
-  const nextLevel = levels.find(l => l.min_points > currentRep);
+
+  const currentLevel =
+    levels.find((l) => l.id === author.level_id) || levels[0];
+  const nextLevel = levels.find((l) => l.min_points > currentRep);
 
   let progress = 100;
   let remainingPercentage = 0;
@@ -47,14 +62,18 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
     const diff = nextMin - currentMin;
     if (diff > 0) {
       const currentProgress = currentRep - currentMin;
-      progress = Math.max(0, Math.min(100, Math.round((currentProgress / diff) * 100)));
+      progress = Math.max(
+        0,
+        Math.min(100, Math.round((currentProgress / diff) * 100)),
+      );
       remainingPercentage = 100 - progress;
     }
   }
 
   const levelName = currentLevel ? currentLevel.name_th : "รายัต";
   const levelId = author.level_id;
-  const levelColor = (currentLevel as { color?: string } | undefined)?.color || "#475569";
+  const levelColor =
+    (currentLevel as { color?: string } | undefined)?.color || "#475569";
   const levelBadgeStyle = {
     backgroundColor: `${levelColor}1A`,
     color: levelColor,
@@ -70,9 +89,8 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
   let progressColor = "bg-slate-500 dark:bg-slate-400";
   let nameClass = "text-on-surface font-semibold";
   let leftStripeClass = "border-l-[5px] border-l-emerald-600";
-  
-  // โครงสร้างเส้นขอบล่างแบบกำหนดสีเอง (Custom Bottom Border Stripe)
 
+  // โครงสร้างเส้นขอบล่างแบบกำหนดสีเอง (Custom Bottom Border Stripe)
 
   if (levelId >= 16) {
     cardBg = "bg-[#fef9eb] dark:bg-amber-950/10";
@@ -83,11 +101,12 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
       </div>
     );
     avatarBorder = "border-amber-500";
-    badgeIcon = <Timer className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />;
+    badgeIcon = (
+      <Timer className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
+    );
     progressColor = "bg-purple-500";
     nameClass = "text-amber-600 dark:text-amber-500 font-bold";
     leftStripeClass = "border-l-[5px] border-l-amber-500";
-
   } else if (levelId >= 6) {
     cardBg = "bg-[#f0fbf6] dark:bg-emerald-950/10";
     headerBg = "bg-[#dbf3e5] dark:bg-emerald-950/20";
@@ -97,16 +116,18 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
       </div>
     );
     avatarBorder = "border-emerald-600 dark:border-emerald-500";
-    badgeIcon = <Timer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />;
+    badgeIcon = (
+      <Timer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+    );
     progressColor = "bg-emerald-500";
     nameClass = "text-on-surface font-semibold";
     leftStripeClass = "border-l-[5px] border-l-emerald-500";
-
   }
 
   // กำหนดสีของข้อความและป้าย Role
   let roleColorClass = "text-emerald-600 dark:text-emerald-500 font-bold";
-  let roleBadgeClass = "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300";
+  let roleBadgeClass =
+    "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300";
 
   // กำหนดขอบซ้ายและกรอบรูปตามระดับสิทธิ์ (Role) หากมีบทบาทพิเศษ หากเป็นผู้ใช้ทั่วไปให้ยึดตามระดับ Level
   if (author.role === "admin") {
@@ -140,7 +161,9 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
   function formatStatNumber(num: number): string {
     if (num >= 1000) {
       const formatted = (num / 1000).toFixed(1);
-      return formatted.endsWith(".0") ? `${Math.floor(num / 1000)}k` : `${formatted}k`;
+      return formatted.endsWith(".0")
+        ? `${Math.floor(num / 1000)}k`
+        : `${formatted}k`;
     }
     return num.toString();
   }
@@ -161,37 +184,50 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
 
   return (
     <>
-      {/* 1) แสดงผลบน Mobile (ดีไซน์แบบแนวนอน กระชับพื้นที่) */}
-      <div className={`sm:hidden flex items-center gap-3 w-full pb-3 border-b border-outline-variant/40 ${cardBg}`}>
-        <div className={`relative rounded-full p-[3px] border-2 flex items-center justify-center shrink-0 aspect-square ${avatarBorder} w-[58px] h-[58px]`}>
-          <Avatar src={author.avatar_url} name={name} size={48} />
+      {/* 1) แสดงผลบน Mobile (ดีไซน์การ์ดแนวนอนพร้อมแถบสีตามระดับ) */}
+      <div
+        className={`sm:hidden flex items-center gap-3 w-full p-2.5 rounded-t-lg border-b border-outline-variant/40 ${cardBg}`}
+      >
+        <div
+          className={`relative rounded-full p-[2px] border-2 flex items-center justify-center shrink-0 aspect-square ${avatarBorder} w-[52px] h-[52px]`}
+        >
+          <Avatar src={author.avatar_url} name={name} size={44} />
+          <div
+            className={`absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full ${checkBadgeBg} text-white ring-2 ring-surface`}
+          >
+            <Check className="h-2.5 w-2.5 stroke-[3]" />
+          </div>
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <Link href={`/u/${author.username}`} className={`hover:underline truncate text-sm ${nameClass}`}>
+            <Link
+              href={`/u/${author.username}`}
+              className={`hover:underline truncate text-sm ${nameClass}`}
+            >
               {name}
             </Link>
-            <div className={`flex h-3.5 w-3.5 items-center justify-center rounded-full ${checkBadgeBg} text-white p-0.5 shrink-0`}>
-              <Check className="h-2.5 w-2.5 stroke-[3]" />
-            </div>
             {author.role && author.role !== "member" && (
-              <span className={`ml-1 text-[8px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0 ${roleBadgeClass}`}>
+              <span
+                className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0 ${roleBadgeClass}`}
+              >
                 {author.role}
               </span>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+          <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
             <span
-              className="text-[10px] font-medium px-2 py-0.5 rounded-full border"
+              className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full border"
               style={levelBadgeStyle}
             >
               {levelName} · LV {author.level_id}
             </span>
-            <span className="text-[10px] text-on-surface-variant font-medium">
-              ชื่อเสียง {formatReputation(currentRep)}
+            <span className="inline-flex items-center gap-1 text-[10px] text-on-surface-variant font-medium">
+              <Star className="h-3 w-3" />
+              {formatReputation(currentRep)}
             </span>
-            <span className="text-[10px] text-on-surface-variant/75 font-medium">
-              · {diffDays} วัน
+            <span className="inline-flex items-center gap-1 text-[10px] text-on-surface-variant/75 font-medium">
+              <Clock className="h-3 w-3" />
+              {diffDays} วัน
             </span>
           </div>
         </div>
@@ -204,14 +240,24 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
         } ${cardBg} ${leftStripeClass}`}
       >
         {/* หัวการ์ด */}
-        <div className={`flex items-center justify-between px-3 py-2 border-b border-outline-variant/40 ${headerBg}`}>
+        <div
+          className={`flex items-center justify-between px-3 py-2 border-b border-outline-variant/40 ${headerBg}`}
+        >
           <div className="flex items-center gap-1">
             {headerIcon}
-            <span className={`text-[9px] font-extrabold tracking-wider uppercase ${roleColorClass}`}>
-              {author.role === "admin" ? "ADMIN" : author.role === "editor" ? "EDITOR" : "MEMBER"}
+            <span
+              className={`text-[9px] font-extrabold tracking-wider uppercase ${roleColorClass}`}
+            >
+              {author.role === "admin"
+                ? "ADMIN"
+                : author.role === "editor"
+                  ? "EDITOR"
+                  : "MEMBER"}
             </span>
           </div>
-          <div className={`flex h-4 w-4 items-center justify-center rounded-full ${checkBadgeBg} text-white p-0.5 shadow-sm`}>
+          <div
+            className={`flex h-4 w-4 items-center justify-center rounded-full ${checkBadgeBg} text-white p-0.5 shadow-sm`}
+          >
             <Check className="h-2.5 w-2.5 stroke-[3]" />
           </div>
         </div>
@@ -219,10 +265,16 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
         {/* เนื้อหาการ์ดส่วนกลาง */}
         <div className="flex-1 flex flex-col items-center p-3">
           {/* รูปอวาตาร์ขอบพรีเมียม */}
-          <div className={`relative rounded-full p-[3px] border-2 mb-3 flex items-center justify-center shrink-0 aspect-square ${avatarBorder} ${
-            compact ? "w-[74px] h-[74px]" : "w-[86px] h-[86px]"
-          }`}>
-            <Avatar src={author.avatar_url} name={name} size={compact ? 64 : 76} />
+          <div
+            className={`relative rounded-full p-[3px] border-2 mb-3 flex items-center justify-center shrink-0 aspect-square ${avatarBorder} ${
+              compact ? "w-[74px] h-[74px]" : "w-[86px] h-[86px]"
+            }`}
+          >
+            <Avatar
+              src={author.avatar_url}
+              name={name}
+              size={compact ? 64 : 76}
+            />
           </div>
 
           {/* ชื่อสมาชิก */}
@@ -239,13 +291,18 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
             style={levelBadgeStyle}
           >
             {badgeIcon}
-            <span>{levelName} · LV {author.level_id}</span>
+            <span>
+              {levelName} · LV {author.level_id}
+            </span>
           </div>
 
           {/* หลอดเก็บแต้มความก้าวหน้า */}
           <div className="mt-3.5 w-full">
             <div className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div className={`h-full transition-all duration-500 ${progressColor}`} style={{ width: `${progress}%` }}></div>
+              <div
+                className={`h-full transition-all duration-500 ${progressColor}`}
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
             {nextLevel ? (
               <p className="mt-1.5 text-[10px] text-on-surface-variant/80 font-medium text-center">
@@ -264,16 +321,28 @@ export async function AuthorCard({ author, compact = false }: { author: Author |
           {/* สถิติตัวเลข 3 ช่อง */}
           <div className="grid grid-cols-3 w-full text-center divide-x divide-outline-variant/60">
             <div className="px-0.5">
-              <p className="text-[13px] font-bold text-on-surface tracking-tight leading-tight">{formatStatNumber(totalPosts)}</p>
-              <p className="text-[9px] text-on-surface-variant/80 font-medium mt-0.5">โพสต์</p>
+              <p className="text-[13px] font-bold text-on-surface tracking-tight leading-tight">
+                {formatStatNumber(totalPosts)}
+              </p>
+              <p className="text-[9px] text-on-surface-variant/80 font-medium mt-0.5">
+                โพสต์
+              </p>
             </div>
             <div className="px-0.5">
-              <p className="text-[13px] font-bold text-on-surface tracking-tight leading-tight">{formatReputation(currentRep)}</p>
-              <p className="text-[9px] text-on-surface-variant/80 font-medium mt-0.5">ชื่อเสียง</p>
+              <p className="text-[13px] font-bold text-on-surface tracking-tight leading-tight">
+                {formatReputation(currentRep)}
+              </p>
+              <p className="text-[9px] text-on-surface-variant/80 font-medium mt-0.5">
+                ชื่อเสียง
+              </p>
             </div>
             <div className="px-0.5">
-              <p className="text-[13px] font-bold text-on-surface tracking-tight leading-tight">{diffDays} วัน</p>
-              <p className="text-[9px] text-on-surface-variant/80 font-medium mt-0.5">อายุ</p>
+              <p className="text-[13px] font-bold text-on-surface tracking-tight leading-tight">
+                {diffDays} วัน
+              </p>
+              <p className="text-[9px] text-on-surface-variant/80 font-medium mt-0.5">
+                อายุ
+              </p>
             </div>
           </div>
 

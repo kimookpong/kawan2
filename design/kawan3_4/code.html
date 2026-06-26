@@ -1,472 +1,938 @@
-<!DOCTYPE html>
+<!doctype html>
 
-<html class="scroll-smooth" lang="th"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>kawan3 | เว็บบอร์ดชุมชนชายแดนใต้</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="scroll-smooth" lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>kawan3 | เว็บบอร์ดชุมชนชายแดนใต้</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
-            "colors": {
-                    "surface-variant": "#e2e2e2",
-                    "on-tertiary": "#ffffff",
-                    "surface-container-low": "#f3f3f4",
-                    "primary-fixed": "#b0f0d6",
-                    "on-tertiary-fixed-variant": "#763300",
-                    "on-primary-fixed": "#002117",
-                    "inverse-primary": "#95d3ba",
-                    "outline-variant": "#bfc9c3",
-                    "tertiary-container": "#733100",
-                    "primary": "#003527",
-                    "outline": "#707974",
-                    "on-primary": "#ffffff",
-                    "primary-container": "#064e3b",
-                    "surface-dim": "#dadada",
-                    "on-secondary-fixed": "#191c1e",
-                    "on-secondary-fixed-variant": "#444749",
-                    "tertiary-fixed-dim": "#ffb68e",
-                    "tertiary": "#502000",
-                    "surface-container-highest": "#e2e2e2",
-                    "on-tertiary-fixed": "#331200",
-                    "surface-tint": "#2b6954",
-                    "secondary-fixed": "#e1e2e4",
-                    "primary-fixed-dim": "#95d3ba",
-                    "on-secondary-container": "#606365",
-                    "surface": "#f9f9f9",
-                    "surface-container": "#eeeeee",
-                    "on-primary-fixed-variant": "#0b513d",
-                    "surface-container-high": "#e8e8e8",
-                    "on-background": "#1a1c1c",
-                    "secondary-fixed-dim": "#c5c6c8",
-                    "error-container": "#ffdad6",
-                    "secondary": "#5c5f60",
-                    "inverse-on-surface": "#f0f1f1",
-                    "background": "#f9f9f9",
-                    "on-secondary": "#ffffff",
-                    "on-primary-container": "#80bea6",
-                    "surface-container-lowest": "#ffffff",
-                    "surface-bright": "#f9f9f9",
-                    "on-error-container": "#93000a",
-                    "on-error": "#ffffff",
-                    "secondary-container": "#dee0e2",
-                    "on-tertiary-container": "#ff985a",
-                    "tertiary-fixed": "#ffdbca",
-                    "error": "#ba1a1a",
-                    "on-surface": "#1a1c1c",
-                    "inverse-surface": "#2f3131",
-                    "on-surface-variant": "#404944"
+            colors: {
+              "surface-variant": "#e2e2e2",
+              "on-tertiary": "#ffffff",
+              "surface-container-low": "#f3f3f4",
+              "primary-fixed": "#b0f0d6",
+              "on-tertiary-fixed-variant": "#763300",
+              "on-primary-fixed": "#002117",
+              "inverse-primary": "#95d3ba",
+              "outline-variant": "#bfc9c3",
+              "tertiary-container": "#733100",
+              primary: "#003527",
+              outline: "#707974",
+              "on-primary": "#ffffff",
+              "primary-container": "#064e3b",
+              "surface-dim": "#dadada",
+              "on-secondary-fixed": "#191c1e",
+              "on-secondary-fixed-variant": "#444749",
+              "tertiary-fixed-dim": "#ffb68e",
+              tertiary: "#502000",
+              "surface-container-highest": "#e2e2e2",
+              "on-tertiary-fixed": "#331200",
+              "surface-tint": "#2b6954",
+              "secondary-fixed": "#e1e2e4",
+              "primary-fixed-dim": "#95d3ba",
+              "on-secondary-container": "#606365",
+              surface: "#f9f9f9",
+              "surface-container": "#eeeeee",
+              "on-primary-fixed-variant": "#0b513d",
+              "surface-container-high": "#e8e8e8",
+              "on-background": "#1a1c1c",
+              "secondary-fixed-dim": "#c5c6c8",
+              "error-container": "#ffdad6",
+              secondary: "#5c5f60",
+              "inverse-on-surface": "#f0f1f1",
+              background: "#f9f9f9",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#80bea6",
+              "surface-container-lowest": "#ffffff",
+              "surface-bright": "#f9f9f9",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "secondary-container": "#dee0e2",
+              "on-tertiary-container": "#ff985a",
+              "tertiary-fixed": "#ffdbca",
+              error: "#ba1a1a",
+              "on-surface": "#1a1c1c",
+              "inverse-surface": "#2f3131",
+              "on-surface-variant": "#404944",
             },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
             },
-            "spacing": {
-                    "stack-xs": "0.25rem",
-                    "stack-sm": "0.5rem",
-                    "stack-lg": "2rem",
-                    "stack-md": "1rem",
-                    "margin-mobile": "1rem",
-                    "gutter": "1.5rem",
-                    "container-max": "1280px"
+            spacing: {
+              "stack-xs": "0.25rem",
+              "stack-sm": "0.5rem",
+              "stack-lg": "2rem",
+              "stack-md": "1rem",
+              "margin-mobile": "1rem",
+              gutter: "1.5rem",
+              "container-max": "1280px",
             },
-            "fontFamily": {
-                    "body-lg": ["Be Vietnam Pro"],
-                    "label-bold": ["Be Vietnam Pro"],
-                    "headline-md": ["Be Vietnam Pro"],
-                    "headline-lg": ["Be Vietnam Pro"],
-                    "body-md": ["Be Vietnam Pro"],
-                    "headline-lg-mobile": ["Be Vietnam Pro"],
-                    "body-sm": ["Be Vietnam Pro"]
+            fontFamily: {
+              "body-lg": ["Be Vietnam Pro"],
+              "label-bold": ["Be Vietnam Pro"],
+              "headline-md": ["Be Vietnam Pro"],
+              "headline-lg": ["Be Vietnam Pro"],
+              "body-md": ["Be Vietnam Pro"],
+              "headline-lg-mobile": ["Be Vietnam Pro"],
+              "body-sm": ["Be Vietnam Pro"],
             },
-            "fontSize": {
-                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "label-bold": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
-                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                    "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
-                    "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}]
-            }
+            fontSize: {
+              "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "label-bold": ["12px", { lineHeight: "16px", fontWeight: "700" }],
+              "headline-md": [
+                "20px",
+                { lineHeight: "28px", fontWeight: "600" },
+              ],
+              "headline-lg": [
+                "30px",
+                {
+                  lineHeight: "38px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "700",
+                },
+              ],
+              "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+              "headline-lg-mobile": [
+                "24px",
+                { lineHeight: "32px", fontWeight: "700" },
+              ],
+              "body-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }],
+            },
           },
         },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
       }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body { font-family: 'Be Vietnam Pro', 'Sarabun', sans-serif; }
-        .forum-card-hover:hover {
-            box-shadow: 0px 4px 6px rgba(0,0,0,0.05);
-            border-color: #003527;
-        }
+      body {
+        font-family: "Be Vietnam Pro", "Sarabun", sans-serif;
+      }
+      .forum-card-hover:hover {
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
+        border-color: #003527;
+      }
     </style>
-</head>
-<body class="bg-surface text-on-surface">
-<!-- TopNavBar -->
-<header class="sticky top-0 z-50 flex justify-between items-center px-gutter py-2 w-full max-w-container-max mx-auto bg-surface border-b border-outline-variant">
-<div class="flex items-center gap-stack-md">
-<span class="text-headline-md font-black text-primary">kawan3</span>
-<div class="hidden md:flex items-center bg-surface-container-low px-stack-md py-1 rounded-lg">
-<span class="material-symbols-outlined text-outline text-[20px]">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-body-md w-48" placeholder="ค้นหากระทู้..." type="text"/>
-</div>
-</div>
-<nav class="hidden md:flex gap-stack-md items-center">
-<a class="text-on-surface-variant hover:text-primary font-body-md transition-colors" href="#">หน้าแรก</a>
-<a class="text-on-surface-variant hover:text-primary font-body-md transition-colors" href="#">ข่าวสาร</a>
-<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md" href="#">กระดานสนทนา</a>
-<a class="text-on-surface-variant hover:text-primary font-body-md transition-colors" href="#">กิจกรรม</a>
-<a class="text-on-surface-variant hover:text-primary font-body-md transition-colors" href="#">ตลาดซื้อขาย</a>
-</nav>
-<div class="flex items-center gap-stack-md">
-<button class="hidden lg:flex items-center gap-1 bg-tertiary text-on-tertiary px-stack-md py-2 font-label-bold rounded-lg hover:opacity-90 transition-all">
-<span class="material-symbols-outlined text-[18px]">add_circle</span>
-                สร้างกระทู้
+  </head>
+  <body class="bg-surface text-on-surface">
+    <!-- TopNavBar -->
+    <header
+      class="sticky top-0 z-50 flex justify-between items-center px-gutter py-2 w-full max-w-container-max mx-auto bg-surface border-b border-outline-variant"
+    >
+      <div class="flex items-center gap-stack-md">
+        <span class="text-headline-md font-black text-primary">kawan3</span>
+        <div
+          class="hidden md:flex items-center bg-surface-container-low px-stack-md py-1 rounded-lg"
+        >
+          <span class="material-symbols-outlined text-outline text-[20px]"
+            >search</span
+          >
+          <input
+            class="bg-transparent border-none focus:ring-0 text-body-md w-48"
+            placeholder="ค้นหากระทู้..."
+            type="text"
+          />
+        </div>
+      </div>
+      <nav class="hidden md:flex gap-stack-md items-center">
+        <a
+          class="text-on-surface-variant hover:text-primary font-body-md transition-colors"
+          href="#"
+          >หน้าแรก</a
+        >
+        <a
+          class="text-on-surface-variant hover:text-primary font-body-md transition-colors"
+          href="#"
+          >ข่าวสาร</a
+        >
+        <a
+          class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md"
+          href="#"
+          >กระดานสนทนา</a
+        >
+        <a
+          class="text-on-surface-variant hover:text-primary font-body-md transition-colors"
+          href="#"
+          >กิจกรรม</a
+        >
+        <a
+          class="text-on-surface-variant hover:text-primary font-body-md transition-colors"
+          href="#"
+          >ตลาดซื้อขาย</a
+        >
+      </nav>
+      <div class="flex items-center gap-stack-md">
+        <button
+          class="hidden lg:flex items-center gap-1 bg-tertiary text-on-tertiary px-stack-md py-2 font-label-bold rounded-lg hover:opacity-90 transition-all"
+        >
+          <span class="material-symbols-outlined text-[18px]">add_circle</span>
+          สร้างกระทู้
+        </button>
+        <div class="flex items-center gap-stack-sm text-on-surface-variant">
+          <span
+            class="material-symbols-outlined cursor-pointer hover:text-primary"
+            >notifications</span
+          >
+          <span
+            class="material-symbols-outlined cursor-pointer hover:text-primary"
+            >mail</span
+          >
+          <span
+            class="material-symbols-outlined cursor-pointer hover:text-primary"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >account_circle</span
+          >
+        </div>
+      </div>
+    </header>
+    <div class="max-w-container-max mx-auto flex">
+      <!-- SideNav (Regional Directory) -->
+      <aside
+        class="hidden lg:flex flex-col gap-stack-md p-margin-mobile w-64 h-[calc(100vh-64px)] sticky top-16 bg-surface-container-low border-r border-outline-variant overflow-y-auto"
+      >
+        <div class="mb-stack-lg">
+          <p
+            class="text-label-bold text-primary mb-stack-xs uppercase tracking-wider"
+          >
+            จังหวัด
+          </p>
+          <div class="flex flex-col gap-1">
+            <a
+              class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[18px]"
+                >location_on</span
+              >
+              <span class="text-body-md">ปัตตานี</span>
+            </a>
+            <a
+              class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[18px]"
+                >location_on</span
+              >
+              <span class="text-body-md">ยะลา</span>
+            </a>
+            <a
+              class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[18px]"
+                >location_on</span
+              >
+              <span class="text-body-md">นราธิวาส</span>
+            </a>
+          </div>
+        </div>
+        <div class="mb-stack-lg">
+          <p
+            class="text-label-bold text-primary mb-stack-xs uppercase tracking-wider"
+          >
+            ทำเนียบท้องถิ่น
+          </p>
+          <div class="flex flex-col gap-1">
+            <a
+              class="flex items-center gap-2 px-stack-md py-2 bg-primary-container text-on-primary-container font-bold rounded-lg"
+              href="#"
+            >
+              <span
+                class="material-symbols-outlined text-[18px]"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >trending_up</span
+              >
+              <span class="text-body-md">กำลังเป็นกระแส</span>
+            </a>
+            <a
+              class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[18px]"
+                >query_stats</span
+              >
+              <span class="text-body-md">สถิติ</span>
+            </a>
+            <a
+              class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[18px]"
+                >settings</span
+              >
+              <span class="text-body-md">ตั้งค่า</span>
+            </a>
+          </div>
+        </div>
+        <div class="mt-auto pt-stack-lg border-t border-outline-variant">
+          <button
+            class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-bold hover:bg-primary-container transition-colors mb-stack-md"
+          >
+            เข้าร่วมชุมชน
+          </button>
+          <div class="flex flex-col gap-1">
+            <a
+              class="flex items-center gap-2 px-stack-md py-1 text-on-surface-variant text-body-sm hover:underline"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[16px]">help</span>
+              ความช่วยเหลือ
+            </a>
+            <a
+              class="flex items-center gap-2 px-stack-md py-1 text-on-surface-variant text-body-sm hover:underline"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[16px]"
+                >security</span
+              >
+              ความเป็นส่วนตัว
+            </a>
+          </div>
+        </div>
+      </aside>
+      <!-- Main Content Area -->
+      <main class="flex-1 p-gutter bg-background min-h-screen">
+        <!-- Category Chips -->
+        <section class="mb-stack-lg">
+          <div class="flex items-center justify-between mb-stack-md">
+            <h1 class="text-headline-lg font-headline-lg text-primary">
+              กระดานสนทนา
+            </h1>
+            <div class="flex gap-stack-sm">
+              <button
+                class="p-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors"
+              >
+                <span class="material-symbols-outlined">filter_list</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-stack-sm">
+            <button
+              class="px-stack-md py-2 bg-primary text-on-primary rounded-full font-label-bold text-body-sm"
+            >
+              ทุกหัวข้อ
             </button>
-<div class="flex items-center gap-stack-sm text-on-surface-variant">
-<span class="material-symbols-outlined cursor-pointer hover:text-primary">notifications</span>
-<span class="material-symbols-outlined cursor-pointer hover:text-primary">mail</span>
-<span class="material-symbols-outlined cursor-pointer hover:text-primary" style="font-variation-settings: 'FILL' 1;">account_circle</span>
-</div>
-</div>
-</header>
-<div class="max-w-container-max mx-auto flex">
-<!-- SideNav (Regional Directory) -->
-<aside class="hidden lg:flex flex-col gap-stack-md p-margin-mobile w-64 h-[calc(100vh-64px)] sticky top-16 bg-surface-container-low border-r border-outline-variant overflow-y-auto">
-<div class="mb-stack-lg">
-<p class="text-label-bold text-primary mb-stack-xs uppercase tracking-wider">จังหวัด</p>
-<div class="flex flex-col gap-1">
-<a class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
-<span class="material-symbols-outlined text-[18px]">location_on</span>
-<span class="text-body-md">ปัตตานี</span>
-</a>
-<a class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
-<span class="material-symbols-outlined text-[18px]">location_on</span>
-<span class="text-body-md">ยะลา</span>
-</a>
-<a class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
-<span class="material-symbols-outlined text-[18px]">location_on</span>
-<span class="text-body-md">นราธิวาส</span>
-</a>
-</div>
-</div>
-<div class="mb-stack-lg">
-<p class="text-label-bold text-primary mb-stack-xs uppercase tracking-wider">ทำเนียบท้องถิ่น</p>
-<div class="flex flex-col gap-1">
-<a class="flex items-center gap-2 px-stack-md py-2 bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
-<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
-<span class="text-body-md">กำลังเป็นกระแส</span>
-</a>
-<a class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
-<span class="material-symbols-outlined text-[18px]">query_stats</span>
-<span class="text-body-md">สถิติ</span>
-</a>
-<a class="flex items-center gap-2 px-stack-md py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
-<span class="material-symbols-outlined text-[18px]">settings</span>
-<span class="text-body-md">ตั้งค่า</span>
-</a>
-</div>
-</div>
-<div class="mt-auto pt-stack-lg border-t border-outline-variant">
-<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-bold hover:bg-primary-container transition-colors mb-stack-md">เข้าร่วมชุมชน</button>
-<div class="flex flex-col gap-1">
-<a class="flex items-center gap-2 px-stack-md py-1 text-on-surface-variant text-body-sm hover:underline" href="#">
-<span class="material-symbols-outlined text-[16px]">help</span> ความช่วยเหลือ
-                    </a>
-<a class="flex items-center gap-2 px-stack-md py-1 text-on-surface-variant text-body-sm hover:underline" href="#">
-<span class="material-symbols-outlined text-[16px]">security</span> ความเป็นส่วนตัว
-                    </a>
-</div>
-</div>
-</aside>
-<!-- Main Content Area -->
-<main class="flex-1 p-gutter bg-background min-h-screen">
-<!-- Category Chips -->
-<section class="mb-stack-lg">
-<div class="flex items-center justify-between mb-stack-md">
-<h1 class="text-headline-lg font-headline-lg text-primary">กระดานสนทนา</h1>
-<div class="flex gap-stack-sm">
-<button class="p-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined">filter_list</span>
-</button>
-</div>
-</div>
-<div class="flex flex-wrap gap-stack-sm">
-<button class="px-stack-md py-2 bg-primary text-on-primary rounded-full font-label-bold text-body-sm">ทุกหัวข้อ</button>
-<button class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors">ไลฟ์สไตล์</button>
-<button class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors">อาหารและเครื่องดื่ม</button>
-<button class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors">งานและธุรกิจ</button>
-<button class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors">มรดกวัฒนธรรม</button>
-<button class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors">เทคโนโลยีและดิจิทัล</button>
-</div>
-</section>
-<!-- Featured Discussion / Bento Highlight -->
-<section class="grid grid-cols-1 md:grid-cols-3 gap-stack-md mb-stack-lg">
-<div class="md:col-span-2 relative group overflow-hidden rounded-xl h-64 border border-outline-variant">
-<div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent z-10"></div>
-<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCpBV-O9l5Qgn-O2hl6O6bzSRzG-laaDiUgMg9bcICnjp-SHViXKxntS1ql5c_JSqvWte-I-7bwNnVMYj1eCDrJCgQCH7nxeC11V76odfE-FkwEYIQKRFmNvyMJ89zog3Hsk2lQA3e854b6kg3vDdOlGrCPYBVUR2G4I14qnkfvNjKIFqttU0peuKWk9OBB1z7Pyd0FxmMUbeqG7ITx-HmeokYvwTl7eX2cOh--c449q-zWUQxbNI42DBPC9U1-fe3kVVKeJWiK7G8k')"></div>
-<div class="absolute bottom-0 left-0 p-stack-lg z-20">
-<span class="bg-tertiary text-on-tertiary text-[10px] uppercase font-bold px-2 py-1 rounded mb-2 inline-block">กระทู้ยอดฮิต</span>
-<h2 class="text-white text-headline-md font-headline-md mb-2">การท่องเที่ยวอย่างยั่งยืนในปัตตานี: วิสัยทัศน์ชุมชนปี 2025</h2>
-<div class="flex items-center gap-stack-md text-white/80 text-body-sm">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">visibility</span> 4.2k</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">forum</span> 128</span>
-</div>
-</div>
-</div>
-<div class="bg-primary-container rounded-xl p-stack-md flex flex-col justify-between border border-outline-variant">
-<div>
-<h3 class="text-on-primary-container text-headline-md font-headline-md mb-stack-sm">พร้อมที่จะแบ่งปันหรือยัง?</h3>
-<p class="text-on-primary-container/80 text-body-md">เข้าร่วมกับสมาชิก kawan3 นับพันในการพูดคุยเกี่ยวกับกิจกรรมในท้องถิ่น โอกาสทางธุรกิจ และข่าวสารทางวัฒนธรรม</p>
-</div>
-<button class="w-full bg-on-tertiary-container text-tertiary-container py-3 rounded-lg font-label-bold hover:scale-105 transition-all">
-                        เริ่มหัวข้อใหม่
-                    </button>
-</div>
-</section>
-<!-- Discussions List -->
-<section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-<div class="p-stack-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
-<span class="text-label-bold text-primary uppercase">กระทู้ล่าสุด</span>
-<div class="flex gap-stack-sm">
-<span class="text-body-sm text-on-surface-variant">เรียงตาม: <span class="font-bold text-primary">ใหม่ที่สุด</span></span>
-</div>
-</div>
-<!-- Discussion Item 1 -->
-<div class="p-stack-md flex gap-stack-md items-start hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant group">
-<div class="w-12 h-12 shrink-0 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdm0epj5rkKuD811h07IR9Yw4ypSr_AHEgq6P6cwT3KiaIWv873kFldFOnvVrwYfknkuPUbDdPLNAz-NBN_jrueyFHI0kdxM9DRxfADJ3W1EuJtfEOxqorK4Kd--jC9vXvS-XW52keLDTcLsJtbd7fGh7mEWzsajoSYZD2NOt4lYF9Y5zPhVPnkHP4ftop65fdYh1jAN0V9vZkTCYSU9hzrHkV3iuEXrMDpzPXnXEplvai3FKpf5E7ZoRsDwZkNa1E915m28CLs29u"/>
-</div>
-<div class="flex-1">
-<div class="flex items-center gap-2 mb-1">
-<span class="text-tertiary font-label-bold text-[10px] border border-tertiary px-1.5 py-0.5 rounded uppercase">ธุรกิจ</span>
-<span class="text-on-surface-variant text-body-sm">โพสต์โดย <span class="text-primary font-bold">AisyaH</span> • 2 ชั่วโมงที่แล้ว</span>
-</div>
-<h3 class="text-body-lg font-bold group-hover:text-primary transition-colors mb-2">กำลังมองหาพันธมิตรในพื้นที่สำหรับโครงการกาแฟที่ยั่งยืนในยะลา</h3>
-<p class="text-on-surface-variant text-body-md line-clamp-1 mb-3">สวัสดีทุกคน! เรากำลังเปิดตัววิสาหกิจเพื่อสังคมที่เน้นกาแฟโรบัสต้าจากเทือกเขาเบตง...</p>
-<div class="flex items-center gap-stack-lg">
-<div class="flex items-center gap-4">
-<span class="flex items-center gap-1 text-on-surface-variant text-body-sm">
-<span class="material-symbols-outlined text-[18px]">forum</span> 24 ตอบกลับ
-                                </span>
-<span class="flex items-center gap-1 text-on-surface-variant text-body-sm">
-<span class="material-symbols-outlined text-[18px]">visibility</span> 1.1k การเข้าชม
-                                </span>
-</div>
-<div class="hidden sm:flex gap-2">
-<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold">#SME</span>
-<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold">#AgriTech</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Discussion Item 2 -->
-<div class="p-stack-md flex gap-stack-md items-start hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant group">
-<div class="w-12 h-12 shrink-0 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe03-AIrCqBOGuz8XyZ5plL6hyG7qFri-IUZO143nRmmHZaUKchKOMJB5YId7gfPLee38nCwIO1v0jJxU-KUNHAleWR_vQ5FxDpLlY7J_VXku_w-R-o3pQfK178Xy_5HRHoupq5-wSvCg8Tjt_y3Trw2mUibMMyWrAO_3IZknqE_ODqLBRDoywf1VcrRFGVJqVD13_IZMYjh2hrQrcac_76HDngV11Hx0fuwFq2DzW7EsX2YKD4AYj5tn9_MtkE8GJsIE3LK_9fg7y"/>
-</div>
-<div class="flex-1">
-<div class="flex items-center gap-2 mb-1">
-<span class="text-primary-container font-label-bold text-[10px] border border-primary px-1.5 py-0.5 rounded uppercase">มรดกวัฒนธรรม</span>
-<span class="text-on-surface-variant text-body-sm">โพสต์โดย <span class="text-primary font-bold">Uncle_Samad</span> • 5 ชั่วโมงที่แล้ว</span>
-</div>
-<h3 class="text-body-lg font-bold group-hover:text-primary transition-colors mb-2">เวิร์กช็อปผ้าบาติกแบบดั้งเดิมที่จะจัดขึ้นในสุดสัปดาห์นี้ที่นราธิวาส</h3>
-<p class="text-on-surface-variant text-body-md line-clamp-1 mb-3">เชิญชวนคนรุ่นใหม่มาเรียนรู้ศิลปะการเขียนลายผ้าบาติกที่ซับซ้อน ไม่มีค่าใช้จ่ายสำหรับสมาชิก kawan3 ระดับโกลด์...</p>
-<div class="flex items-center gap-stack-lg">
-<div class="flex items-center gap-4">
-<span class="flex items-center gap-1 text-on-surface-variant text-body-sm">
-<span class="material-symbols-outlined text-[18px]">forum</span> 48 ตอบกลับ
-                                </span>
-<span class="flex items-center gap-1 text-on-surface-variant text-body-sm">
-<span class="material-symbols-outlined text-[18px]">visibility</span> 2.5k การเข้าชม
-                                </span>
-</div>
-<div class="hidden sm:flex gap-2">
-<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold">#Arts</span>
-<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold">#Workshop</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Discussion Item 3 -->
-<div class="p-stack-md flex gap-stack-md items-start hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant group">
-<div class="w-12 h-12 shrink-0 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhYodM9Qqzl_oriZ4BeuE15oD78X_ydpyHHSBDeeZ-rzXVmDgED16eSkxryo2FjoZEHq5IgkKjSSJdECGwNR9jd_m2vXgYGbYHbL2W43T0aB0N2XmgS7tV8nm8nk3cPGyVm3PxNQa-WtjTe695_1l_2obZJoH2LSS3LLIVLBnmtU-9EvT_vDAg0oGPu-j7uYlI0n3FzG1Lng-3m3NE-LpXHf0EPoEL1njX-UorMtYAFUSgELnsibWbaIRKWtkj69u6BKS-FUdkoH2F"/>
-</div>
-<div class="flex-1">
-<div class="flex items-center gap-2 mb-1">
-<span class="text-secondary font-label-bold text-[10px] border border-secondary px-1.5 py-0.5 rounded uppercase">ไลฟ์สไตล์</span>
-<span class="text-on-surface-variant text-body-sm">โพสต์โดย <span class="text-primary font-bold">KawanTravels</span> • 1 วันที่แล้ว</span>
-</div>
-<h3 class="text-body-lg font-bold group-hover:text-primary transition-colors mb-2">น้ำตกที่ซ่อนอยู่ในป่าฮาลาบาลา - รายงานผลทริปสุดสัปดาห์</h3>
-<p class="text-on-surface-variant text-body-md line-clamp-1 mb-3">เพิ่งกลับจากการเดินป่า 2 วันในแนวเทือกเขาฮาลาบาลา ระดับน้ำตอนนี้กำลังพอดีเลย นี่คือรูปภาพบางส่วน...</p>
-<div class="flex items-center gap-stack-lg">
-<div class="flex items-center gap-4">
-<span class="flex items-center gap-1 text-on-surface-variant text-body-sm">
-<span class="material-symbols-outlined text-[18px]">forum</span> 86 ตอบกลับ
-                                </span>
-<span class="flex items-center gap-1 text-on-surface-variant text-body-sm">
-<span class="material-symbols-outlined text-[18px]">visibility</span> 5.8k การเข้าชม
-                                </span>
-</div>
-<div class="hidden sm:flex gap-2">
-<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold">#Hiking</span>
-<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold">#EcoTourism</span>
-</div>
-</div>
-</div>
-</div>
-<div class="p-stack-md text-center bg-surface-container-low">
-<button class="text-primary font-label-bold hover:underline">ดูกระทู้เพิ่มเติม</button>
-</div>
-</section>
-</main>
-<!-- Right Sidebar (Contributors) -->
-<aside class="hidden xl:block w-72 p-gutter bg-surface">
-<div class="sticky top-20 flex flex-col gap-stack-lg">
-<!-- Create Post CTA -->
-<div class="p-stack-md bg-white border border-outline-variant rounded-xl shadow-sm">
-<p class="text-body-md mb-stack-md text-on-surface-variant">มีเรื่องอยากแชร์กับชุมชนไหม?</p>
-<button class="w-full bg-primary text-on-primary py-2 rounded-lg font-label-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">edit</span> สร้างกระทู้
-                    </button>
-</div>
-<!-- Top Contributors -->
-<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
-<div class="p-stack-md bg-surface-container-low border-b border-outline-variant">
-<h4 class="text-label-bold text-primary uppercase">ผู้ร่วมแบ่งปันยอดเยี่ยม</h4>
-</div>
-<div class="p-stack-sm flex flex-col gap-2">
-<!-- Contributor 1 -->
-<div class="flex items-center gap-stack-sm p-2 hover:bg-surface-container rounded-lg cursor-pointer">
-<div class="relative">
-<div class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbrSitUReKwpXIAB2y9X8zpewkTGt3h17epQeZE5-Q2l6I0LcAHI6RLCKE6a9B_ukbY7TDB6cSI46IHTnM5P3Ha3T6upyWUEUNi92DMkN3gUdCoJ9WH4D9hg1sqv3Zsom8YwtrJg1IVGCDXR97nh1ZuwZfE8IfWEq6UYEUTZbazOPs7yLw1i8R8o4ZMqCbT2tBzh35xqzwdpa2TjQhL3ZeJJhXzMFho7AbQJQwPUVLf2J243e2S5Cye32tlTzw1EzLhbHS3M11oxO6"/>
-</div>
-<div class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
-<span class="material-symbols-outlined text-[#FFD700] text-[16px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-</div>
-</div>
-<div class="flex-1">
-<p class="text-body-md font-bold leading-tight">Abdullah.R</p>
-<p class="text-label-bold text-tertiary-container text-[10px]">GOLD MEMBER</p>
-</div>
-<div class="text-right">
-<p class="text-label-bold text-primary">1.2k</p>
-<p class="text-[9px] uppercase text-on-surface-variant">โพสต์</p>
-</div>
-</div>
-<!-- Contributor 2 -->
-<div class="flex items-center gap-stack-sm p-2 hover:bg-surface-container rounded-lg cursor-pointer">
-<div class="relative">
-<div class="w-10 h-10 rounded-full border-2 border-outline-variant overflow-hidden">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJApD3ZVQ2vAnHj9kUn4wdR4sDrN_vH50pwvlZLcAr0DgTD1gosaKAcVTDmXNGS4UxClmDliXf5xhWgT9c_ebMwCftw4U2pDNRTn0FYh3rq8WMB4j5RxtBE410MEHqAUzvpkNEtGg2xrqF2PSPbWjFaJnPnNTtxaVyEZY47hkD3AlqKl4cCV4QDCIITYgZ9o1EweW4l4SKabPW5ps-55rUXTZZ_dm23zqj-jJb5dsCc24nw6k8VrgKFPffowTfEOWY5QeqJL96CcAb"/>
-</div>
-<div class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
-<span class="material-symbols-outlined text-[#C0C0C0] text-[16px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-</div>
-</div>
-<div class="flex-1">
-<p class="text-body-md font-bold leading-tight">Teacher_Zahra</p>
-<p class="text-label-bold text-on-surface-variant text-[10px]">SILVER MEMBER</p>
-</div>
-<div class="text-right">
-<p class="text-label-bold text-primary">850</p>
-<p class="text-[9px] uppercase text-on-surface-variant">โพสต์</p>
-</div>
-</div>
-<!-- Contributor 3 -->
-<div class="flex items-center gap-stack-sm p-2 hover:bg-surface-container rounded-lg cursor-pointer">
-<div class="relative">
-<div class="w-10 h-10 rounded-full border-2 border-outline-variant overflow-hidden">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb8FaZpB97lp1YtdutAJyCn25ku_m7fy34kQdvI9jxH1iEBHIYCifqHTxHx_yuWxXerEZBNhJ8L6l5HKEQpCmfWEc86cznGeXfRxQHQ5UThqicda2-QiZdQUklLa8fOWf4R41ah4Qeh_cVsm_VeEUFI91DsvrGSd7HL0U7zqetWKYqQWt77hGWM2A6s4o--qetNd1Ho3ONguib4WK5tVFKxhU5G9IjACfdU9fcbkXE3k1aboRNsNqN9xUiMw-v2WT8HuwF7gyBbSnB"/>
-</div>
-<div class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
-<span class="material-symbols-outlined text-[#CD7F32] text-[16px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-</div>
-</div>
-<div class="flex-1">
-<p class="text-body-md font-bold leading-tight">Yala_Entrepreneur</p>
-<p class="text-label-bold text-on-surface-variant text-[10px]">BRONZE MEMBER</p>
-</div>
-<div class="text-right">
-<p class="text-label-bold text-primary">420</p>
-<p class="text-[9px] uppercase text-on-surface-variant">โพสต์</p>
-</div>
-</div>
-</div>
-<a class="block p-stack-md text-center border-t border-outline-variant text-body-sm text-primary font-bold hover:bg-surface-container-low" href="#">ดูหอเกียรติยศ</a>
-</div>
-<!-- Community Stats Card -->
-<div class="bg-primary p-stack-md rounded-xl text-on-primary">
-<h4 class="text-label-bold text-primary-fixed uppercase mb-stack-md">ชีพจรชุมชน</h4>
-<div class="space-y-4">
-<div class="flex justify-between items-center">
-<span class="text-body-sm opacity-80">กำลังออนไลน์</span>
-<span class="font-bold">1,204</span>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-body-sm opacity-80">โพสต์ใหม่วันนี้</span>
-<span class="font-bold">156</span>
-</div>
-<div class="w-full bg-primary-container h-1 rounded-full overflow-hidden">
-<div class="bg-primary-fixed w-3/4 h-full"></div>
-</div>
-</div>
-</div>
-</div>
-</aside>
-</div>
-<!-- Footer -->
-<footer class="w-full py-stack-lg px-gutter grid grid-cols-1 md:grid-cols-4 gap-stack-lg bg-primary text-on-primary mt-stack-lg">
-<div class="md:col-span-1">
-<h2 class="text-headline-md font-headline-lg-mobile text-on-primary mb-stack-sm">kawan3</h2>
-<p class="text-body-sm opacity-80 mb-stack-md">แพลตฟอร์มดิจิทัลที่รวมเป็นหนึ่งสำหรับจังหวัดชายแดนภาคใต้ เชื่อมต่อหัวใจ แบ่งปันภูมิปัญญา และสร้างอนาคตที่เข้มแข็งร่วมกัน</p>
-</div>
-<div>
-<h4 class="text-label-bold text-on-primary uppercase mb-stack-sm">ลิงก์ด่วน</h4>
-<ul class="space-y-2">
-<li><a class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors" href="#">หน้าแรก</a></li>
-<li><a class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors" href="#">ข่าวสารภูมิภาค</a></li>
-<li><a class="text-body-sm font-bold underline text-on-primary" href="#">กระดานสนทนา</a></li>
-<li><a class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors" href="#">ปฏิทินกิจกรรม</a></li>
-</ul>
-</div>
-<div>
-<h4 class="text-label-bold text-on-primary uppercase mb-stack-sm">การสนับสนุน</h4>
-<ul class="space-y-2">
-<li><a class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors" href="#">เกี่ยวกับเรา</a></li>
-<li><a class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors" href="#">ติดต่อเรา</a></li>
-<li><a class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors" href="#">มรดกวัฒนธรรม</a></li>
-<li><a class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors" href="#">เงื่อนไขการบริการ</a></li>
-</ul>
-</div>
-<div>
-<h4 class="text-label-bold text-on-primary uppercase mb-stack-sm">จดหมายข่าว</h4>
-<div class="flex gap-2">
-<input class="bg-primary-container border-none text-on-primary text-body-sm rounded-lg flex-1 focus:ring-1 focus:ring-primary-fixed" placeholder="อีเมลของคุณ" type="email"/>
-<button class="bg-tertiary px-stack-md py-2 rounded-lg hover:bg-tertiary-container transition-colors">
-<span class="material-symbols-outlined text-[18px]">send</span>
-</button>
-</div>
-<p class="text-[10px] mt-2 opacity-60">© 2024 kawan3. เพิ่มศักยภาพให้จังหวัดชายแดนภาคใต้</p>
-</div>
-</footer>
-<script>
-        // Micro-interactions for list items
-        document.querySelectorAll('.group').forEach(item => {
-            item.addEventListener('click', () => {
-                item.classList.add('scale-[0.99]');
-                setTimeout(() => item.classList.remove('scale-[0.99]'), 150);
-            });
+            <button
+              class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors"
+            >
+              ไลฟ์สไตล์
+            </button>
+            <button
+              class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors"
+            >
+              อาหารและเครื่องดื่ม
+            </button>
+            <button
+              class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors"
+            >
+              งานและธุรกิจ
+            </button>
+            <button
+              class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors"
+            >
+              มรดกวัฒนธรรม
+            </button>
+            <button
+              class="px-stack-md py-2 bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container rounded-full font-label-bold text-body-sm transition-colors"
+            >
+              เทคโนโลยีและดิจิทัล
+            </button>
+          </div>
+        </section>
+        <!-- Featured Discussion / Bento Highlight -->
+        <section
+          class="grid grid-cols-1 md:grid-cols-3 gap-stack-md mb-stack-lg"
+        >
+          <div
+            class="md:col-span-2 relative group overflow-hidden rounded-xl h-64 border border-outline-variant"
+          >
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent z-10"
+            ></div>
+            <div
+              class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700"
+              style="
+                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCpBV-O9l5Qgn-O2hl6O6bzSRzG-laaDiUgMg9bcICnjp-SHViXKxntS1ql5c_JSqvWte-I-7bwNnVMYj1eCDrJCgQCH7nxeC11V76odfE-FkwEYIQKRFmNvyMJ89zog3Hsk2lQA3e854b6kg3vDdOlGrCPYBVUR2G4I14qnkfvNjKIFqttU0peuKWk9OBB1z7Pyd0FxmMUbeqG7ITx-HmeokYvwTl7eX2cOh--c449q-zWUQxbNI42DBPC9U1-fe3kVVKeJWiK7G8k&quot;);
+              "
+            ></div>
+            <div class="absolute bottom-0 left-0 p-stack-lg z-20">
+              <span
+                class="bg-tertiary text-on-tertiary text-[10px] uppercase font-bold px-2 py-1 rounded mb-2 inline-block"
+                >กระทู้ยอดฮิต</span
+              >
+              <h2 class="text-white text-headline-md font-headline-md mb-2">
+                การท่องเที่ยวอย่างยั่งยืนในปัตตานี: วิสัยทัศน์ชุมชนปี 2025
+              </h2>
+              <div
+                class="flex items-center gap-stack-md text-white/80 text-body-sm"
+              >
+                <span class="flex items-center gap-1"
+                  ><span class="material-symbols-outlined text-[16px]"
+                    >visibility</span
+                  >
+                  4.2k</span
+                >
+                <span class="flex items-center gap-1"
+                  ><span class="material-symbols-outlined text-[16px]"
+                    >forum</span
+                  >
+                  128</span
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-primary-container rounded-xl p-stack-md flex flex-col justify-between border border-outline-variant"
+          >
+            <div>
+              <h3
+                class="text-on-primary-container text-headline-md font-headline-md mb-stack-sm"
+              >
+                พร้อมที่จะแบ่งปันหรือยัง?
+              </h3>
+              <p class="text-on-primary-container/80 text-body-md">
+                เข้าร่วมกับสมาชิก kawan3
+                นับพันในการพูดคุยเกี่ยวกับกิจกรรมในท้องถิ่น โอกาสทางธุรกิจ
+                และข่าวสารทางวัฒนธรรม
+              </p>
+            </div>
+            <button
+              class="w-full bg-on-tertiary-container text-tertiary-container py-3 rounded-lg font-label-bold hover:scale-105 transition-all"
+            >
+              เริ่มหัวข้อใหม่
+            </button>
+          </div>
+        </section>
+        <!-- Discussions List -->
+        <section
+          class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden"
+        >
+          <div
+            class="p-stack-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center"
+          >
+            <span class="text-label-bold text-primary uppercase"
+              >กระทู้ล่าสุด</span
+            >
+            <div class="flex gap-stack-sm">
+              <span class="text-body-sm text-on-surface-variant"
+                >เรียงตาม:
+                <span class="font-bold text-primary">ใหม่ที่สุด</span></span
+              >
+            </div>
+          </div>
+          <!-- Discussion Item 1 -->
+          <div
+            class="p-stack-md flex gap-stack-md items-start hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant group"
+          >
+            <div
+              class="w-12 h-12 shrink-0 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden"
+            >
+              <img
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdm0epj5rkKuD811h07IR9Yw4ypSr_AHEgq6P6cwT3KiaIWv873kFldFOnvVrwYfknkuPUbDdPLNAz-NBN_jrueyFHI0kdxM9DRxfADJ3W1EuJtfEOxqorK4Kd--jC9vXvS-XW52keLDTcLsJtbd7fGh7mEWzsajoSYZD2NOt4lYF9Y5zPhVPnkHP4ftop65fdYh1jAN0V9vZkTCYSU9hzrHkV3iuEXrMDpzPXnXEplvai3FKpf5E7ZoRsDwZkNa1E915m28CLs29u"
+              />
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span
+                  class="text-tertiary font-label-bold text-[10px] border border-tertiary px-1.5 py-0.5 rounded uppercase"
+                  >ธุรกิจ</span
+                >
+                <span class="text-on-surface-variant text-body-sm"
+                  >โพสต์โดย <span class="text-primary font-bold">AisyaH</span> •
+                  2 ชั่วโมงที่แล้ว</span
+                >
+              </div>
+              <h3
+                class="text-body-lg font-bold group-hover:text-primary transition-colors mb-2"
+              >
+                กำลังมองหาพันธมิตรในพื้นที่สำหรับโครงการกาแฟที่ยั่งยืนในยะลา
+              </h3>
+              <p class="text-on-surface-variant text-body-md line-clamp-1 mb-3">
+                สวัสดีทุกคน!
+                เรากำลังเปิดตัววิสาหกิจเพื่อสังคมที่เน้นกาแฟโรบัสต้าจากเทือกเขาเบตง...
+              </p>
+              <div class="flex items-center gap-stack-lg">
+                <div class="flex items-center gap-4">
+                  <span
+                    class="flex items-center gap-1 text-on-surface-variant text-body-sm"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >forum</span
+                    >
+                    24 ตอบกลับ
+                  </span>
+                  <span
+                    class="flex items-center gap-1 text-on-surface-variant text-body-sm"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >visibility</span
+                    >
+                    1.1k การเข้าชม
+                  </span>
+                </div>
+                <div class="hidden sm:flex gap-2">
+                  <span
+                    class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold"
+                    >#SME</span
+                  >
+                  <span
+                    class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold"
+                    >#AgriTech</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Discussion Item 2 -->
+          <div
+            class="p-stack-md flex gap-stack-md items-start hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant group"
+          >
+            <div
+              class="w-12 h-12 shrink-0 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden"
+            >
+              <img
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe03-AIrCqBOGuz8XyZ5plL6hyG7qFri-IUZO143nRmmHZaUKchKOMJB5YId7gfPLee38nCwIO1v0jJxU-KUNHAleWR_vQ5FxDpLlY7J_VXku_w-R-o3pQfK178Xy_5HRHoupq5-wSvCg8Tjt_y3Trw2mUibMMyWrAO_3IZknqE_ODqLBRDoywf1VcrRFGVJqVD13_IZMYjh2hrQrcac_76HDngV11Hx0fuwFq2DzW7EsX2YKD4AYj5tn9_MtkE8GJsIE3LK_9fg7y"
+              />
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span
+                  class="text-primary-container font-label-bold text-[10px] border border-primary px-1.5 py-0.5 rounded uppercase"
+                  >มรดกวัฒนธรรม</span
+                >
+                <span class="text-on-surface-variant text-body-sm"
+                  >โพสต์โดย
+                  <span class="text-primary font-bold">Uncle_Samad</span> • 5
+                  ชั่วโมงที่แล้ว</span
+                >
+              </div>
+              <h3
+                class="text-body-lg font-bold group-hover:text-primary transition-colors mb-2"
+              >
+                เวิร์กช็อปผ้าบาติกแบบดั้งเดิมที่จะจัดขึ้นในสุดสัปดาห์นี้ที่นราธิวาส
+              </h3>
+              <p class="text-on-surface-variant text-body-md line-clamp-1 mb-3">
+                เชิญชวนคนรุ่นใหม่มาเรียนรู้ศิลปะการเขียนลายผ้าบาติกที่ซับซ้อน
+                ไม่มีค่าใช้จ่ายสำหรับสมาชิก kawan3 ระดับโกลด์...
+              </p>
+              <div class="flex items-center gap-stack-lg">
+                <div class="flex items-center gap-4">
+                  <span
+                    class="flex items-center gap-1 text-on-surface-variant text-body-sm"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >forum</span
+                    >
+                    48 ตอบกลับ
+                  </span>
+                  <span
+                    class="flex items-center gap-1 text-on-surface-variant text-body-sm"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >visibility</span
+                    >
+                    2.5k การเข้าชม
+                  </span>
+                </div>
+                <div class="hidden sm:flex gap-2">
+                  <span
+                    class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold"
+                    >#Arts</span
+                  >
+                  <span
+                    class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold"
+                    >#Workshop</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Discussion Item 3 -->
+          <div
+            class="p-stack-md flex gap-stack-md items-start hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant group"
+          >
+            <div
+              class="w-12 h-12 shrink-0 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden"
+            >
+              <img
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhYodM9Qqzl_oriZ4BeuE15oD78X_ydpyHHSBDeeZ-rzXVmDgED16eSkxryo2FjoZEHq5IgkKjSSJdECGwNR9jd_m2vXgYGbYHbL2W43T0aB0N2XmgS7tV8nm8nk3cPGyVm3PxNQa-WtjTe695_1l_2obZJoH2LSS3LLIVLBnmtU-9EvT_vDAg0oGPu-j7uYlI0n3FzG1Lng-3m3NE-LpXHf0EPoEL1njX-UorMtYAFUSgELnsibWbaIRKWtkj69u6BKS-FUdkoH2F"
+              />
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span
+                  class="text-secondary font-label-bold text-[10px] border border-secondary px-1.5 py-0.5 rounded uppercase"
+                  >ไลฟ์สไตล์</span
+                >
+                <span class="text-on-surface-variant text-body-sm"
+                  >โพสต์โดย
+                  <span class="text-primary font-bold">KawanTravels</span> • 1
+                  วันที่แล้ว</span
+                >
+              </div>
+              <h3
+                class="text-body-lg font-bold group-hover:text-primary transition-colors mb-2"
+              >
+                น้ำตกที่ซ่อนอยู่ในป่าฮาลาบาลา - รายงานผลทริปสุดสัปดาห์
+              </h3>
+              <p class="text-on-surface-variant text-body-md line-clamp-1 mb-3">
+                เพิ่งกลับจากการเดินป่า 2 วันในแนวเทือกเขาฮาลาบาลา
+                ระดับน้ำตอนนี้กำลังพอดีเลย นี่คือรูปภาพบางส่วน...
+              </p>
+              <div class="flex items-center gap-stack-lg">
+                <div class="flex items-center gap-4">
+                  <span
+                    class="flex items-center gap-1 text-on-surface-variant text-body-sm"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >forum</span
+                    >
+                    86 ตอบกลับ
+                  </span>
+                  <span
+                    class="flex items-center gap-1 text-on-surface-variant text-body-sm"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >visibility</span
+                    >
+                    5.8k การเข้าชม
+                  </span>
+                </div>
+                <div class="hidden sm:flex gap-2">
+                  <span
+                    class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold"
+                    >#Hiking</span
+                  >
+                  <span
+                    class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold"
+                    >#EcoTourism</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-stack-md text-center bg-surface-container-low">
+            <button class="text-primary font-label-bold hover:underline">
+              ดูกระทู้เพิ่มเติม
+            </button>
+          </div>
+        </section>
+      </main>
+      <!-- Right Sidebar (Contributors) -->
+      <aside class="hidden xl:block w-72 p-gutter bg-surface">
+        <div class="sticky top-20 flex flex-col gap-stack-lg">
+          <!-- Create Post CTA -->
+          <div
+            class="p-stack-md bg-white border border-outline-variant rounded-xl shadow-sm"
+          >
+            <p class="text-body-md mb-stack-md text-on-surface-variant">
+              มีเรื่องอยากแชร์กับชุมชนไหม?
+            </p>
+            <button
+              class="w-full bg-primary text-on-primary py-2 rounded-lg font-label-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined">edit</span> สร้างกระทู้
+            </button>
+          </div>
+          <!-- Top Contributors -->
+          <div
+            class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm"
+          >
+            <div
+              class="p-stack-md bg-surface-container-low border-b border-outline-variant"
+            >
+              <h4 class="text-label-bold text-primary uppercase">
+                ผู้ร่วมแบ่งปันยอดเยี่ยม
+              </h4>
+            </div>
+            <div class="p-stack-sm flex flex-col gap-2">
+              <!-- Contributor 1 -->
+              <div
+                class="flex items-center gap-stack-sm p-2 hover:bg-surface-container rounded-lg cursor-pointer"
+              >
+                <div class="relative">
+                  <div
+                    class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden"
+                  >
+                    <img
+                      class="w-full h-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbrSitUReKwpXIAB2y9X8zpewkTGt3h17epQeZE5-Q2l6I0LcAHI6RLCKE6a9B_ukbY7TDB6cSI46IHTnM5P3Ha3T6upyWUEUNi92DMkN3gUdCoJ9WH4D9hg1sqv3Zsom8YwtrJg1IVGCDXR97nh1ZuwZfE8IfWEq6UYEUTZbazOPs7yLw1i8R8o4ZMqCbT2tBzh35xqzwdpa2TjQhL3ZeJJhXzMFho7AbQJQwPUVLf2J243e2S5Cye32tlTzw1EzLhbHS3M11oxO6"
+                    />
+                  </div>
+                  <div
+                    class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5"
+                  >
+                    <span
+                      class="material-symbols-outlined text-[#FFD700] text-[16px]"
+                      style="font-variation-settings: &quot;FILL&quot; 1"
+                      >workspace_premium</span
+                    >
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-body-md font-bold leading-tight">Abdullah.R</p>
+                  <p
+                    class="text-label-bold text-tertiary-container text-[10px]"
+                  >
+                    GOLD MEMBER
+                  </p>
+                </div>
+                <div class="text-right">
+                  <p class="text-label-bold text-primary">1.2k</p>
+                  <p class="text-[9px] uppercase text-on-surface-variant">
+                    โพสต์
+                  </p>
+                </div>
+              </div>
+              <!-- Contributor 2 -->
+              <div
+                class="flex items-center gap-stack-sm p-2 hover:bg-surface-container rounded-lg cursor-pointer"
+              >
+                <div class="relative">
+                  <div
+                    class="w-10 h-10 rounded-full border-2 border-outline-variant overflow-hidden"
+                  >
+                    <img
+                      class="w-full h-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJApD3ZVQ2vAnHj9kUn4wdR4sDrN_vH50pwvlZLcAr0DgTD1gosaKAcVTDmXNGS4UxClmDliXf5xhWgT9c_ebMwCftw4U2pDNRTn0FYh3rq8WMB4j5RxtBE410MEHqAUzvpkNEtGg2xrqF2PSPbWjFaJnPnNTtxaVyEZY47hkD3AlqKl4cCV4QDCIITYgZ9o1EweW4l4SKabPW5ps-55rUXTZZ_dm23zqj-jJb5dsCc24nw6k8VrgKFPffowTfEOWY5QeqJL96CcAb"
+                    />
+                  </div>
+                  <div
+                    class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5"
+                  >
+                    <span
+                      class="material-symbols-outlined text-[#C0C0C0] text-[16px]"
+                      style="font-variation-settings: &quot;FILL&quot; 1"
+                      >workspace_premium</span
+                    >
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-body-md font-bold leading-tight">
+                    Teacher_Zahra
+                  </p>
+                  <p
+                    class="text-label-bold text-on-surface-variant text-[10px]"
+                  >
+                    SILVER MEMBER
+                  </p>
+                </div>
+                <div class="text-right">
+                  <p class="text-label-bold text-primary">850</p>
+                  <p class="text-[9px] uppercase text-on-surface-variant">
+                    โพสต์
+                  </p>
+                </div>
+              </div>
+              <!-- Contributor 3 -->
+              <div
+                class="flex items-center gap-stack-sm p-2 hover:bg-surface-container rounded-lg cursor-pointer"
+              >
+                <div class="relative">
+                  <div
+                    class="w-10 h-10 rounded-full border-2 border-outline-variant overflow-hidden"
+                  >
+                    <img
+                      class="w-full h-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb8FaZpB97lp1YtdutAJyCn25ku_m7fy34kQdvI9jxH1iEBHIYCifqHTxHx_yuWxXerEZBNhJ8L6l5HKEQpCmfWEc86cznGeXfRxQHQ5UThqicda2-QiZdQUklLa8fOWf4R41ah4Qeh_cVsm_VeEUFI91DsvrGSd7HL0U7zqetWKYqQWt77hGWM2A6s4o--qetNd1Ho3ONguib4WK5tVFKxhU5G9IjACfdU9fcbkXE3k1aboRNsNqN9xUiMw-v2WT8HuwF7gyBbSnB"
+                    />
+                  </div>
+                  <div
+                    class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5"
+                  >
+                    <span
+                      class="material-symbols-outlined text-[#CD7F32] text-[16px]"
+                      style="font-variation-settings: &quot;FILL&quot; 1"
+                      >workspace_premium</span
+                    >
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-body-md font-bold leading-tight">
+                    Yala_Entrepreneur
+                  </p>
+                  <p
+                    class="text-label-bold text-on-surface-variant text-[10px]"
+                  >
+                    BRONZE MEMBER
+                  </p>
+                </div>
+                <div class="text-right">
+                  <p class="text-label-bold text-primary">420</p>
+                  <p class="text-[9px] uppercase text-on-surface-variant">
+                    โพสต์
+                  </p>
+                </div>
+              </div>
+            </div>
+            <a
+              class="block p-stack-md text-center border-t border-outline-variant text-body-sm text-primary font-bold hover:bg-surface-container-low"
+              href="#"
+              >ดูหอเกียรติยศ</a
+            >
+          </div>
+          <!-- Community Stats Card -->
+          <div class="bg-primary p-stack-md rounded-xl text-on-primary">
+            <h4
+              class="text-label-bold text-primary-fixed uppercase mb-stack-md"
+            >
+              ชีพจรชุมชน
+            </h4>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-body-sm opacity-80">กำลังออนไลน์</span>
+                <span class="font-bold">1,204</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-body-sm opacity-80">โพสต์ใหม่วันนี้</span>
+                <span class="font-bold">156</span>
+              </div>
+              <div
+                class="w-full bg-primary-container h-1 rounded-full overflow-hidden"
+              >
+                <div class="bg-primary-fixed w-3/4 h-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <!-- Footer -->
+    <footer
+      class="w-full py-stack-lg px-gutter grid grid-cols-1 md:grid-cols-4 gap-stack-lg bg-primary text-on-primary mt-stack-lg"
+    >
+      <div class="md:col-span-1">
+        <h2
+          class="text-headline-md font-headline-lg-mobile text-on-primary mb-stack-sm"
+        >
+          kawan3
+        </h2>
+        <p class="text-body-sm opacity-80 mb-stack-md">
+          แพลตฟอร์มดิจิทัลที่รวมเป็นหนึ่งสำหรับจังหวัดชายแดนภาคใต้
+          เชื่อมต่อหัวใจ แบ่งปันภูมิปัญญา และสร้างอนาคตที่เข้มแข็งร่วมกัน
+        </p>
+      </div>
+      <div>
+        <h4 class="text-label-bold text-on-primary uppercase mb-stack-sm">
+          ลิงก์ด่วน
+        </h4>
+        <ul class="space-y-2">
+          <li>
+            <a
+              class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors"
+              href="#"
+              >หน้าแรก</a
+            >
+          </li>
+          <li>
+            <a
+              class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors"
+              href="#"
+              >ข่าวสาร</a
+            >
+          </li>
+          <li>
+            <a class="text-body-sm font-bold underline text-on-primary" href="#"
+              >กระดานสนทนา</a
+            >
+          </li>
+          <li>
+            <a
+              class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors"
+              href="#"
+              >ปฏิทินกิจกรรม</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-label-bold text-on-primary uppercase mb-stack-sm">
+          การสนับสนุน
+        </h4>
+        <ul class="space-y-2">
+          <li>
+            <a
+              class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors"
+              href="#"
+              >เกี่ยวกับเรา</a
+            >
+          </li>
+          <li>
+            <a
+              class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors"
+              href="#"
+              >ติดต่อเรา</a
+            >
+          </li>
+          <li>
+            <a
+              class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors"
+              href="#"
+              >มรดกวัฒนธรรม</a
+            >
+          </li>
+          <li>
+            <a
+              class="text-body-sm text-on-primary opacity-80 hover:opacity-100 transition-colors"
+              href="#"
+              >เงื่อนไขการบริการ</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-label-bold text-on-primary uppercase mb-stack-sm">
+          จดหมายข่าว
+        </h4>
+        <div class="flex gap-2">
+          <input
+            class="bg-primary-container border-none text-on-primary text-body-sm rounded-lg flex-1 focus:ring-1 focus:ring-primary-fixed"
+            placeholder="อีเมลของคุณ"
+            type="email"
+          />
+          <button
+            class="bg-tertiary px-stack-md py-2 rounded-lg hover:bg-tertiary-container transition-colors"
+          >
+            <span class="material-symbols-outlined text-[18px]">send</span>
+          </button>
+        </div>
+        <p class="text-[10px] mt-2 opacity-60">
+          © 2024 kawan3. เพิ่มศักยภาพให้จังหวัดชายแดนภาคใต้
+        </p>
+      </div>
+    </footer>
+    <script>
+      // Micro-interactions for list items
+      document.querySelectorAll(".group").forEach((item) => {
+        item.addEventListener("click", () => {
+          item.classList.add("scale-[0.99]");
+          setTimeout(() => item.classList.remove("scale-[0.99]"), 150);
         });
+      });
     </script>
-</body></html>
+  </body>
+</html>

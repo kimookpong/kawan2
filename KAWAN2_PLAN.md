@@ -28,7 +28,7 @@
 
 ## 1. ภาพรวมและเป้าหมาย
 
-**Kawan2** ("kawan" = เพื่อน ในภาษามลายู) เป็นแพลตฟอร์มชุมชนออนไลน์ที่รวมผู้คนใน 3 จังหวัดชายแดนใต้เข้าด้วยกัน โดยผสมผสานระหว่าง **เว็บบอร์ด (webboard)**, **พอร์ทัลข่าวสารภูมิภาค**, และ **เครือข่ายสังคม** ที่มีระบบสมาชิกแบบมีระดับ (membership level) เพื่อสร้างแรงจูงใจในการมีส่วนร่วม
+**Kawan2** ("kawan" = เพื่อน ในภาษามลายู) เป็นแพลตฟอร์มชุมชนออนไลน์ที่รวมผู้คนใน 3 จังหวัดชายแดนใต้เข้าด้วยกัน โดยผสมผสานระหว่าง **เว็บบอร์ด (webboard)**, **พอร์ทัลข่าวสาร**, และ **เครือข่ายสังคม** ที่มีระบบสมาชิกแบบมีระดับ (membership level) เพื่อสร้างแรงจูงใจในการมีส่วนร่วม
 
 ### เป้าหมายหลัก
 
@@ -40,12 +40,12 @@
 
 ### กลุ่มผู้ใช้เป้าหมาย
 
-| กลุ่ม | ความต้องการหลัก |
-|-------|----------------|
-| คนในพื้นที่ทั่วไป | อ่านข่าว เข้าร่วมสนทนา หากิจกรรม |
+| กลุ่ม                           | ความต้องการหลัก                               |
+| ------------------------------- | --------------------------------------------- |
+| คนในพื้นที่ทั่วไป               | อ่านข่าว เข้าร่วมสนทนา หากิจกรรม              |
 | ผู้สร้างเนื้อหา / นักเขียนชุมชน | โพสต์กระทู้ บทความ สะสมชื่อเสียง (reputation) |
-| ผู้ดูแลชุมชน (Moderator) | ดูแลเนื้อหา อนุมัติข่าว จัดการรายงาน |
-| ผู้ดูแลระบบ (Admin) | จัดการผู้ใช้ จังหวัด หมวดหมู่ การตั้งค่าระบบ |
+| ผู้ดูแลชุมชน (Moderator)        | ดูแลเนื้อหา อนุมัติข่าว จัดการรายงาน          |
+| ผู้ดูแลระบบ (Admin)             | จัดการผู้ใช้ จังหวัด หมวดหมู่ การตั้งค่าระบบ  |
 
 ---
 
@@ -53,21 +53,21 @@
 
 ### 2.1 ความต้องการเชิงฟังก์ชัน (Functional Requirements)
 
-| รหัส | ฟีเจอร์ | คำอธิบาย | ความสำคัญ |
-|------|---------|----------|-----------|
-| FR-1 | ระบบสมาชิก | สมัคร / เข้าสู่ระบบ / โปรไฟล์ ผ่าน Supabase Auth | ต้องมี (MVP) |
-| FR-2 | Membership Level | ระดับสมาชิกตาม point/activity (Bronze→Silver→Gold→Platinum) | ต้องมี |
-| FR-3 | เว็บบอร์ด | สร้างกระทู้ ตอบกลับ กดไลก์ ตามหมวดหมู่และจังหวัด | ต้องมี (MVP) |
-| FR-4 | ระบบข่าวสาร | หน้าแรกแสดงข่าว/บทความเด่น แยกหมวด | ต้องมี (MVP) |
-| FR-5 | Direct Message | แชทส่วนตัวระหว่างสมาชิกแบบ realtime | ต้องมี |
-| FR-6 | ระบบจังหวัด | กรองเนื้อหาตามจังหวัด รองรับเพิ่มจังหวัดใหม่ | ต้องมี |
-| FR-7 | กิจกรรม (Events) | ปฏิทินกิจกรรมชุมชน | ควรมี (Phase 2) |
-| FR-8 | หอเกียรติยศ (Leaderboard) | จัดอันดับสมาชิกตาม point/badge | ควรมี |
-| FR-9 | Badge / Achievement | เหรียญรางวัลตามกิจกรรม | ควรมี |
-| FR-10 | การแจ้งเตือน (Notifications) | แจ้งตอบกระทู้ ข้อความใหม่ ระบบ | ควรมี |
-| FR-11 | ตลาดซื้อขาย (Marketplace) | ประกาศซื้อขายชุมชน | อนาคต (Phase 3) |
-| FR-12 | ระบบรายงาน/Moderation | รายงานเนื้อหา จัดการโดย mod | ควรมี |
-| FR-13 | ค้นหา (Search) | ค้นกระทู้ ข่าว สมาชิก | ควรมี |
+| รหัส  | ฟีเจอร์                      | คำอธิบาย                                                    | ความสำคัญ       |
+| ----- | ---------------------------- | ----------------------------------------------------------- | --------------- |
+| FR-1  | ระบบสมาชิก                   | สมัคร / เข้าสู่ระบบ / โปรไฟล์ ผ่าน Supabase Auth            | ต้องมี (MVP)    |
+| FR-2  | Membership Level             | ระดับสมาชิกตาม point/activity (Bronze→Silver→Gold→Platinum) | ต้องมี          |
+| FR-3  | เว็บบอร์ด                    | สร้างกระทู้ ตอบกลับ กดไลก์ ตามหมวดหมู่และจังหวัด            | ต้องมี (MVP)    |
+| FR-4  | ระบบข่าวสาร                  | หน้าแรกแสดงข่าว/บทความเด่น แยกหมวด                          | ต้องมี (MVP)    |
+| FR-5  | Direct Message               | แชทส่วนตัวระหว่างสมาชิกแบบ realtime                         | ต้องมี          |
+| FR-6  | ระบบจังหวัด                  | กรองเนื้อหาตามจังหวัด รองรับเพิ่มจังหวัดใหม่                | ต้องมี          |
+| FR-7  | กิจกรรม (Events)             | ปฏิทินกิจกรรมชุมชน                                          | ควรมี (Phase 2) |
+| FR-8  | หอเกียรติยศ (Leaderboard)    | จัดอันดับสมาชิกตาม point/badge                              | ควรมี           |
+| FR-9  | Badge / Achievement          | เหรียญรางวัลตามกิจกรรม                                      | ควรมี           |
+| FR-10 | การแจ้งเตือน (Notifications) | แจ้งตอบกระทู้ ข้อความใหม่ ระบบ                              | ควรมี           |
+| FR-11 | ตลาดซื้อขาย (Marketplace)    | ประกาศซื้อขายชุมชน                                          | อนาคต (Phase 3) |
+| FR-12 | ระบบรายงาน/Moderation        | รายงานเนื้อหา จัดการโดย mod                                 | ควรมี           |
+| FR-13 | ค้นหา (Search)               | ค้นกระทู้ ข่าว สมาชิก                                       | ควรมี           |
 
 ### 2.2 ความต้องการที่ไม่ใช่ฟังก์ชัน (Non-Functional)
 
@@ -137,16 +137,16 @@
 
 ### 4.1 สีหลัก (Color Tokens)
 
-| Token | ค่า | การใช้งาน |
-|-------|-----|-----------|
-| `primary` (Deep Green) | `#003527` | navbar, ปุ่มหลัก, หัวข้อสำคัญ |
-| `primary-container` | `#064e3b` | พื้นหลัง section เน้น |
-| `tertiary` (Terracotta) | `#502000` / `#733100` | CTA สำคัญ ("เข้าร่วมชุมชน"), badge active |
-| `surface` | `#f9f9f9` | พื้นหลังหน้า |
-| `surface-container-lowest` | `#ffffff` | พื้นหลังการ์ด |
-| `outline-variant` | `#bfc9c3` | เส้นขอบการ์ด (1px) |
-| `on-surface` | `#1a1c1c` | ข้อความหลัก |
-| `error` | `#ba1a1a` | error state |
+| Token                      | ค่า                   | การใช้งาน                                 |
+| -------------------------- | --------------------- | ----------------------------------------- |
+| `primary` (Deep Green)     | `#003527`             | navbar, ปุ่มหลัก, หัวข้อสำคัญ             |
+| `primary-container`        | `#064e3b`             | พื้นหลัง section เน้น                     |
+| `tertiary` (Terracotta)    | `#502000` / `#733100` | CTA สำคัญ ("เข้าร่วมชุมชน"), badge active |
+| `surface`                  | `#f9f9f9`             | พื้นหลังหน้า                              |
+| `surface-container-lowest` | `#ffffff`             | พื้นหลังการ์ด                             |
+| `outline-variant`          | `#bfc9c3`             | เส้นขอบการ์ด (1px)                        |
+| `on-surface`               | `#1a1c1c`             | ข้อความหลัก                               |
+| `error`                    | `#ba1a1a`             | error state                               |
 
 > รองรับ dark mode ผ่าน token `darkMode: "class"` ที่มีอยู่แล้วใน config
 
@@ -172,11 +172,11 @@
 
 ### 4.5 หน้าจอที่มีดีไซน์อ้างอิงแล้ว
 
-| ไฟล์ | หน้า |
-|------|------|
-| `kawan3_2`, `kawan3_4` | หน้าแรก / เว็บบอร์ดชุมชน (TH/EN) |
-| `kawan3_community_1/2` | หน้า community ข่าว + stats + กระทู้ล่าสุด |
-| `kawan3_3`, `kawan3_5` | หน้าโปรไฟล์สมาชิก + badge + achievement |
+| ไฟล์                     | หน้า                                        |
+| ------------------------ | ------------------------------------------- |
+| `kawan3_2`, `kawan3_4`   | หน้าแรก / เว็บบอร์ดชุมชน (TH/EN)            |
+| `kawan3_community_1/2`   | หน้า community ข่าว + stats + กระทู้ล่าสุด  |
+| `kawan3_3`, `kawan3_5`   | หน้าโปรไฟล์สมาชิก + badge + achievement     |
 | `kawan3_1`, `kawan3_6/7` | หน้าบทความ/เนื้อหา (Pattani Heritage Trail) |
 
 > สามารถปรับเปลี่ยนได้ตามความเหมาะสม — ใช้เป็น reference ในการสร้าง component library
@@ -188,7 +188,7 @@
 ```
 Kawan2
 ├── / (หน้าแรก)              → ข่าวเด่น + กระทู้ล่าสุด + สถิติชุมชน + สมาชิกเด่น
-├── /news                    → ข่าวสารภูมิภาค (แยกหมวด/จังหวัด)
+├── /news                    → ข่าวสาร (แยกหมวด/จังหวัด)
 │   └── /news/[slug]         → รายละเอียดข่าว
 ├── /board                   → กระดานสนทนา (รายการหมวดหมู่)
 │   ├── /board/[category]    → กระทู้ในหมวด
@@ -207,7 +207,7 @@ Kawan2
 
 ### Navigation (จากดีไซน์)
 
-หน้าแรก · ข่าวสารภูมิภาค · กระดานสนทนา · ปฏิทินกิจกรรม · ตลาดซื้อขาย · หอเกียรติยศ
+หน้าแรก · ข่าวสาร · กระดานสนทนา · ปฏิทินกิจกรรม · ตลาดซื้อขาย · หอเกียรติยศ
 มุมขวา: ค้นหา · การแจ้งเตือน · ข้อความ · เมนูโปรไฟล์ · ปุ่ม CTA "สร้างกระทู้"
 
 ---
@@ -215,6 +215,7 @@ Kawan2
 ## 6. รายละเอียดฟีเจอร์
 
 ### 6.1 หน้าแรก (News Portal)
+
 - Hero: ข่าว/บทความเด่น (featured) แบบ carousel หรือ grid
 - แถบสถิติชุมชน: จำนวนสมาชิก, กระทู้, ออนไลน์ (จากดีไซน์ community_1)
 - คอลัมน์กระทู้ล่าสุด + sidebar (สมาชิกเด่น, แท็กยอดนิยม, กิจกรรมใกล้ถึง)
@@ -222,6 +223,7 @@ Kawan2
 - Render แบบ **ISR** (revalidate ตามเวลา) เพื่อ SEO + ความสด
 
 ### 6.2 เว็บบอร์ด (Webboard)
+
 - หมวดหมู่ (categories) เช่น พูดคุยทั่วไป, วัฒนธรรม, การศึกษา, ท่องเที่ยว, ซื้อขาย
 - สร้างกระทู้: title, เนื้อหา (rich text/markdown), รูปแนบ, แท็ก, จังหวัด
 - ตอบกลับแบบ thread, กดไลก์/reaction, ปักหมุด (pin) โดย mod
@@ -229,22 +231,26 @@ Kawan2
 - สิทธิ์การโพสต์ผูกกับ membership level (เช่น ระดับต่ำสุดโพสต์ได้, แนบไฟล์ต้องถึงระดับหนึ่ง)
 
 ### 6.3 ระบบข่าวสาร (News)
+
 - ข่าวมีสถานะ draft → pending → published (workflow อนุมัติ)
 - เฉพาะ role `editor`/`admin` หรือสมาชิก level สูงที่ได้รับสิทธิ์เท่านั้นที่เผยแพร่ได้
 - หมวดข่าว, จังหวัด, รูปปก, ผู้เขียน, จำนวนเข้าชม
 
 ### 6.4 Direct Message
+
 - รายการบทสนทนา (conversations) + กล่องแชท
 - ส่งข้อความ realtime ผ่าน Supabase Realtime (postgres changes / broadcast)
 - สถานะอ่าน/ยังไม่อ่าน, แนบรูป (ผ่าน Storage), แจ้งเตือนข้อความใหม่
 - เห็นเฉพาะคู่สนทนา (บังคับด้วย RLS)
 
 ### 6.5 โปรไฟล์ & หอเกียรติยศ
+
 - โปรไฟล์: avatar, bio, จังหวัด, level + progress bar, สถิติ (โพสต์/ไลก์/reputation), badge ที่ได้
 - Achievement grid (จากดีไซน์ kawan3_5)
 - Leaderboard จัดอันดับตาม point รวม/รายเดือน
 
 ### 6.6 การแจ้งเตือน
+
 - ตอบกระทู้, mention, ข้อความใหม่, ได้ badge, เลื่อนระดับ
 - realtime badge + หน้า /notifications
 
@@ -256,24 +262,24 @@ Kawan2
 
 ใช้ระบบ **point/reputation สะสม** เลื่อนระดับอัตโนมัติ
 
-| Level | ชื่อ | Point ขั้นต่ำ | สิทธิพิเศษ (ตัวอย่าง) |
-|-------|------|--------------|----------------------|
-| 1 | Bronze (สัมฤทธิ์) | 0 | โพสต์กระทู้/ตอบกลับ, ส่ง DM |
-| 2 | Silver (เงิน) | 500 | แนบไฟล์, สร้างโพล, ตั้งรูปโปรไฟล์ GIF |
-| 3 | Gold (ทอง) | 2,000 | ปักหมุดกระทู้ตนเอง, custom title |
-| 4 | Platinum (แพลทินัม) | 5,000 | เสนอข่าว, badge พิเศษ, สิทธิ์ moderator-lite |
+| Level | ชื่อ                | Point ขั้นต่ำ | สิทธิพิเศษ (ตัวอย่าง)                        |
+| ----- | ------------------- | ------------- | -------------------------------------------- |
+| 1     | Bronze (สัมฤทธิ์)   | 0             | โพสต์กระทู้/ตอบกลับ, ส่ง DM                  |
+| 2     | Silver (เงิน)       | 500           | แนบไฟล์, สร้างโพล, ตั้งรูปโปรไฟล์ GIF        |
+| 3     | Gold (ทอง)          | 2,000         | ปักหมุดกระทู้ตนเอง, custom title             |
+| 4     | Platinum (แพลทินัม) | 5,000         | เสนอข่าว, badge พิเศษ, สิทธิ์ moderator-lite |
 
 > ค่า point/threshold เก็บในตาราง `membership_levels` (config-driven) ปรับได้โดยไม่แก้โค้ด
 
 ### 7.2 การได้ point (ตัวอย่างกติกา)
 
-| กิจกรรม | Point |
-|---------|-------|
-| สร้างกระทู้ | +10 |
-| ตอบกระทู้ | +5 |
-| กระทู้/ตอบได้รับ like | +2 ต่อ like |
-| เข้าใช้งานรายวัน (streak) | +1 |
-| ถูกรายงานและผิดจริง | -20 |
+| กิจกรรม                   | Point       |
+| ------------------------- | ----------- |
+| สร้างกระทู้               | +10         |
+| ตอบกระทู้                 | +5          |
+| กระทู้/ตอบได้รับ like     | +2 ต่อ like |
+| เข้าใช้งานรายวัน (streak) | +1          |
+| ถูกรายงานและผิดจริง       | -20         |
 
 - คำนวณผ่าน **Postgres trigger/function** หรือ **Edge Function** เมื่อเกิด event
 - ตาราง `point_transactions` เก็บ log ทุกครั้ง (auditable) แล้ว aggregate ไปที่ `profiles.reputation`
@@ -581,14 +587,15 @@ $$;
 
 ## 10. Supabase Storage
 
-| Bucket | Public? | ใช้เก็บ | Policy |
-|--------|---------|---------|--------|
-| `avatars` | public-read | รูปโปรไฟล์ | เขียนได้เฉพาะ path `=auth.uid()/...` |
-| `thread-images` | public-read | รูปแนบกระทู้ | เขียนเมื่อ login, path ผูก user id |
-| `news-covers` | public-read | รูปปกข่าว | เขียนเฉพาะ editor/admin |
-| `dm-attachments` | private | ไฟล์แนบ DM | อ่าน/เขียนเฉพาะสมาชิกห้อง (signed URL) |
+| Bucket           | Public?     | ใช้เก็บ      | Policy                                 |
+| ---------------- | ----------- | ------------ | -------------------------------------- |
+| `avatars`        | public-read | รูปโปรไฟล์   | เขียนได้เฉพาะ path `=auth.uid()/...`   |
+| `thread-images`  | public-read | รูปแนบกระทู้ | เขียนเมื่อ login, path ผูก user id     |
+| `news-covers`    | public-read | รูปปกข่าว    | เขียนเฉพาะ editor/admin                |
+| `dm-attachments` | private     | ไฟล์แนบ DM   | อ่าน/เขียนเฉพาะสมาชิกห้อง (signed URL) |
 
 ตัวอย่าง policy avatars:
+
 ```sql
 create policy "avatar_upload_own" on storage.objects
   for insert with check (
@@ -604,16 +611,19 @@ create policy "avatar_upload_own" on storage.objects
 ## 11. Realtime & Direct Message
 
 ### กลไก
+
 - ใช้ **Supabase Realtime** subscribe การเปลี่ยนแปลงตาราง `messages` (เฉพาะ conversation ที่ผู้ใช้เป็นสมาชิก) — RLS คุมว่า client เห็น event ไหน
 - เมื่อมีข้อความใหม่ → trigger อัปเดต `conversations.last_message_at` + สร้าง `notifications`
 - สถานะอ่าน: อัปเดต `conversation_members.last_read_at`; นับ unread = messages ที่ใหม่กว่า last_read_at
 
 ### Flow การเริ่มแชท
+
 1. ผู้ใช้ A กดส่งข้อความหา B → server action หา/สร้าง conversation ระหว่าง A,B (ป้องกันซ้ำ)
 2. insert message → realtime ส่งถึง B ทันที
 3. B ได้ notification + badge unread
 
 ### พิจารณาเพิ่ม (อนาคต)
+
 - typing indicator (Realtime broadcast)
 - online presence (Realtime presence)
 - block / report ผู้ใช้
@@ -665,12 +675,14 @@ kawan2/
 ## 13. แผนการพัฒนา (Roadmap)
 
 ### Phase 0 — เตรียมความพร้อม (สัปดาห์ 1)
+
 - ตั้งโปรเจกต์ Supabase + Next.js, เชื่อม `@supabase/ssr`
 - ตั้ง Tailwind config ตาม design tokens, สร้าง UI primitives (ปุ่ม/การ์ด/chip/badge)
 - เขียน migration: provinces, membership_levels, profiles, categories + seed
 - ตั้ง CI/CD (Vercel) + ตัวแปรสภาพแวดล้อม
 
 ### Phase 1 — MVP แกนหลัก (สัปดาห์ 2–4)
+
 - **Auth**: สมัคร/เข้าสู่ระบบ (email + OAuth), trigger สร้าง profile, หน้าโปรไฟล์
 - **เว็บบอร์ด**: หมวดหมู่, สร้าง/อ่าน/ตอบกระทู้, like, RLS ครบ
 - **หน้าแรก + ข่าว**: แสดงข่าว featured + กระทู้ล่าสุด (ISR), หน้ารายละเอียดข่าว
@@ -678,6 +690,7 @@ kawan2/
 - ✅ เป้าหมาย: ใช้งานชุมชนพื้นฐานได้จริง
 
 ### Phase 2 — สังคมและการมีส่วนร่วม (สัปดาห์ 5–7)
+
 - **Direct Message** realtime + notifications
 - **Badge/Achievement** + หน้า Leaderboard
 - **กิจกรรม (Events)** + ปฏิทิน
@@ -685,6 +698,7 @@ kawan2/
 - ระบบค้นหา (Postgres full-text หรือ extension)
 
 ### Phase 3 — ขยายและดูแล (สัปดาห์ 8+)
+
 - **Admin dashboard**: จัดการ user/ข่าว/รายงาน/จังหวัด
 - **Moderation**: report → review workflow
 - **Marketplace** (ตลาดซื้อขาย)
@@ -692,6 +706,7 @@ kawan2/
 - i18n (มลายู/อังกฤษ), dark mode, PWA, ปรับ performance/SEO
 
 ### สรุปลำดับความสำคัญ (MoSCoW)
+
 - **Must**: Auth, profile+level, webboard, news homepage, RLS
 - **Should**: DM, notifications, leaderboard, badge, search
 - **Could**: events, admin tools, moderation
@@ -701,15 +716,15 @@ kawan2/
 
 ## 14. ความเสี่ยงและข้อควรระวัง
 
-| ความเสี่ยง | ผลกระทบ | แนวทางรับมือ |
-|-----------|---------|--------------|
-| RLS เขียนผิด → ข้อมูลรั่ว | สูง | เขียน test policy, review, default-deny |
-| เนื้อหาอ่อนไหว/การเมืองในพื้นที่ | สูง | moderation + report + แนวทางชุมชนชัดเจน |
-| XSS จาก user content | สูง | sanitize markdown ก่อน render |
-| Realtime/DB cost พุ่งเมื่อโต | กลาง | denormalize counter, index, pagination, cache |
-| Spam/abuse | กลาง | rate limit, ผูกสิทธิ์กับ level, captcha สมัคร |
-| ฟอนต์ไทยแสดงผลเพี้ยน | กลาง | line-height ≥1.5, ทดสอบ Be Vietnam Pro + fallback ไทย |
-| Vendor lock-in (Supabase) | ต่ำ-กลาง | ใช้ Postgres มาตรฐาน, schema portable |
+| ความเสี่ยง                       | ผลกระทบ  | แนวทางรับมือ                                          |
+| -------------------------------- | -------- | ----------------------------------------------------- |
+| RLS เขียนผิด → ข้อมูลรั่ว        | สูง      | เขียน test policy, review, default-deny               |
+| เนื้อหาอ่อนไหว/การเมืองในพื้นที่ | สูง      | moderation + report + แนวทางชุมชนชัดเจน               |
+| XSS จาก user content             | สูง      | sanitize markdown ก่อน render                         |
+| Realtime/DB cost พุ่งเมื่อโต     | กลาง     | denormalize counter, index, pagination, cache         |
+| Spam/abuse                       | กลาง     | rate limit, ผูกสิทธิ์กับ level, captcha สมัคร         |
+| ฟอนต์ไทยแสดงผลเพี้ยน             | กลาง     | line-height ≥1.5, ทดสอบ Be Vietnam Pro + fallback ไทย |
+| Vendor lock-in (Supabase)        | ต่ำ-กลาง | ใช้ Postgres มาตรฐาน, schema portable                 |
 
 > หมายเหตุด้านเนื้อหา: เนื่องจากเป็นชุมชนพื้นที่ชายแดนใต้ที่มีความอ่อนไหว ควรมี **แนวปฏิบัติชุมชน (community guidelines)** และทีม moderator ตั้งแต่เปิดตัว
 
@@ -727,4 +742,4 @@ kawan2/
 
 ---
 
-*เอกสารนี้อ้างอิงดีไซน์จากโฟลเดอร์ `design/` (kawan3) ซึ่งปรับใช้ได้ตามความเหมาะสม*
+_เอกสารนี้อ้างอิงดีไซน์จากโฟลเดอร์ `design/` (kawan3) ซึ่งปรับใช้ได้ตามความเหมาะสม_

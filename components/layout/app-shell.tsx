@@ -40,7 +40,7 @@ type ProfileLite = {
 
 const NAV = [
   { href: "/", label: "หน้าแรก", Icon: Home },
-  { href: "/news", label: "ข่าวสารภูมิภาค", Icon: Newspaper },
+  { href: "/news", label: "ข่าวสาร", Icon: Newspaper },
   { href: "/board", label: "กระดานสนทนา", Icon: MessagesSquare },
   { href: "/events", label: "ปฏิทินกิจกรรม", Icon: CalendarDays },
   { href: "/guilds", label: "กิลด์", Icon: Flag },
@@ -117,7 +117,11 @@ export function AppShell({
           </Link>
 
           {/* search (desktop) */}
-          <form action="/search" method="get" className="relative ml-4 hidden max-w-md flex-1 md:block">
+          <form
+            action="/search"
+            method="get"
+            className="relative ml-4 hidden max-w-md flex-1 md:block"
+          >
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-on-surface-variant" />
             <input
               type="search"
@@ -136,7 +140,12 @@ export function AppShell({
                   aria-label="เมนูผู้ใช้"
                   aria-expanded={menuOpen}
                 >
-                  <Avatar src={profile.avatar_url} name={profile.display_name || profile.username} role={profile.role} size={36} />
+                  <Avatar
+                    src={profile.avatar_url}
+                    name={profile.display_name || profile.username}
+                    role={profile.role}
+                    size={36}
+                  />
                 </button>
 
                 {menuOpen && (
@@ -154,14 +163,26 @@ export function AppShell({
                         onClick={() => setMenuOpen(false)}
                         className="flex items-center gap-3 border-b border-outline-variant p-3 hover:bg-surface-container-low"
                       >
-                        <Avatar src={profile.avatar_url} name={profile.display_name || profile.username} role={profile.role} size={44} />
+                        <Avatar
+                          src={profile.avatar_url}
+                          name={profile.display_name || profile.username}
+                          role={profile.role}
+                          size={44}
+                        />
                         <div className="min-w-0">
-                          <p className="truncate font-semibold text-on-surface">{profile.display_name || profile.username}</p>
-                          <p className="truncate text-xs text-on-surface-variant">@{profile.username}</p>
+                          <p className="truncate font-semibold text-on-surface">
+                            {profile.display_name || profile.username}
+                          </p>
+                          <p className="truncate text-xs text-on-surface-variant">
+                            @{profile.username}
+                          </p>
                           <div className="mt-1 flex items-center gap-2">
                             <LevelBadge levelId={profile.level_id} />
                             <span className="text-[11px] text-on-surface-variant">
-                              {(profile.reputation ?? 0).toLocaleString("th-TH")} คะแนน
+                              {(profile.reputation ?? 0).toLocaleString(
+                                "th-TH",
+                              )}{" "}
+                              คะแนน
                             </span>
                           </div>
                         </div>
@@ -170,11 +191,35 @@ export function AppShell({
                       {/* เมนู */}
                       <nav className="py-1 text-sm">
                         {[
-                          { href: `/u/${profile.username}`, Icon: UserRound, label: "โปรไฟล์ของฉัน" },
-                          { href: "/messages", Icon: MessageCircle, label: "ข้อความ" },
-                          { href: "/notifications", Icon: Bell, label: "การแจ้งเตือน" },
-                          ...(profile.role === "admin" ? [{ href: "/admin", Icon: Shield, label: "แผงผู้ดูแล" }] : []),
-                          { href: "/membership", Icon: Crown, label: "สนับสนุนเรา" },
+                          {
+                            href: `/u/${profile.username}`,
+                            Icon: UserRound,
+                            label: "โปรไฟล์ของฉัน",
+                          },
+                          {
+                            href: "/messages",
+                            Icon: MessageCircle,
+                            label: "ข้อความ",
+                          },
+                          {
+                            href: "/notifications",
+                            Icon: Bell,
+                            label: "การแจ้งเตือน",
+                          },
+                          ...(profile.role === "admin"
+                            ? [
+                                {
+                                  href: "/admin",
+                                  Icon: Shield,
+                                  label: "แผงผู้ดูแล",
+                                },
+                              ]
+                            : []),
+                          {
+                            href: "/membership",
+                            Icon: Crown,
+                            label: "สนับสนุนเรา",
+                          },
                         ].map(({ href, Icon, label }) => (
                           <Link
                             key={href}
@@ -182,12 +227,16 @@ export function AppShell({
                             onClick={() => setMenuOpen(false)}
                             className="flex items-center gap-2.5 px-3 py-2 text-on-surface hover:bg-surface-container-low"
                           >
-                            <Icon className="h-4 w-4 text-on-surface-variant" /> {label}
+                            <Icon className="h-4 w-4 text-on-surface-variant" />{" "}
+                            {label}
                           </Link>
                         ))}
                       </nav>
 
-                      <form action={signout} className="border-t border-outline-variant">
+                      <form
+                        action={signout}
+                        className="border-t border-outline-variant"
+                      >
                         <button className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-error hover:bg-error-container">
                           <LogOut className="h-4 w-4" /> ออกจากระบบ
                         </button>
@@ -206,13 +255,16 @@ export function AppShell({
       </header>
 
       {/* แบนเนอร์เมื่อถูกระงับ/ปิดบัญชี */}
-      {profile && (profile.disabled || (profile.banned_until && new Date(profile.banned_until).getTime() > Date.now())) && (
-        <div className="bg-error px-4 py-2 text-center text-sm font-medium text-on-error">
-          {profile.disabled
-            ? "บัญชีของคุณถูกปิดใช้งาน — โพสต์/ตอบ/ส่งข้อความไม่ได้"
-            : `บัญชีของคุณถูกระงับถึง ${new Date(profile.banned_until!).toLocaleString("th-TH")} — โพสต์/ตอบ/ส่งข้อความไม่ได้`}
-        </div>
-      )}
+      {profile &&
+        (profile.disabled ||
+          (profile.banned_until &&
+            new Date(profile.banned_until).getTime() > Date.now())) && (
+          <div className="bg-error px-4 py-2 text-center text-sm font-medium text-on-error">
+            {profile.disabled
+              ? "บัญชีของคุณถูกปิดใช้งาน — โพสต์/ตอบ/ส่งข้อความไม่ได้"
+              : `บัญชีของคุณถูกระงับถึง ${new Date(profile.banned_until!).toLocaleString("th-TH")} — โพสต์/ตอบ/ส่งข้อความไม่ได้`}
+          </div>
+        )}
 
       {/* ===== body: sidebar + main ===== */}
       <div className="mx-auto flex w-full max-w-container">
