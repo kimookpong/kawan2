@@ -8,7 +8,11 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function MessagesPage() {
+export default async function MessagesPage({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) {
   const supabase = createClient();
   const {
     data: { user },
@@ -47,6 +51,11 @@ export default async function MessagesPage() {
       <h1 className="mb-4 text-xl font-bold text-primary sm:text-2xl">
         ข้อความ
       </h1>
+      {searchParams.error && (
+        <p className="mb-3 rounded border border-error-container bg-error-container px-4 py-2 text-sm text-on-error-container">
+          {searchParams.error}
+        </p>
+      )}
       <div className="card divide-y divide-outline-variant">
         {sorted.length > 0 ? (
           sorted.map((m: any) => {

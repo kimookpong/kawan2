@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Swords } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "@/components/avatar";
 
@@ -119,7 +119,13 @@ export default async function MePage({ searchParams }: { searchParams: { error?:
           <label className="mb-1 block text-sm font-medium">กิลด์</label>
           {guild ? (
             <p className="text-sm">
-              สังกัด <Link href={`/guilds/${guild.slug}`} className="font-medium text-primary hover:underline">⚔ {guild.name}</Link>
+              สังกัด{" "}
+              <Link
+                href={`/guilds/${guild.slug}`}
+                className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+              >
+                <Swords className="h-3.5 w-3.5" /> {guild.name}
+              </Link>
             </p>
           ) : (
             <p className="text-sm text-on-surface-variant">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  Shield,
+  Swords,
   Users,
   AlertCircle,
   LogOut,
@@ -120,7 +120,7 @@ export default async function GuildPage({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={guild.emblem_url} alt="" className="h-full w-full" />
             ) : (
-              <Shield className="h-10 w-10" />
+              <Swords className="h-10 w-10" />
             )}
           </span>
           <div className="min-w-0 flex-1">
@@ -128,9 +128,7 @@ export default async function GuildPage({
               <h1 className="text-xl font-bold text-on-surface sm:text-2xl">
                 {guild.name}
               </h1>
-              {guild.is_official && (
-                <span className="chip bg-amber-100 text-amber-800">ทางการ</span>
-              )}
+
               {canEditName &&
                 (canEditNameNow ? (
                   <details className="group">

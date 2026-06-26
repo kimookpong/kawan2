@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Award, MessageSquare, MessagesSquare, Ban } from "lucide-react";
+import { Award, MessageSquare, MessagesSquare, Ban, Swords } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
 import { ModerationPanel } from "@/components/moderation-panel";
 import { JsonLd } from "@/components/seo/json-ld";
+import { ThreadListItem } from "@/components/board/thread-list-item";
 
 export async function generateMetadata({
   params,
@@ -103,7 +104,7 @@ export default async function ProfilePage({
     supabase
       .from("threads")
       .select(
-        "id, title, created_at, reply_count, like_count, view_count, categories(name_th, slug)",
+        "id, title, created_at, reply_count, like_count, view_count, is_pinned, categories(name_th, slug)",
       )
       .eq("author_id", profile.id)
       .eq("status", "published")
@@ -111,7 +112,7 @@ export default async function ProfilePage({
       .limit(10),
     supabase
       .from("posts")
-      .select("id, body, created_at, thread_id, threads(id, title)")
+      .select("id, body, created_at, thread_id, threads(id, title, categories(name_th, slug))")
       .eq("author_id", profile.id)
       .eq("status", "published")
       .order("created_at", { ascending: false })
@@ -211,9 +212,9 @@ export default async function ProfilePage({
                     ·{" "}
                     <Link
                       href={`/guilds/${guild.slug}`}
-                      className="text-primary hover:underline"
+                      className="inline-flex items-center gap-1 text-primary hover:underline"
                     >
-                      ⚔ {guild.name}
+                      <Swords className="h-3.5 w-3.5" /> {guild.name}
                     </Link>
                   </>
                 )}
@@ -277,31 +278,20 @@ export default async function ProfilePage({
           <h2 className="mb-3 flex items-center gap-2 border-l-4 border-tertiary-container pl-3 text-lg font-bold">
             <MessageSquare className="h-5 w-5 text-primary" /> กระทู้ที่ตั้ง
           </h2>
-          <div className="card divide-y divide-outline-variant">
+          <div className="card overflow-hidden divide-y divide-outline-variant">
             {(recentThreads ?? []).length > 0 ? (
               (recentThreads ?? []).map((t: any) => (
-                <Link
+                <ThreadListItem
                   key={t.id}
-                  href={`/board/thread/${t.id}`}
-                  className="block p-4 hover:bg-surface-container-low"
-                >
-                  <div className="flex items-center gap-2">
-                    {t.categories && (
-                      <span className="chip bg-primary-container/10 text-primary">
-                        {t.categories.name_th}
-                      </span>
-                    )}
-                    <span className="text-xs text-on-surface-variant">
-                      {new Date(t.created_at).toLocaleDateString("th-TH")}
-                    </span>
-                  </div>
-                  <p className="mt-1 truncate font-medium text-on-surface text-sm">
-                    {t.title}
-                  </p>
-                  <p className="text-xs text-on-surface-variant">
-                    💬 {t.reply_count} · ❤ {t.like_count} · 👁 {t.view_count}
-                  </p>
-                </Link>
+                  t={{
+                    ...t,
+                    profiles: {
+                      username: profile.username,
+                      display_name: profile.display_name,
+                      level_id: profile.level_id,
+                    },
+                  }}
+                />
               ))
             ) : (
               <p className="p-6 text-center text-sm text-on-surface-variant">
@@ -316,25 +306,10 @@ export default async function ProfilePage({
           <h2 className="mb-3 flex items-center gap-2 border-l-4 border-tertiary-container pl-3 text-lg font-bold">
             <MessagesSquare className="h-5 w-5 text-primary" /> ความเห็นล่าสุด
           </h2>
-          <div className="card divide-y divide-outline-variant">
+          <div className="card overflow-hidden divide-y divide-outline-variant">
             {(recentPosts ?? []).length > 0 ? (
               (recentPosts ?? []).map((p: any) => (
-                <Link
-                  key={p.id}
-                  href={`/board/thread/${p.thread_id}`}
-                  className="block p-4 hover:bg-surface-container-low"
-                >
-                  <p className="text-xs text-on-surface-variant">
-                    ตอบในกระทู้ ·{" "}
-                    {new Date(p.created_at).toLocaleDateString("th-TH")}
-                  </p>
-                  <p className="truncate text-sm font-medium text-primary">
-                    {p.threads?.title ?? "(กระทู้ถูกลบ)"}
-                  </p>
-                  <p className="mt-1 line-clamp-2 text-sm text-on-surface-variant">
-                    {p.body.replace(/\[[^\]]*\]/g, "").slice(0, 160)}
-                  </p>
-                </Link>
+                <PostListItem key={p.id} p={p} />
               ))
             ) : (
               <p className="p-6 text-center text-sm text-on-surface-variant">
@@ -377,5 +352,50 @@ function Stat({ label, value }: { label: string; value: number }) {
       </p>
       <p className="text-xs text-on-surface-variant">{label}</p>
     </div>
+  );
+}
+
+/** แถวความเห็นแบบเดียวกับ ThreadListItem แต่แสดงตัวอย่างเนื้อความที่ตอบ */
+function PostListItem({ p }: { p: any }) {
+  const when = new Date(p.created_at).toLocaleString("th-TH", {
+    day: "numeric",
+    month: "short",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const preview = (p.body ?? "")
+    .replace(/\[[^\]]*\]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const title = p.threads?.title ?? "(กระทู้ถูกลบ)";
+  const cat = p.threads?.categories;
+
+  return (
+    <Link
+      href={`/board/thread/${p.thread_id}`}
+      className="flex items-start gap-3 px-3 py-2 transition hover:bg-surface-container-low"
+    >
+      <span className="shrink-0 pt-0.5">
+        <MessagesSquare className="h-4 w-4 text-on-surface-variant" />
+      </span>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          {cat && (
+            <span className="chip bg-primary-container/10 text-primary">
+              {cat.name_th}
+            </span>
+          )}
+          <p className="truncate font-medium text-on-surface text-sm">
+            {title}
+          </p>
+        </div>
+        <p className="line-clamp-2 text-xs text-on-surface-variant">
+          {preview.slice(0, 200) || "(ไม่มีเนื้อหา)"}
+        </p>
+        <p className="text-[11px] text-on-surface-variant">{when} น.</p>
+      </div>
+    </Link>
   );
 }

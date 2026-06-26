@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Shield, Plus, Users } from "lucide-react";
+import { Swords, Plus, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
@@ -91,7 +91,7 @@ export default async function GuildsPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={g.emblem_url} alt="" className="h-full w-full" />
                 ) : (
-                  <Shield className="h-6 w-6" />
+                  <Swords className="h-6 w-6" />
                 )}
               </span>
               <div className="min-w-0 flex-1">
@@ -99,11 +99,7 @@ export default async function GuildsPage() {
                   <p className="truncate font-semibold text-on-surface">
                     {g.name}
                   </p>
-                  {g.is_official && (
-                    <span className="chip bg-amber-100 text-amber-800">
-                      ทางการ
-                    </span>
-                  )}
+
                   {myGuildId === g.id && (
                     <span className="chip bg-primary-container/15 text-primary">
                       ของคุณ

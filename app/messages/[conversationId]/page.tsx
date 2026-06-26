@@ -23,7 +23,7 @@ export default async function ConversationPage({
 
   const { data: other } = await supabase
     .from("conversation_members")
-    .select("profiles(username, display_name)")
+    .select("profiles(username, display_name, avatar_url, role)")
     .eq("conversation_id", convId)
     .neq("user_id", user.id)
     .maybeSingle();
@@ -35,14 +35,17 @@ export default async function ConversationPage({
     .order("created_at")
     .limit(100);
 
-  const otherName =
-    (other?.profiles as any)?.display_name || (other?.profiles as any)?.username || "ผู้ใช้";
+  const op = (other?.profiles as any) ?? null;
+  const otherName = op?.display_name || op?.username || "ผู้ใช้";
 
   return (
     <ChatRoom
       conversationId={convId}
       currentUserId={user.id}
       otherName={otherName}
+      otherUsername={op?.username ?? null}
+      otherAvatar={op?.avatar_url ?? null}
+      otherRole={op?.role ?? null}
       initialMessages={initialMessages ?? []}
     />
   );

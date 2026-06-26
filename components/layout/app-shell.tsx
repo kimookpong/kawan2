@@ -11,7 +11,7 @@ import {
   Newspaper,
   MessagesSquare,
   CalendarDays,
-  Flag,
+  Swords,
   Users,
   MessageCircle,
   Bell,
@@ -43,7 +43,7 @@ const NAV = [
   { href: "/news", label: "ข่าวสาร", Icon: Newspaper },
   { href: "/board", label: "กระดานสนทนา", Icon: MessagesSquare },
   { href: "/events", label: "ปฏิทินกิจกรรม", Icon: CalendarDays },
-  { href: "/guilds", label: "กิลด์", Icon: Flag },
+  { href: "/guilds", label: "กิลด์", Icon: Swords },
   { href: "/members", label: "ค้นหาสมาชิก", Icon: Users },
 ];
 

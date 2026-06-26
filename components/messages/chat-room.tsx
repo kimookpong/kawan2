@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Send } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { Avatar } from "@/components/avatar";
 
 type Msg = { id: number; body: string | null; sender_id: string; created_at: string };
 
@@ -9,20 +12,26 @@ export function ChatRoom({
   conversationId,
   currentUserId,
   otherName,
+  otherUsername,
+  otherAvatar,
+  otherRole,
   initialMessages,
 }: {
   conversationId: number;
   currentUserId: string;
   otherName: string;
+  otherUsername?: string | null;
+  otherAvatar?: string | null;
+  otherRole?: string | null;
   initialMessages: Msg[];
 }) {
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
   const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
   const supabase = createClient();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // subscribe ข้อความใหม่แบบ realtime
     const channel = supabase
       .channel(`conv-${conversationId}`)
       .on(
@@ -37,9 +46,9 @@ export function ChatRoom({
           setMessages((prev) =>
             prev.some((m) => m.id === (payload.new as Msg).id)
               ? prev
-              : [...prev, payload.new as Msg]
+              : [...prev, payload.new as Msg],
           );
-        }
+        },
       )
       .subscribe();
 
@@ -55,24 +64,48 @@ export function ChatRoom({
   async function send(e: React.FormEvent) {
     e.preventDefault();
     const body = text.trim();
-    if (!body) return;
+    if (!body || sending) return;
+    setSending(true);
     setText("");
     const { error } = await supabase
       .from("messages")
       .insert({ conversation_id: conversationId, sender_id: currentUserId, body });
-    if (error) setText(body); // คืนค่าถ้าส่งไม่สำเร็จ
+    if (error) setText(body);
+    setSending(false);
   }
+
+  const headerAvatar = (
+    <Avatar src={otherAvatar} name={otherName} role={otherRole ?? null} size={36} />
+  );
 
   return (
     <div className="flex h-[75vh] w-full flex-col">
       <div className="card flex items-center gap-3 rounded-b-none p-4">
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-on-primary">
-          {otherName.charAt(0).toUpperCase()}
-        </span>
-        <p className="font-semibold">{otherName}</p>
+        {otherUsername ? (
+          <Link
+            href={`/u/${otherUsername}`}
+            className="flex items-center gap-3 hover:opacity-90"
+          >
+            {headerAvatar}
+            <div>
+              <p className="font-semibold leading-tight">{otherName}</p>
+              <p className="text-xs text-on-surface-variant">@{otherUsername}</p>
+            </div>
+          </Link>
+        ) : (
+          <>
+            {headerAvatar}
+            <p className="font-semibold">{otherName}</p>
+          </>
+        )}
       </div>
 
       <div className="flex-1 space-y-2 overflow-y-auto border-x border-outline-variant bg-surface-container-low p-4">
+        {messages.length === 0 && (
+          <p className="py-10 text-center text-sm text-on-surface-variant">
+            ยังไม่มีข้อความ — เริ่มทักทายกันได้เลย
+          </p>
+        )}
         {messages.map((m) => {
           const mine = m.sender_id === currentUserId;
           return (
@@ -100,7 +133,13 @@ export function ChatRoom({
           placeholder="พิมพ์ข้อความ..."
           className="flex-1 rounded border border-outline-variant px-3 py-2 outline-none focus:border-primary"
         />
-        <button className="btn-primary">ส่ง</button>
+        <button
+          type="submit"
+          disabled={!text.trim() || sending}
+          className="btn-primary inline-flex items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Send className="h-4 w-4" /> ส่ง
+        </button>
       </form>
     </div>
   );

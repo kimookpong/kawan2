@@ -14,10 +14,14 @@ export function LevelBadge({
   const c = `var(--lvl-${levelId}, #64748b)`;
   return (
     <span
-      className="chip font-medium"
-      style={{ color: c, backgroundColor: `color-mix(in srgb, ${c} 14%, transparent)` }}
+      className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold"
+      style={{
+        color: c,
+        backgroundColor: `color-mix(in srgb, ${c} 14%, transparent)`,
+      }}
     >
-      {showTier ? `ระดับ ${levelId} · ${lvl.label}` : lvl.label}
+      <Shield className="h-3 w-3" strokeWidth={2} />
+      {showTier ? `${lvl.label} · LV ${levelId}` : lvl.label}
     </span>
   );
 }
