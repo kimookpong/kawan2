@@ -23,6 +23,7 @@ export default async function MarketplacePage({
   const minPrice = Number(searchParams.min) || null;
   const maxPrice = Number(searchParams.max) || null;
 
+  const archiveCutoff = new Date(Date.now() - 30 * 86400000).toISOString();
   let query = supabase
     .from("marketplace_listings")
     .select(
@@ -30,6 +31,8 @@ export default async function MarketplacePage({
     )
     .neq("status", "hidden")
     .neq("status", "deleted")
+    // ซ่อนประกาศ sold ที่เก่ากว่า 30 วัน
+    .or(`status.neq.sold,updated_at.gte.${archiveCutoff}`)
     .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(48);
@@ -39,7 +42,7 @@ export default async function MarketplacePage({
   if (minPrice != null) query = query.gte("price", minPrice);
   if (maxPrice != null) query = query.lte("price", maxPrice);
 
-  const [{ data: listings }, { data: categories }, { data: provinces }, { data: mySeller }] =
+  const [{ data: listings }, { data: categories }, { data: provinces }, { data: mySeller }, { data: me }] =
     await Promise.all([
       query,
       supabase
@@ -51,13 +54,27 @@ export default async function MarketplacePage({
       user
         ? supabase.from("sellers").select("status").eq("id", user.id).maybeSingle()
         : Promise.resolve({ data: null }),
+      user
+        ? supabase.from("profiles").select("role").eq("id", user.id).single()
+        : Promise.resolve({ data: null }),
     ]);
+  const isStaff = me?.role === "admin" || me?.role === "editor";
 
   return (
     <div className="w-full space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-bold text-primary sm:text-2xl">ตลาดซื้อขาย</h1>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          {user && (
+            <Link href="/marketplace/favorites" className="btn-outline text-sm">
+              ที่บันทึก
+            </Link>
+          )}
+          {isStaff && (
+            <Link href="/admin/marketplace/listings" className="btn-outline text-sm">
+              จัดการ
+            </Link>
+          )}
           {mySeller?.status === "approved" ? (
             <>
               <Link href="/marketplace/seller/dashboard" className="btn-outline text-sm">
@@ -71,11 +88,11 @@ export default async function MarketplacePage({
             <Link href="/marketplace/seller/status" className="btn-outline text-sm">
               สถานะผู้ขาย
             </Link>
-          ) : (
+          ) : user ? (
             <Link href="/marketplace/seller/register" className="btn-accent text-sm">
               สมัครเป็นผู้ขาย
             </Link>
-          )}
+          ) : null}
         </div>
       </div>
 

@@ -237,7 +237,10 @@ export default async function ListingPage({
             <p className="mb-2 text-xs font-semibold text-on-surface-variant">
               ผู้ขาย
             </p>
-            <div className="flex items-center gap-3">
+            <Link
+              href={`/marketplace/seller/${l.seller_id}`}
+              className="flex items-center gap-3 hover:opacity-90"
+            >
               <Avatar
                 src={seller?.logo_url || sellerProfile?.avatar_url}
                 name={seller?.shop_name || sellerProfile?.username}
@@ -245,16 +248,13 @@ export default async function ListingPage({
                 size={44}
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold">
+                <p className="truncate font-semibold hover:text-primary">
                   {seller?.shop_name ?? "ผู้ขาย"}
                 </p>
                 {sellerProfile?.username && (
-                  <Link
-                    href={`/u/${sellerProfile.username}`}
-                    className="block truncate text-xs text-primary hover:underline"
-                  >
+                  <span className="block truncate text-xs text-on-surface-variant">
                     @{sellerProfile.username}
-                  </Link>
+                  </span>
                 )}
                 {seller?.provinces?.name_th && (
                   <p className="text-xs text-on-surface-variant">
@@ -262,7 +262,7 @@ export default async function ListingPage({
                   </p>
                 )}
               </div>
-            </div>
+            </Link>
             <div className="mt-3 space-y-1 text-sm">
               {seller?.contact_line && (
                 <p>LINE: <span className="font-medium">{seller.contact_line}</span></p>

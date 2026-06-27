@@ -5,6 +5,7 @@ import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
 import { BannerCarousel, type Banner } from "@/components/home/banner-carousel";
 import { ThreadListItem } from "@/components/board/thread-list-item";
+import { ListingCard } from "@/components/marketplace/listing-card";
 import { NEWS_FALLBACK_IMG, levelNameStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
 
@@ -84,6 +85,18 @@ export default async function HomePage() {
       .order("starts_at")
       .limit(4),
   ]);
+
+  // ประกาศ marketplace ล่าสุด (แยก query เพื่อไม่ขัดกับ types ของ Promise.all เดิม)
+  const { data: latestListings } = await supabase
+    .from("marketplace_listings")
+    .select(
+      "id, title, cover_url, price, price_type, condition, status, marketplace_categories(name_th), provinces(name_th)",
+    )
+    .in("status", ["available", "reserved"])
+    .order("is_pinned", { ascending: false })
+    .order("is_featured", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(8);
 
   const featured = featuredArr?.[0];
   // ข่าวที่เหลือ (ไม่รวม featured) สำหรับการ์ดเล็ก
@@ -236,6 +249,18 @@ export default async function HomePage() {
           </div>
         )}
       </section>
+
+      {/* ===== 3b) ประกาศตลาดซื้อขาย ===== */}
+      {(latestListings ?? []).length > 0 && (
+        <section>
+          <SectionHead title="ประกาศซื้อขายล่าสุด" href="/marketplace" />
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+            {(latestListings ?? []).map((l: any) => (
+              <ListingCard key={l.id} l={l} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ===== 4) กระทู้ยอดนิยม + สมาชิกเด่น ===== */}
       <section className="grid gap-6 lg:grid-cols-3">

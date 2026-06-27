@@ -37,6 +37,7 @@ export default async function MarketplaceCategoryPage({
     .single();
   if (!category) notFound();
 
+  const archiveCutoff = new Date(Date.now() - 30 * 86400000).toISOString();
   const { data: listings } = await supabase
     .from("marketplace_listings")
     .select(
@@ -45,6 +46,7 @@ export default async function MarketplaceCategoryPage({
     .eq("category_id", category.id)
     .neq("status", "hidden")
     .neq("status", "deleted")
+    .or(`status.neq.sold,updated_at.gte.${archiveCutoff}`)
     .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(60);
