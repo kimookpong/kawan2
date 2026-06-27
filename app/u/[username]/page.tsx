@@ -1,6 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Award, MessageSquare, MessagesSquare, Ban, Swords } from "lucide-react";
+import {
+  Award,
+  MessageSquare,
+  MessagesSquare,
+  Ban,
+  Swords,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
@@ -112,7 +118,9 @@ export default async function ProfilePage({
       .limit(10),
     supabase
       .from("posts")
-      .select("id, body, created_at, thread_id, threads(id, title, categories(name_th, slug))")
+      .select(
+        "id, body, created_at, thread_id, threads(id, title, categories(name_th, slug))",
+      )
       .eq("author_id", profile.id)
       .eq("status", "published")
       .order("created_at", { ascending: false })
@@ -133,7 +141,7 @@ export default async function ProfilePage({
       )
     : 100;
 
-  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
+  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.app";
   const pName = profile.display_name || profile.username;
 
   return (

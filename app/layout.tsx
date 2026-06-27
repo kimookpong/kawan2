@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app",
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.app",
   ),
   title: {
     default: "Kawan2 | ชุมชนชายแดนใต้",

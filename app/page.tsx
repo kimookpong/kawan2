@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { MapPin, Pin, ArrowRight, MessageCircle, Eye, Plus } from "lucide-react";
+import {
+  MapPin,
+  Pin,
+  ArrowRight,
+  MessageCircle,
+  Eye,
+  Plus,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
@@ -9,7 +16,7 @@ import { ListingCard } from "@/components/marketplace/listing-card";
 import { NEWS_FALLBACK_IMG, levelNameStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.app";
 
 export const revalidate = 60; // ISR
 
@@ -130,16 +137,16 @@ export default async function HomePage() {
     },
     ...(hero
       ? [
-        {
-          id: "news",
-          eyebrow: hero.category ?? "ข่าวเด่น",
-          title: hero.title,
-          subtitle: hero.excerpt ?? undefined,
-          cta: { label: "อ่านต่อ", href: `/news/${hero.slug}` },
-          theme: "dark" as const,
-          image: hero.cover_url,
-        } as Banner,
-      ]
+          {
+            id: "news",
+            eyebrow: hero.category ?? "ข่าวเด่น",
+            title: hero.title,
+            subtitle: hero.excerpt ?? undefined,
+            cta: { label: "อ่านต่อ", href: `/news/${hero.slug}` },
+            theme: "dark" as const,
+            image: hero.cover_url,
+          } as Banner,
+        ]
       : []),
     {
       id: "membership",

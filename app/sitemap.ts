@@ -1,30 +1,34 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.app";
 
 export const revalidate = 3600; // อัปเดต sitemap ทุกชั่วโมง
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createClient();
 
-  const [{ data: news }, { data: threads }, { data: guilds }, { data: categories }] =
-    await Promise.all([
-      supabase
-        .from("news")
-        .select("slug, published_at")
-        .eq("status", "published")
-        .order("published_at", { ascending: false })
-        .limit(2000),
-      supabase
-        .from("threads")
-        .select("id, created_at")
-        .eq("status", "published")
-        .order("created_at", { ascending: false })
-        .limit(5000),
-      supabase.from("guilds").select("slug, created_at").limit(2000),
-      supabase.from("categories").select("slug").eq("is_active", true),
-    ]);
+  const [
+    { data: news },
+    { data: threads },
+    { data: guilds },
+    { data: categories },
+  ] = await Promise.all([
+    supabase
+      .from("news")
+      .select("slug, published_at")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(2000),
+    supabase
+      .from("threads")
+      .select("id, created_at")
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(5000),
+    supabase.from("guilds").select("slug, created_at").limit(2000),
+    supabase.from("categories").select("slug").eq("is_active", true),
+  ]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
@@ -58,12 +62,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const categoryRoutes: MetadataRoute.Sitemap = (categories ?? []).map((c: any) => ({
-    url: `${SITE}/board/${c.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "daily",
-    priority: 0.6,
-  }));
+  const categoryRoutes: MetadataRoute.Sitemap = (categories ?? []).map(
+    (c: any) => ({
+      url: `${SITE}/board/${c.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.6,
+    }),
+  );
 
   const guildRoutes: MetadataRoute.Sitemap = (guilds ?? []).map((g: any) => ({
     url: `${SITE}/guilds/${g.slug}`,
@@ -72,5 +78,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticRoutes, ...newsRoutes, ...categoryRoutes, ...threadRoutes, ...guildRoutes];
+  return [
+    ...staticRoutes,
+    ...newsRoutes,
+    ...categoryRoutes,
+    ...threadRoutes,
+    ...guildRoutes,
+  ];
 }
