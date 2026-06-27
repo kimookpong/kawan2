@@ -182,6 +182,45 @@ export async function setListingStatus(formData: FormData) {
   revalidatePath("/marketplace/seller/dashboard");
 }
 
+export async function createListingComment(formData: FormData) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const listingId = Number(formData.get("listing_id"));
+  if (!user) redirect(`/auth/login?redirect=/marketplace/listing/${listingId}`);
+
+  const body = String(formData.get("body") || "").trim();
+  if (body.length < 1 || !listingId) {
+    redirect(`/marketplace/listing/${listingId}`);
+  }
+
+  const { error } = await supabase
+    .from("listing_comments")
+    .insert({ listing_id: listingId, author_id: user.id, body });
+  if (error) {
+    redirect(
+      `/marketplace/listing/${listingId}?error=${encodeURIComponent(error.message)}#comments`,
+    );
+  }
+
+  revalidatePath(`/marketplace/listing/${listingId}`);
+  redirect(`/marketplace/listing/${listingId}#comments`);
+}
+
+export async function deleteListingComment(formData: FormData) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const commentId = Number(formData.get("comment_id"));
+  const listingId = Number(formData.get("listing_id"));
+  if (!user || !commentId) return;
+
+  await supabase
+    .from("listing_comments")
+    .update({ status: "deleted", updated_at: new Date().toISOString() })
+    .eq("id", commentId);
+
+  revalidatePath(`/marketplace/listing/${listingId}`);
+}
+
 export async function toggleFavorite(formData: FormData) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

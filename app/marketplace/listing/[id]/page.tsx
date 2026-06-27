@@ -1,22 +1,32 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ChevronLeft,
   Edit,
   Eye,
   Heart,
+  Lock,
   MapPin,
   MessageCircle,
   Phone,
+  Trash2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { renderBBCode } from "@/lib/bbcode";
 import { Avatar } from "@/components/avatar";
 import { ReportButton } from "@/components/report-button";
 import { JsonLd } from "@/components/seo/json-ld";
-import { CONDITION_LABEL, formatPrice, LISTING_STATUS_LABEL } from "@/lib/marketplace";
-import { NEWS_FALLBACK_IMG } from "@/lib/constants";
-import { toggleFavorite } from "@/app/marketplace/actions";
+import { LevelBadge } from "@/components/user-badges";
+import {
+  CONDITION_LABEL,
+  formatPrice,
+  LISTING_STATUS_LABEL,
+} from "@/lib/marketplace";
+import { NEWS_FALLBACK_IMG, levelNameStyle } from "@/lib/constants";
+import {
+  createListingComment,
+  deleteListingComment,
+  toggleFavorite,
+} from "@/app/marketplace/actions";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = createClient();
@@ -59,6 +69,7 @@ export default async function ListingPage({
 
   const { data: { user } } = await supabase.auth.getUser();
   let canEdit = false;
+  let isStaff = false;
   let isFav = false;
   if (user) {
     const { data: me } = await supabase
@@ -66,8 +77,8 @@ export default async function ListingPage({
       .select("role")
       .eq("id", user.id)
       .single();
-    canEdit =
-      user.id === l.seller_id || me?.role === "admin" || me?.role === "editor";
+    isStaff = me?.role === "admin" || me?.role === "editor";
+    canEdit = user.id === l.seller_id || isStaff;
     const { data: fav } = await supabase
       .from("marketplace_favorites")
       .select("user_id")
@@ -76,6 +87,15 @@ export default async function ListingPage({
       .maybeSingle();
     isFav = !!fav;
   }
+
+  const { data: comments } = await supabase
+    .from("listing_comments")
+    .select(
+      "id, body, created_at, author_id, profiles(username, display_name, avatar_url, role, level_id)",
+    )
+    .eq("listing_id", id)
+    .eq("status", "published")
+    .order("created_at", { ascending: true });
 
   const seller: any = l.sellers;
   const sellerProfile: any = seller?.profiles;
@@ -161,6 +181,117 @@ export default async function ListingPage({
               dangerouslySetInnerHTML={{ __html: renderBBCode(l.description) }}
             />
           </div>
+
+          {/* ความเห็น */}
+          <div id="comments" className="card mt-4 scroll-mt-20 p-5">
+            <h2 className="mb-3 border-b border-outline-variant pb-2 text-lg font-bold">
+              ความเห็น ({(comments ?? []).length})
+            </h2>
+
+            <div className="space-y-3">
+              {(comments ?? []).map((c: any) => {
+                const author = c.profiles;
+                const name =
+                  author?.display_name || author?.username || "สมาชิก";
+                const canDelete =
+                  user && (user.id === c.author_id || isStaff);
+                return (
+                  <div
+                    key={c.id}
+                    id={`comment-${c.id}`}
+                    className="flex gap-3 scroll-mt-20"
+                  >
+                    <Link
+                      href={author?.username ? `/u/${author.username}` : "#"}
+                      className="shrink-0"
+                    >
+                      <Avatar
+                        src={author?.avatar_url}
+                        name={name}
+                        role={author?.role}
+                        size={36}
+                      />
+                    </Link>
+                    <div className="min-w-0 flex-1 rounded-lg bg-surface-container-low p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <Link
+                            href={author?.username ? `/u/${author.username}` : "#"}
+                            className="text-sm font-semibold hover:text-primary"
+                            style={levelNameStyle(author?.level_id)}
+                          >
+                            {name}
+                          </Link>
+                          {author?.level_id && (
+                            <LevelBadge levelId={author.level_id} />
+                          )}
+                          {c.author_id === l.seller_id && (
+                            <span className="rounded bg-primary-container px-1.5 text-[10px] font-semibold text-on-primary-container">
+                              ผู้ขาย
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-on-surface-variant">
+                          {new Date(c.created_at).toLocaleString("th-TH")}
+                        </span>
+                      </div>
+                      <p className="mt-1 whitespace-pre-wrap text-sm text-on-surface">
+                        {c.body}
+                      </p>
+                      {canDelete && (
+                        <form action={deleteListingComment} className="mt-1">
+                          <input type="hidden" name="comment_id" value={c.id} />
+                          <input type="hidden" name="listing_id" value={id} />
+                          <button className="inline-flex items-center gap-1 text-xs text-on-surface-variant hover:text-error">
+                            <Trash2 className="h-3 w-3" /> ลบ
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              {(comments ?? []).length === 0 && (
+                <p className="py-4 text-center text-sm text-on-surface-variant">
+                  ยังไม่มีความเห็น เป็นคนแรกที่สอบถามได้เลย
+                </p>
+              )}
+            </div>
+
+            {user ? (
+              <form
+                action={createListingComment}
+                className="mt-4 border-t border-outline-variant pt-3"
+              >
+                <input type="hidden" name="listing_id" value={id} />
+                <textarea
+                  name="body"
+                  required
+                  minLength={1}
+                  maxLength={2000}
+                  rows={3}
+                  placeholder="ถามผู้ขาย หรือแสดงความเห็นเกี่ยวกับประกาศนี้..."
+                  className="w-full rounded border border-outline-variant px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <div className="mt-2 flex items-center justify-between">
+                  <span className="text-xs text-on-surface-variant">
+                    ความเห็นนี้แสดงต่อทุกคน — สำหรับคุยส่วนตัวให้กด "ส่งข้อความ"
+                  </span>
+                  <button className="btn-primary text-sm">ส่งความเห็น</button>
+                </div>
+              </form>
+            ) : (
+              <p className="mt-4 border-t border-outline-variant pt-3 text-center text-sm text-on-surface-variant">
+                <Link
+                  href={`/auth/login?redirect=/marketplace/listing/${id}`}
+                  className="text-primary hover:underline"
+                >
+                  เข้าสู่ระบบ
+                </Link>
+                {" "}เพื่อแสดงความเห็น
+              </p>
+            )}
+          </div>
         </div>
 
         {/* sidebar info */}
@@ -194,6 +325,14 @@ export default async function ListingPage({
             </p>
 
             <div className="mt-4 flex flex-wrap gap-2 border-t border-outline-variant pt-3">
+              {!user && (
+                <Link
+                  href={`/auth/login?redirect=/marketplace/listing/${id}`}
+                  className="btn-outline gap-1 text-sm"
+                >
+                  <Lock className="h-4 w-4" /> เข้าสู่ระบบเพื่อดูข้อมูลติดต่อ
+                </Link>
+              )}
               {user && phone && (
                 <a href={`tel:${phone}`} className="btn-outline gap-1 text-sm">
                   <Phone className="h-4 w-4" /> {phone}
@@ -264,10 +403,16 @@ export default async function ListingPage({
               </div>
             </Link>
             <div className="mt-3 space-y-1 text-sm">
-              {seller?.contact_line && (
+              {!user && (seller?.contact_line || seller?.contact_facebook) && (
+                <p className="rounded bg-surface-container px-2 py-1.5 text-xs text-on-surface-variant">
+                  <Lock className="mr-1 inline h-3 w-3" />
+                  เข้าสู่ระบบเพื่อดูช่องทางติดต่อเพิ่มเติม
+                </p>
+              )}
+              {user && seller?.contact_line && (
                 <p>LINE: <span className="font-medium">{seller.contact_line}</span></p>
               )}
-              {seller?.contact_facebook && (
+              {user && seller?.contact_facebook && (
                 <a
                   href={seller.contact_facebook}
                   target="_blank"

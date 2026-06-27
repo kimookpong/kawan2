@@ -27,9 +27,12 @@ export function hrefForNotification(
     case "reply_thread":
     case "reply_post":
       return `/board/thread/${p.thread_id}${p.post_id ? `#post-${p.post_id}` : ""}`;
+    case "comment_listing":
+      return `/marketplace/listing/${p.listing_id}${p.comment_id ? `#comment-${p.comment_id}` : "#comments"}`;
     case "mention":
       if (p.ref === "thread" && p.thread_id) return `/board/thread/${p.thread_id}`;
       if (p.ref === "news" && p.news_id) return `/news/${p.news_id}`;
+      if (p.ref === "listing" && p.listing_id) return `/marketplace/listing/${p.listing_id}`;
       return "/notifications";
     case "like":
       if (p.target_type === "thread" && p.target_id)
@@ -60,6 +63,7 @@ export function iconForNotification(type: string, size: "sm" | "md" = "md") {
   switch (type) {
     case "reply_thread":
     case "reply_post":
+    case "comment_listing":
       return <MessageSquare className={`${cls} text-primary`} />;
     case "like":
       return <Heart className={`${cls} text-rose-500`} />;
@@ -99,6 +103,12 @@ export function messageForNotification(
       return (
         <>
           <span className="font-medium">{actorName}</span> ตอบความเห็นของคุณ
+        </>
+      );
+    case "comment_listing":
+      return (
+        <>
+          <span className="font-medium">{actorName}</span> แสดงความเห็นในประกาศของคุณ
         </>
       );
     case "like":
