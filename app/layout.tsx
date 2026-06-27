@@ -42,6 +42,7 @@ export default async function RootLayout({
   } = await supabase.auth.getUser();
 
   let profile = null;
+  let unreadNotifs = 0;
   if (user) {
     const { data } = await supabase
       .from("profiles")
@@ -51,6 +52,12 @@ export default async function RootLayout({
       .eq("id", user.id)
       .single();
     profile = data;
+    const { count } = await supabase
+      .from("notifications")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("is_read", false);
+    unreadNotifs = count ?? 0;
   }
 
   // สีประจำระดับสมาชิก (แอดมินเลือกได้) → ฉีดเป็น CSS variables ใช้ทั้งระบบ
@@ -81,7 +88,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans">
-        <AppShell user={user} profile={profile}>
+        <AppShell user={user} profile={profile} unreadNotifs={unreadNotifs}>
           <div className="min-h-[70vh] px-4 md:px-6 pt-2">{children}</div>
           <Footer />
         </AppShell>

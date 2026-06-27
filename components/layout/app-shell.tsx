@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
+import {
+  hrefForNotification,
+  iconForNotification,
+  messageForNotification,
+  type NotifLite,
+} from "@/lib/notifications";
 import {
   Menu,
   X,
@@ -50,15 +57,55 @@ const NAV = [
 export function AppShell({
   user,
   profile,
+  unreadNotifs = 0,
   children,
 }: {
   user: User | null;
   profile: ProfileLite;
+  unreadNotifs?: number;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [toasts, setToasts] = useState<NotifLite[]>([]);
+  const [unreadLocal, setUnreadLocal] = useState(unreadNotifs);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // sync เมื่อ server prop เปลี่ยน (เช่นหลัง navigation/revalidate)
+  useEffect(() => {
+    setUnreadLocal(unreadNotifs);
+  }, [unreadNotifs]);
+
+  // realtime: subscribe notifications ของตัวเอง → toast + bump badge
+  useEffect(() => {
+    if (!user) return;
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`notif-toast-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const n = payload.new as NotifLite;
+          setUnreadLocal((c) => c + 1);
+          setToasts((q) => [...q, n]);
+          window.setTimeout(() => {
+            setToasts((q) => q.filter((t) => t.id !== n.id));
+          }, 6000);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -134,7 +181,7 @@ export function AppShell({
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen((v) => !v)}
-                  className="flex rounded-full ring-2 ring-transparent transition hover:ring-outline-variant"
+                  className="relative flex rounded-full ring-2 ring-transparent transition hover:ring-outline-variant"
                   aria-label="เมนูผู้ใช้"
                   aria-expanded={menuOpen}
                 >
@@ -144,6 +191,14 @@ export function AppShell({
                     role={profile.role}
                     size={36}
                   />
+                  {unreadLocal > 0 && (
+                    <span
+                      aria-label={`มี ${unreadLocal} การแจ้งเตือนใหม่`}
+                      className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-error px-1 text-[10px] font-bold leading-none text-on-error ring-2 ring-surface-container-lowest"
+                    >
+                      {unreadLocal > 9 ? "9+" : unreadLocal}
+                    </span>
+                  )}
                 </button>
 
                 {menuOpen && (
@@ -226,7 +281,12 @@ export function AppShell({
                             className="flex items-center gap-2.5 px-3 py-2 text-on-surface hover:bg-surface-container-low"
                           >
                             <Icon className="h-4 w-4 text-on-surface-variant" />{" "}
-                            {label}
+                            <span className="flex-1">{label}</span>
+                            {href === "/notifications" && unreadLocal > 0 && (
+                              <span className="grid h-5 min-w-5 place-items-center rounded-full bg-error px-1.5 text-[11px] font-bold text-on-error">
+                                {unreadLocal > 9 ? "9+" : unreadLocal}
+                              </span>
+                            )}
                           </Link>
                         ))}
                       </nav>
@@ -336,6 +396,50 @@ export function AppShell({
               <Crown className="h-4 w-4" /> สนับสนุนเรา
             </Link>
           </div>
+        </div>
+      )}
+
+      {/* ===== Realtime notification toasts ===== */}
+      {toasts.length > 0 && (
+        <div className="pointer-events-none fixed bottom-4 right-4 z-50 flex max-w-sm flex-col gap-2">
+          {toasts.map((t) => (
+            <Link
+              key={t.id}
+              href={hrefForNotification(t)}
+              onClick={(e) => {
+                e.preventDefault();
+                setToasts((q) => q.filter((x) => x.id !== t.id));
+                router.push(hrefForNotification(t));
+                router.refresh();
+              }}
+              className="pointer-events-auto flex items-start gap-3 rounded-xl border border-outline-variant bg-surface p-3 shadow-card transition hover:bg-surface-container-low"
+              role="alert"
+            >
+              <span className="mt-0.5 shrink-0">
+                {iconForNotification(t.type)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-on-surface">
+                  {messageForNotification(t, "มีคน")}
+                </p>
+                <p className="mt-0.5 text-[11px] text-on-surface-variant">
+                  คลิกเพื่อดู
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setToasts((q) => q.filter((x) => x.id !== t.id));
+                }}
+                className="shrink-0 rounded p-1 text-on-surface-variant hover:bg-surface-container"
+                aria-label="ปิดการแจ้งเตือน"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </Link>
+          ))}
         </div>
       )}
     </div>
