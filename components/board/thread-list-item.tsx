@@ -9,7 +9,7 @@ type Data = {
   view_count: number;
   created_at: string;
   is_pinned?: boolean;
-  is_locked?: boolean;
+  members_only?: boolean;
   like_count?: number;
   profiles?: { username: string; display_name: string | null; level_id?: number } | null;
   categories?: { name_th: string; slug: string } | null;
@@ -34,7 +34,7 @@ export function ThreadListItem({
   const author = t.profiles?.display_name || t.profiles?.username || "ไม่ทราบ";
   const isHot =
     !t.is_pinned &&
-    !t.is_locked &&
+    !t.members_only &&
     ((t.like_count ?? 0) >= 20 || (t.reply_count ?? 0) >= 20);
 
   return (
@@ -49,7 +49,7 @@ export function ThreadListItem({
       <span className="shrink-0">
         {t.is_pinned ? (
           <Pin className="h-4 w-4 text-tertiary-container" aria-label="ปักหมุด" />
-        ) : t.is_locked ? (
+        ) : t.members_only ? (
           <Lock className="h-4 w-4 text-amber-600" aria-label="เฉพาะสมาชิก" />
         ) : isHot ? (
           <Flame className="h-4 w-4 text-orange-500" aria-label="กระทู้เด่น" />

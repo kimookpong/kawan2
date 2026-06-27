@@ -46,7 +46,7 @@ export default async function CategoryPage({
   const { data: threads, count } = await supabase
     .from("threads")
     .select(
-      "id, title, reply_count, view_count, created_at, is_pinned, profiles(username, display_name, level_id), categories(name_th, slug)",
+      "id, title, reply_count, like_count, view_count, created_at, is_pinned, members_only, profiles(username, display_name, level_id), categories(name_th, slug)",
       { count: "exact" },
     )
     .eq("category_id", category.id)

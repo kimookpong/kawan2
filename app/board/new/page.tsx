@@ -63,6 +63,21 @@ export default async function NewThreadPage({
           </div>
         </div>
 
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="members_only"
+            value="1"
+            className="mt-0.5 h-4 w-4"
+          />
+          <span>
+            <span className="font-medium">เห็นได้เฉพาะสมาชิกเท่านั้น</span>
+            <span className="block text-xs text-on-surface-variant">
+              กระทู้นี้จะไม่แสดงต่อผู้ที่ยังไม่ได้ล็อกอิน
+            </span>
+          </span>
+        </label>
+
         <div className="flex justify-end gap-2">
           <button type="submit" className="btn-primary">เผยแพร่กระทู้</button>
         </div>

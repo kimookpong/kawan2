@@ -57,6 +57,7 @@ export interface Thread {
   body: string;
   is_pinned: boolean;
   is_locked: boolean;
+  members_only: boolean;
   view_count: number;
   reply_count: number;
   like_count: number;

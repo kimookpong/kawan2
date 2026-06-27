@@ -55,7 +55,7 @@ export default async function HomePage() {
     supabase
       .from("threads")
       .select(
-        "id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, is_locked, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)",
+        "id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, members_only, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)",
       )
       .eq("status", "published")
       .order("created_at", { ascending: false })
@@ -93,10 +93,10 @@ export default async function HomePage() {
   const hero = featured ?? (news ?? [])[0];
 
   // จัดกลุ่มกระทู้ตามหมวด สำหรับกล่องเว็บบอร์ด (เรียงปักหมุดขึ้นก่อน)
-  // กระทู้เฉพาะสมาชิก (is_locked) ซ่อนจากผู้ที่ยังไม่ได้ล็อกอิน
+  // กระทู้ members_only ซ่อนจากผู้ที่ยังไม่ได้ล็อกอิน (RLS กรองอยู่แล้ว — เผื่อไว้ defense-in-depth)
   const threadsByCat = new Map<number, any[]>();
   (recentThreads ?? [])
-    .filter((t: any) => user || !t.is_locked)
+    .filter((t: any) => user || !t.members_only)
     .sort((a: any, b: any) => Number(b.is_pinned) - Number(a.is_pinned))
     .forEach((t: any) => {
       const arr = threadsByCat.get(t.category_id) ?? [];

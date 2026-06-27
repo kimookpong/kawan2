@@ -10,6 +10,7 @@ const threadSchema = z.object({
   body: z.string().min(10, "เนื้อหาสั้นเกินไป"),
   category_id: z.coerce.number().int().positive(),
   province_id: z.coerce.number().int().positive().optional(),
+  members_only: z.boolean().optional(),
 });
 
 export async function createThread(formData: FormData) {
@@ -22,6 +23,7 @@ export async function createThread(formData: FormData) {
     body: formData.get("body"),
     category_id: formData.get("category_id"),
     province_id: formData.get("province_id") || undefined,
+    members_only: formData.get("members_only") === "1",
   });
   if (!parsed.success) {
     redirect(`/board/new?error=${encodeURIComponent(parsed.error.issues[0].message)}`);
