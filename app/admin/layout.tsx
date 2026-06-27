@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Shield, Users, LayoutDashboard, Gauge, Flag } from "lucide-react";
+import { Shield, Users, LayoutDashboard, Gauge, Flag, Store, ShoppingBag } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 /** ป้องกันโซน /admin — เฉพาะ role = admin เท่านั้น */
@@ -19,6 +19,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .select("role")
     .eq("id", user.id)
     .single();
+
+  const { count: pendingSellers } = await supabase
+    .from("sellers")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "pending");
 
   if (profile?.role !== "admin") {
     return (
@@ -50,6 +55,23 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
           <Link href="/admin/reports" className="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-on-surface-variant hover:bg-surface-container hover:text-primary">
             <Flag className="h-4 w-4" /> รายงานเนื้อหา
+          </Link>
+          <Link
+            href="/admin/marketplace/sellers"
+            className="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-on-surface-variant hover:bg-surface-container hover:text-primary"
+          >
+            <Store className="h-4 w-4" /> ผู้ขาย Marketplace
+            {(pendingSellers ?? 0) > 0 && (
+              <span className="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-error px-1.5 text-[11px] font-bold text-on-error">
+                {pendingSellers}
+              </span>
+            )}
+          </Link>
+          <Link
+            href="/admin/marketplace/listings"
+            className="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-on-surface-variant hover:bg-surface-container hover:text-primary"
+          >
+            <ShoppingBag className="h-4 w-4" /> ประกาศ Marketplace
           </Link>
         </nav>
       </aside>

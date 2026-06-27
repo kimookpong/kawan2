@@ -1,18 +1,45 @@
 import Link from "next/link";
-import { Users, MessageSquare, Newspaper, CalendarDays } from "lucide-react";
+import {
+  Users,
+  MessageSquare,
+  Newspaper,
+  CalendarDays,
+  Store,
+  ShoppingBag,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminDashboard() {
   const supabase = createClient();
 
-  const [{ count: members }, { count: threads }, { count: news }, { count: events }, { data: roleRows }] =
-    await Promise.all([
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
-      supabase.from("threads").select("*", { count: "exact", head: true }),
-      supabase.from("news").select("*", { count: "exact", head: true }),
-      supabase.from("events").select("*", { count: "exact", head: true }),
-      supabase.from("profiles").select("role"),
-    ]);
+  const [
+    { count: members },
+    { count: threads },
+    { count: news },
+    { count: events },
+    { data: roleRows },
+    { count: pendingSellers },
+    { count: approvedSellers },
+    { count: activeListings },
+  ] = await Promise.all([
+    supabase.from("profiles").select("*", { count: "exact", head: true }),
+    supabase.from("threads").select("*", { count: "exact", head: true }),
+    supabase.from("news").select("*", { count: "exact", head: true }),
+    supabase.from("events").select("*", { count: "exact", head: true }),
+    supabase.from("profiles").select("role"),
+    supabase
+      .from("sellers")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending"),
+    supabase
+      .from("sellers")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "approved"),
+    supabase
+      .from("marketplace_listings")
+      .select("*", { count: "exact", head: true })
+      .in("status", ["available", "reserved"]),
+  ]);
 
   const roleCount = (roleRows ?? []).reduce(
     (acc: Record<string, number>, r: any) => ((acc[r.role] = (acc[r.role] ?? 0) + 1), acc),
@@ -38,6 +65,34 @@ export default async function AdminDashboard() {
           <RoleStat label="สมาชิก" value={roleCount.member ?? 0} />
         </div>
         <Link href="/admin/users" className="btn-primary mt-4 inline-flex">จัดการสมาชิก</Link>
+      </div>
+
+      <div className="card p-5">
+        <h2 className="mb-3 font-semibold">ตลาดซื้อขาย</h2>
+        <div className="grid grid-cols-3 gap-4">
+          <RoleStat label="ผู้ขายรออนุมัติ" value={pendingSellers ?? 0} />
+          <RoleStat label="ผู้ขายอนุมัติแล้ว" value={approvedSellers ?? 0} />
+          <RoleStat label="ประกาศที่กำลังขาย" value={activeListings ?? 0} />
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/admin/marketplace/sellers"
+            className={`inline-flex items-center gap-1 ${(pendingSellers ?? 0) > 0 ? "btn-primary" : "btn-outline"}`}
+          >
+            <Store className="h-4 w-4" /> อนุมัติผู้ขาย
+            {(pendingSellers ?? 0) > 0 && (
+              <span className="ml-1 rounded-full bg-on-primary px-1.5 text-xs font-bold text-primary">
+                {pendingSellers}
+              </span>
+            )}
+          </Link>
+          <Link
+            href="/admin/marketplace/listings"
+            className="btn-outline inline-flex items-center gap-1"
+          >
+            <ShoppingBag className="h-4 w-4" /> จัดการประกาศ
+          </Link>
+        </div>
       </div>
     </div>
   );
