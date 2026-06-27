@@ -8,6 +8,8 @@ export async function GET(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   const to = request.nextUrl.searchParams.get("to");
+  const listingRaw = request.nextUrl.searchParams.get("listing");
+  const listingId = listingRaw ? Number(listingRaw) : null;
   const origin = request.nextUrl.origin;
 
   if (!user) {
@@ -33,7 +35,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/messages?error=ไม่พบสมาชิกที่ต้องการ`);
   }
 
-  const { data, error } = await supabase.rpc("start_conversation", { other_user: to });
+  const { data, error } = await supabase.rpc("start_conversation", {
+    other_user: to,
+    ...(listingId && Number.isFinite(listingId) ? { p_listing: listingId } : {}),
+  });
   if (error || !data) {
     const back = `/u/${target.username}?error=${encodeURIComponent("ไม่สามารถเริ่มการสนทนาได้")}`;
     return NextResponse.redirect(`${origin}${back}`);

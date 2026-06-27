@@ -201,7 +201,7 @@ export default async function ListingPage({
               )}
               {user && user.id !== l.seller_id && (
                 <Link
-                  href={`/messages/new?to=${l.seller_id}`}
+                  href={`/messages/new?to=${l.seller_id}&listing=${id}`}
                   className="btn-primary gap-1 text-sm"
                 >
                   <MessageCircle className="h-4 w-4" /> ส่งข้อความ

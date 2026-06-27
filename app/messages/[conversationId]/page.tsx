@@ -28,6 +28,13 @@ export default async function ConversationPage({
     .neq("user_id", user.id)
     .maybeSingle();
 
+  const { data: conv } = await supabase
+    .from("conversations")
+    .select("listing_id, marketplace_listings(id, title, cover_url, price, price_type, status)")
+    .eq("id", convId)
+    .maybeSingle();
+  const listingContext: any = (conv as any)?.marketplace_listings ?? null;
+
   const { data: initialMessages } = await supabase
     .from("messages")
     .select("id, body, sender_id, created_at")
@@ -54,6 +61,18 @@ export default async function ConversationPage({
       otherAvatar={op?.avatar_url ?? null}
       otherRole={op?.role ?? null}
       initialMessages={initialMessages ?? []}
+      listingContext={
+        listingContext
+          ? {
+              id: listingContext.id,
+              title: listingContext.title,
+              cover_url: listingContext.cover_url,
+              price: listingContext.price,
+              price_type: listingContext.price_type,
+              status: listingContext.status,
+            }
+          : null
+      }
     />
   );
 }

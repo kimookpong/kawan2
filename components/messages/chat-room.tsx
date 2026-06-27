@@ -5,8 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Avatar } from "@/components/avatar";
+import { formatPrice, LISTING_STATUS_LABEL } from "@/lib/marketplace";
+import { NEWS_FALLBACK_IMG } from "@/lib/constants";
 
 type Msg = { id: number; body: string | null; sender_id: string; created_at: string };
+type ListingContext = {
+  id: number;
+  title: string;
+  cover_url: string | null;
+  price: number | null;
+  price_type: string;
+  status: string;
+} | null;
 
 export function ChatRoom({
   conversationId,
@@ -16,6 +26,7 @@ export function ChatRoom({
   otherAvatar,
   otherRole,
   initialMessages,
+  listingContext,
 }: {
   conversationId: number;
   currentUserId: string;
@@ -24,6 +35,7 @@ export function ChatRoom({
   otherAvatar?: string | null;
   otherRole?: string | null;
   initialMessages: Msg[];
+  listingContext?: ListingContext;
 }) {
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
   const [text, setText] = useState("");
@@ -104,6 +116,38 @@ export function ChatRoom({
           </>
         )}
       </div>
+
+      {listingContext && (
+        <Link
+          href={`/marketplace/listing/${listingContext.id}`}
+          className="flex items-center gap-3 border-x border-b border-outline-variant bg-primary-container/30 px-4 py-2 transition hover:bg-primary-container/50"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={listingContext.cover_url || NEWS_FALLBACK_IMG}
+            alt=""
+            className="h-10 w-10 shrink-0 rounded object-cover"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-on-surface-variant">
+              สอบถามเกี่ยวกับประกาศ
+            </p>
+            <p className="truncate text-sm font-medium text-on-surface">
+              {listingContext.title}
+            </p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-sm font-bold text-primary">
+              {formatPrice(listingContext.price, listingContext.price_type)}
+            </p>
+            {listingContext.status !== "available" && (
+              <span className="rounded bg-error px-1.5 text-[10px] font-bold text-on-error">
+                {LISTING_STATUS_LABEL[listingContext.status]}
+              </span>
+            )}
+          </div>
+        </Link>
+      )}
 
       <div className="flex-1 space-y-2 overflow-y-auto border-x border-outline-variant bg-surface-container-low p-4">
         {messages.length === 0 && (
