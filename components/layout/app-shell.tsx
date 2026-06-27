@@ -70,11 +70,10 @@ export function AppShell({
           key={href}
           href={href}
           onClick={onClick}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-            isActive(href)
-              ? "bg-primary text-on-primary"
-              : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
-          }`}
+          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive(href)
+            ? "bg-primary text-on-primary"
+            : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
+            }`}
         >
           <Icon className="h-5 w-5 shrink-0" />
           {label}
@@ -84,11 +83,10 @@ export function AppShell({
         <Link
           href="/admin"
           onClick={onClick}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-            isActive("/admin")
-              ? "bg-primary text-on-primary"
-              : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
-          }`}
+          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive("/admin")
+            ? "bg-primary text-on-primary"
+            : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
+            }`}
         >
           <Shield className="h-5 w-5 shrink-0" /> แผงผู้ดูแล
         </Link>
@@ -100,7 +98,7 @@ export function AppShell({
     <div className="min-h-screen">
       {/* ===== Top bar ===== */}
       <header className="sticky top-0 z-40 border-b border-outline-variant bg-surface-container-lowest">
-        <div className="mx-auto flex max-w-container w-full items-center gap-3 p-2">
+        <div className="mx-auto flex max-w-container w-full items-center gap-1 p-2">
           {/* hamburger (mobile) */}
           <button
             onClick={() => setOpen(true)}
@@ -208,12 +206,12 @@ export function AppShell({
                           },
                           ...(profile.role === "admin"
                             ? [
-                                {
-                                  href: "/admin",
-                                  Icon: Shield,
-                                  label: "แผงผู้ดูแล",
-                                },
-                              ]
+                              {
+                                href: "/admin",
+                                Icon: Shield,
+                                label: "แผงผู้ดูแล",
+                              },
+                            ]
                             : []),
                           {
                             href: "/membership",
@@ -298,7 +296,7 @@ export function AppShell({
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-72 max-w-[80%] overflow-y-auto bg-surface-container-lowest p-4 shadow-xl">
+          <div className="absolute left-0 top-0 h-full w-72 max-w-[80%] overflow-y-auto bg-surface-container-lowest p-2 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <Link
                 href="/"
@@ -307,13 +305,10 @@ export function AppShell({
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/image.png"
+                  src="/image2.png"
                   alt="Kawan2"
-                  className="h-8 w-8 rounded"
+                  className="h-6 w-auto"
                 />
-                <span className="text-lg font-black text-primary">
-                  kawan<span className="text-tertiary-container">2</span>
-                </span>
               </Link>
               <button
                 onClick={() => setOpen(false)}

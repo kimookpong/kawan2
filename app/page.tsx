@@ -112,16 +112,16 @@ export default async function HomePage() {
     },
     ...(hero
       ? [
-          {
-            id: "news",
-            eyebrow: hero.category ?? "ข่าวเด่น",
-            title: hero.title,
-            subtitle: hero.excerpt ?? undefined,
-            cta: { label: "อ่านต่อ", href: `/news/${hero.slug}` },
-            theme: "dark" as const,
-            image: hero.cover_url,
-          } as Banner,
-        ]
+        {
+          id: "news",
+          eyebrow: hero.category ?? "ข่าวเด่น",
+          title: hero.title,
+          subtitle: hero.excerpt ?? undefined,
+          cta: { label: "อ่านต่อ", href: `/news/${hero.slug}` },
+          theme: "dark" as const,
+          image: hero.cover_url,
+        } as Banner,
+      ]
       : []),
     {
       id: "membership",
@@ -134,7 +134,7 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full space-y-4">
       <JsonLd
         data={{
           "@context": "https://schema.org",
