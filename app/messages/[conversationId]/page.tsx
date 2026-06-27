@@ -35,6 +35,13 @@ export default async function ConversationPage({
     .order("created_at")
     .limit(100);
 
+  // mark as read — ปรับ last_read_at เพื่อให้ unread counter ที่ /messages และ realtime badge อัปเดต
+  await supabase
+    .from("conversation_members")
+    .update({ last_read_at: new Date().toISOString() })
+    .eq("conversation_id", convId)
+    .eq("user_id", user.id);
+
   const op = (other?.profiles as any) ?? null;
   const otherName = op?.display_name || op?.username || "ผู้ใช้";
 
