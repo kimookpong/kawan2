@@ -23,7 +23,7 @@ export function ReportButton({
   targetType,
   targetId,
 }: {
-  targetType: "thread" | "post" | "news" | "news_comment";
+  targetType: "thread" | "post" | "news" | "news_comment" | "listing";
   targetId: number;
 }) {
   const [open, setOpen] = useState(false);

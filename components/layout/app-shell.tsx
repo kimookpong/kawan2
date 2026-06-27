@@ -20,6 +20,7 @@ import {
   CalendarDays,
   Swords,
   Users,
+  ShoppingBag,
   MessageCircle,
   Bell,
   Shield,
@@ -50,6 +51,7 @@ const NAV = [
   { href: "/news", label: "ข่าวสาร", Icon: Newspaper },
   { href: "/board", label: "กระดานสนทนา", Icon: MessagesSquare },
   { href: "/events", label: "ปฏิทินกิจกรรม", Icon: CalendarDays },
+  { href: "/marketplace", label: "ตลาดซื้อขาย", Icon: ShoppingBag },
   { href: "/guilds", label: "กิลด์", Icon: Swords },
   { href: "/members", label: "ค้นหาสมาชิก", Icon: Users },
 ];

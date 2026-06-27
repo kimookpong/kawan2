@@ -6,6 +6,7 @@ import {
   MessageSquare,
   ShieldAlert,
   ShieldCheck,
+  Store,
   Trophy,
 } from "lucide-react";
 
@@ -43,6 +44,9 @@ export function hrefForNotification(
       return actorUsername ? `/u/${actorUsername}` : "/notifications";
     case "report":
       return "/admin/reports";
+    case "seller_approved":
+    case "seller_rejected":
+      return "/marketplace/seller/status";
     case "ban":
     case "disable":
     case "enable":
@@ -71,6 +75,10 @@ export function iconForNotification(type: string, size: "sm" | "md" = "md") {
     case "badge":
     case "level_up":
       return <Trophy className={`${cls} text-amber-500`} />;
+    case "seller_approved":
+      return <Store className={`${cls} text-green-600`} />;
+    case "seller_rejected":
+      return <Store className={`${cls} text-error`} />;
     default:
       return <Bell className={`${cls} text-on-surface-variant`} />;
   }
@@ -124,6 +132,17 @@ export function messageForNotification(
       return "คุณเลื่อนระดับสมาชิก";
     case "report":
       return "มีการรายงานเนื้อหาใหม่ (รอแอดมินตรวจสอบ)";
+    case "seller_approved":
+      return "ใบสมัครผู้ขายของคุณได้รับการอนุมัติ";
+    case "seller_rejected":
+      return (
+        <>
+          ใบสมัครผู้ขายถูกปฏิเสธ
+          {n.payload?.reason && (
+            <span className="text-on-surface-variant"> — {n.payload.reason}</span>
+          )}
+        </>
+      );
     default:
       return n.type;
   }
