@@ -22,19 +22,16 @@ export default async function EditThreadPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/auth/login?redirect=/board/thread/${threadId}/edit`);
 
-  const [{ data: thread }, { data: me }] = await Promise.all([
-    supabase
-      .from("threads")
-      .select("id, title, body, author_id, members_only, categories(name_th)")
-      .eq("id", threadId)
-      .single(),
-    supabase.from("profiles").select("role").eq("id", user.id).single(),
-  ]);
+  const { data: thread } = await supabase
+    .from("threads")
+    .select("id, title, body, author_id, members_only, categories(name_th)")
+    .eq("id", threadId)
+    .single();
 
   if (!thread) notFound();
 
-  const isStaff = me?.role === "admin" || me?.role === "editor";
-  if (thread.author_id !== user.id && !isStaff) {
+  // เจ้าตัวเท่านั้น (staff ใช้ปุ่มซ่อน/ลบ ไม่ใช่แก้ไข)
+  if (thread.author_id !== user.id) {
     redirect(`/board/thread/${threadId}`);
   }
 

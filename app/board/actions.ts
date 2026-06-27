@@ -54,6 +54,16 @@ export async function updateThread(formData: FormData) {
   const threadId = Number(formData.get("thread_id"));
   if (!user) redirect(`/auth/login?redirect=/board/thread/${threadId}/edit`);
 
+  // เจ้าตัวเท่านั้น (staff มีหน้าที่ซ่อน/ลบ ไม่ใช่แก้)
+  const { data: thread } = await supabase
+    .from("threads")
+    .select("author_id")
+    .eq("id", threadId)
+    .single();
+  if (!thread || thread.author_id !== user.id) {
+    redirect(`/board/thread/${threadId}`);
+  }
+
   const parsed = threadUpdateSchema.safeParse({
     thread_id: formData.get("thread_id"),
     title: formData.get("title"),
@@ -90,6 +100,16 @@ export async function updatePost(formData: FormData) {
   const postId = Number(formData.get("post_id"));
   const threadId = Number(formData.get("thread_id"));
   if (!user) redirect(`/auth/login?redirect=/board/thread/${threadId}`);
+
+  // เจ้าตัวเท่านั้น
+  const { data: post } = await supabase
+    .from("posts")
+    .select("author_id")
+    .eq("id", postId)
+    .single();
+  if (!post || post.author_id !== user.id) {
+    redirect(`/board/thread/${threadId}`);
+  }
 
   const body = String(formData.get("body") || "").trim();
   if (body.length < 1) redirect(`/board/thread/${threadId}`);

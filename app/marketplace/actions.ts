@@ -137,6 +137,16 @@ export async function updateListing(formData: FormData) {
   const id = Number(formData.get("listing_id"));
   if (!user || !id) redirect("/marketplace");
 
+  // เจ้าตัวเท่านั้น (staff แก้ไม่ได้ — ใช้ action ซ่อน/ลบแทน)
+  const { data: listing } = await supabase
+    .from("marketplace_listings")
+    .select("seller_id")
+    .eq("id", id)
+    .single();
+  if (!listing || listing.seller_id !== user.id) {
+    redirect(`/marketplace/listing/${id}`);
+  }
+
   const parsed = listingSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description") || "",
@@ -170,9 +180,23 @@ export async function updateListing(formData: FormData) {
 
 export async function setListingStatus(formData: FormData) {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const id = Number(formData.get("listing_id"));
   const status = String(formData.get("status") || "available");
-  if (!id) return;
+  if (!user || !id) return;
+
+  // เจ้าตัว หรือ staff เท่านั้น
+  const [{ data: listing }, { data: me }] = await Promise.all([
+    supabase
+      .from("marketplace_listings")
+      .select("seller_id")
+      .eq("id", id)
+      .single(),
+    supabase.from("profiles").select("role").eq("id", user.id).single(),
+  ]);
+  const isStaff = me?.role === "admin" || me?.role === "editor";
+  if (!listing || (listing.seller_id !== user.id && !isStaff)) return;
+
   await supabase
     .from("marketplace_listings")
     .update({ status, updated_at: new Date().toISOString() })

@@ -25,6 +25,7 @@ import { NEWS_FALLBACK_IMG, levelNameStyle } from "@/lib/constants";
 import {
   createListingComment,
   deleteListingComment,
+  setListingStatus,
   toggleFavorite,
 } from "@/app/marketplace/actions";
 
@@ -68,7 +69,7 @@ export default async function ListingPage({
   await supabase.rpc("increment_listing_view", { p_listing: id }).then(() => {}, () => {});
 
   const { data: { user } } = await supabase.auth.getUser();
-  let canEdit = false;
+  let isOwner = false;
   let isStaff = false;
   let isFav = false;
   if (user) {
@@ -78,7 +79,7 @@ export default async function ListingPage({
       .eq("id", user.id)
       .single();
     isStaff = me?.role === "admin" || me?.role === "editor";
-    canEdit = user.id === l.seller_id || isStaff;
+    isOwner = user.id === l.seller_id;
     const { data: fav } = await supabase
       .from("marketplace_favorites")
       .select("user_id")
@@ -357,7 +358,7 @@ export default async function ListingPage({
                   </button>
                 </form>
               )}
-              {canEdit && (
+              {isOwner && (
                 <Link
                   href={`/marketplace/listing/${id}/edit`}
                   className="btn-outline gap-1 text-sm"
@@ -366,6 +367,33 @@ export default async function ListingPage({
                 </Link>
               )}
             </div>
+
+            {(isOwner || isStaff) && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-outline-variant pt-3">
+                <span className="text-xs text-on-surface-variant">
+                  {isOwner ? "เครื่องมือ:" : "ผู้ดูแล:"}
+                </span>
+                <form action={setListingStatus}>
+                  <input type="hidden" name="listing_id" value={id} />
+                  <input
+                    type="hidden"
+                    name="status"
+                    value={l.status === "hidden" ? "available" : "hidden"}
+                  />
+                  <button className="btn-outline gap-1 text-xs">
+                    {l.status === "hidden" ? "เปิดประกาศ" : "ซ่อนประกาศ"}
+                  </button>
+                </form>
+                <form action={setListingStatus}>
+                  <input type="hidden" name="listing_id" value={id} />
+                  <input type="hidden" name="status" value="deleted" />
+                  <button className="btn-outline gap-1 text-xs text-error">
+                    ลบประกาศ
+                  </button>
+                </form>
+              </div>
+            )}
+
             <div className="mt-2 flex justify-end">
               <ReportButton targetType="listing" targetId={id} />
             </div>

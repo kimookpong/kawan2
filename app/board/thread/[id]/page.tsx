@@ -80,7 +80,7 @@ export default async function ThreadPage({
     likedThread = !!tReact;
     likedPosts = new Set((pReacts ?? []).map((r: any) => r.target_id));
   }
-  const canEditThread = !!user && (user.id === (thread as any).author_id || isStaff);
+  const canEditThread = !!user && user.id === (thread as any).author_id;
   const threadEdited =
     (thread as any).updated_at &&
     new Date((thread as any).updated_at).getTime() -
@@ -191,7 +191,7 @@ export default async function ThreadPage({
 
       <div className="space-y-3">
         {(posts ?? []).map((p: any, i: number) => {
-          const canEditPost = !!user && (user.id === p.author_id || isStaff);
+          const canEditPost = !!user && user.id === p.author_id;
           const isEditing = canEditPost && editPostId === p.id;
           const postEdited =
             p.updated_at &&

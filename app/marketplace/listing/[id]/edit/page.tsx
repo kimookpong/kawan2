@@ -21,21 +21,20 @@ export default async function EditListingPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/auth/login?redirect=/marketplace/listing/${id}/edit`);
 
-  const [{ data: listing }, { data: me }, { data: categories }, { data: provinces }] =
+  const [{ data: listing }, { data: categories }, { data: provinces }] =
     await Promise.all([
       supabase
         .from("marketplace_listings")
         .select("id, title, description, category_id, province_id, price, price_type, condition, cover_url, image_urls, contact_phone_override, seller_id")
         .eq("id", id)
         .single(),
-      supabase.from("profiles").select("role").eq("id", user.id).single(),
       supabase.from("marketplace_categories").select("id, name_th").eq("is_active", true).order("sort_order"),
       supabase.from("provinces").select("id, name_th").order("name_th"),
     ]);
 
   if (!listing) notFound();
-  const isStaff = me?.role === "admin" || me?.role === "editor";
-  if (listing.seller_id !== user.id && !isStaff) redirect(`/marketplace/listing/${id}`);
+  // แก้ไขได้เฉพาะเจ้าตัว (staff มีปุ่มซ่อน/ลบที่หน้ารายละเอียดและหน้าจัดการแทน)
+  if (listing.seller_id !== user.id) redirect(`/marketplace/listing/${id}`);
 
   return (
     <div className="w-full max-w-3xl">
