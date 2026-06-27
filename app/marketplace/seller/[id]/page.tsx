@@ -34,7 +34,7 @@ export default async function SellerPublicPage({
   const { data: seller } = await supabase
     .from("sellers")
     .select(
-      "id, shop_name, description, contact_phone, contact_line, contact_facebook, logo_url, address, status, created_at, profiles(username, display_name, avatar_url, role, level_id), provinces(name_th)",
+      "id, shop_name, description, contact_phone, contact_line, contact_facebook, logo_url, address, status, created_at, profiles!sellers_id_fkey(username, display_name, avatar_url, role, level_id), provinces(name_th)",
     )
     .eq("id", params.id)
     .eq("status", "approved")

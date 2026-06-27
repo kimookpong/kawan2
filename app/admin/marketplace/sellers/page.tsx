@@ -27,13 +27,14 @@ export default async function AdminSellersPage({
   if (me?.role !== "admin" && me?.role !== "editor") redirect("/");
 
   const filter = searchParams.status ?? "pending";
-  const { data: sellers } = await supabase
+  const { data: sellers, error } = await supabase
     .from("sellers")
     .select(
-      "id, shop_name, contact_phone, contact_line, contact_facebook, province_id, address, logo_url, description, status, rejection_reason, created_at, profiles(username, display_name, avatar_url, role), provinces(name_th)",
+      "id, shop_name, contact_phone, contact_line, contact_facebook, province_id, address, logo_url, description, status, rejection_reason, created_at, profiles!sellers_id_fkey(username, display_name, avatar_url, role), provinces(name_th)",
     )
     .eq("status", filter)
     .order("created_at", { ascending: false });
+  if (error) console.error("admin sellers query error:", error);
 
   return (
     <div className="w-full space-y-4">

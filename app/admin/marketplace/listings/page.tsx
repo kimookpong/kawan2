@@ -36,7 +36,7 @@ export default async function AdminListingsPage({
   const { data: listings } = await supabase
     .from("marketplace_listings")
     .select(
-      "id, title, price, price_type, condition, status, cover_url, is_pinned, is_featured, view_count, favorite_count, created_at, sellers(shop_name, profiles(username))",
+      "id, title, price, price_type, condition, status, cover_url, is_pinned, is_featured, view_count, favorite_count, created_at, sellers(shop_name, profiles!sellers_id_fkey(username))",
     )
     .eq("status", filter)
     .order("is_pinned", { ascending: false })

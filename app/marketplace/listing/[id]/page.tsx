@@ -49,7 +49,7 @@ export default async function ListingPage({
   const { data: l } = await supabase
     .from("marketplace_listings")
     .select(
-      "id, title, description, price, price_type, condition, cover_url, image_urls, status, view_count, favorite_count, contact_phone_override, created_at, seller_id, sellers(shop_name, contact_phone, contact_line, contact_facebook, logo_url, provinces(name_th), profiles(username, display_name, avatar_url, role, level_id)), marketplace_categories(name_th, slug), provinces(name_th)",
+      "id, title, description, price, price_type, condition, cover_url, image_urls, status, view_count, favorite_count, contact_phone_override, created_at, seller_id, sellers(shop_name, contact_phone, contact_line, contact_facebook, logo_url, provinces(name_th), profiles!sellers_id_fkey(username, display_name, avatar_url, role, level_id)), marketplace_categories(name_th, slug), provinces(name_th)",
     )
     .eq("id", id)
     .single();
