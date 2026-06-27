@@ -250,18 +250,6 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* ===== 3b) ประกาศตลาดซื้อขาย ===== */}
-      {(latestListings ?? []).length > 0 && (
-        <section>
-          <SectionHead title="ประกาศซื้อขายล่าสุด" href="/marketplace" />
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-            {(latestListings ?? []).map((l: any) => (
-              <ListingCard key={l.id} l={l} />
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* ===== 4) กระทู้ยอดนิยม + สมาชิกเด่น ===== */}
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="min-w-0 lg:col-span-2">
@@ -346,6 +334,18 @@ export default async function HomePage() {
           })}
         </div>
       </section>
+
+      {/* ===== 6) ประกาศตลาดซื้อขาย (ล่างสุด) ===== */}
+      {(latestListings ?? []).length > 0 && (
+        <section>
+          <SectionHead title="ประกาศซื้อขายล่าสุด" href="/marketplace" />
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+            {(latestListings ?? []).map((l: any) => (
+              <ListingCard key={l.id} l={l} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
