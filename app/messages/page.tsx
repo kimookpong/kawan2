@@ -114,7 +114,7 @@ export default async function MessagesPage({
           {searchParams.error}
         </p>
       )}
-      <MessagesList items={items} />
+      <MessagesList items={items} currentUserId={user.id} />
     </div>
   );
 }

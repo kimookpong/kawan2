@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Check, CheckSquare, Square, Trash2 } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import { ConvRowMenu } from "@/components/messages/conv-row-menu";
 import { hideConversations } from "@/app/messages/actions";
+import { createClient } from "@/lib/supabase/client";
 
 type Other = {
   username?: string;
@@ -111,9 +113,38 @@ function Row({
   );
 }
 
-export function MessagesList({ items }: { items: ConvItem[] }) {
+export function MessagesList({
+  items,
+  currentUserId,
+}: {
+  items: ConvItem[];
+  currentUserId?: string;
+}) {
+  const router = useRouter();
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
+
+  // Realtime: ถ้ามีข้อความใหม่ในห้องที่อยู่ในรายการ → refresh server state
+  useEffect(() => {
+    if (!currentUserId) return;
+    const convIds = new Set(items.map((i) => i.conversation_id));
+    if (convIds.size === 0) return;
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`messages-list-${currentUserId}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages" },
+        (payload) => {
+          const convId = (payload.new as any).conversation_id;
+          if (convIds.has(convId)) router.refresh();
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentUserId, items, router]);
 
   const toggle = (id: number) =>
     setSelected((prev) => {
