@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Pin, ArrowRight, MessageCircle, Eye } from "lucide-react";
+import { MapPin, Pin, ArrowRight, MessageCircle, Eye, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
 import { Avatar } from "@/components/avatar";
@@ -14,6 +14,10 @@ export const revalidate = 60; // ISR
 
 export default async function HomePage() {
   const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const [
     { data: featuredArr },
@@ -51,7 +55,7 @@ export default async function HomePage() {
     supabase
       .from("threads")
       .select(
-        "id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)",
+        "id, title, category_id, reply_count, like_count, view_count, created_at, is_pinned, is_locked, profiles(username, display_name, level_id, role, avatar_url), categories(name_th, slug)",
       )
       .eq("status", "published")
       .order("created_at", { ascending: false })
@@ -89,9 +93,10 @@ export default async function HomePage() {
   const hero = featured ?? (news ?? [])[0];
 
   // จัดกลุ่มกระทู้ตามหมวด สำหรับกล่องเว็บบอร์ด (เรียงปักหมุดขึ้นก่อน)
+  // กระทู้เฉพาะสมาชิก (is_locked) ซ่อนจากผู้ที่ยังไม่ได้ล็อกอิน
   const threadsByCat = new Map<number, any[]>();
   (recentThreads ?? [])
-    .slice()
+    .filter((t: any) => user || !t.is_locked)
     .sort((a: any, b: any) => Number(b.is_pinned) - Number(a.is_pinned))
     .forEach((t: any) => {
       const arr = threadsByCat.get(t.category_id) ?? [];
@@ -267,7 +272,20 @@ export default async function HomePage() {
 
       {/* ===== 5) ห้องสนทนาแยกหมวด ===== */}
       <section>
-        <SectionHead title="ห้องสนทนา" href="/board" />
+        <SectionHead
+          title="ห้องสนทนา"
+          href="/board"
+          action={
+            user ? (
+              <Link
+                href="/board/new"
+                className="btn-accent inline-flex items-center gap-1 text-sm"
+              >
+                <Plus className="h-4 w-4" /> ตั้งกระทู้
+              </Link>
+            ) : null
+          }
+        />
         <div className="grid gap-4 lg:grid-cols-2">
           {(categories ?? []).map((c: any) => {
             const list = threadsByCat.get(c.id) ?? [];
@@ -338,16 +356,27 @@ function NewsMini({ n }: { n: any }) {
   );
 }
 
-function SectionHead({ title, href }: { title: string; href: string }) {
+function SectionHead({
+  title,
+  href,
+  action,
+}: {
+  title: string;
+  href: string;
+  action?: React.ReactNode;
+}) {
   return (
     <div className="mb-3 flex items-center justify-between border-l-4 border-tertiary-container pl-3">
       <h2 className="text-lg font-bold text-on-surface">{title}</h2>
-      <Link
-        href={href}
-        className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-      >
-        ดูทั้งหมด <ArrowRight className="h-4 w-4" />
-      </Link>
+      <div className="flex items-center gap-3">
+        {action}
+        <Link
+          href={href}
+          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+        >
+          ดูทั้งหมด <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
     </div>
   );
 }

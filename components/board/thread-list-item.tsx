@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Flame, Pin, MessageCircle, Eye } from "lucide-react";
+import { Flame, Pin, MessageCircle, MessageSquare, Eye, Lock } from "lucide-react";
 import { levelNameStyle } from "@/lib/constants";
 
 type Data = {
@@ -9,6 +9,8 @@ type Data = {
   view_count: number;
   created_at: string;
   is_pinned?: boolean;
+  is_locked?: boolean;
+  like_count?: number;
   profiles?: { username: string; display_name: string | null; level_id?: number } | null;
   categories?: { name_th: string; slug: string } | null;
 };
@@ -30,6 +32,10 @@ export function ThreadListItem({
     minute: "2-digit",
   });
   const author = t.profiles?.display_name || t.profiles?.username || "ไม่ทราบ";
+  const isHot =
+    !t.is_pinned &&
+    !t.is_locked &&
+    ((t.like_count ?? 0) >= 20 || (t.reply_count ?? 0) >= 20);
 
   return (
     <Link
@@ -42,9 +48,13 @@ export function ThreadListItem({
     >
       <span className="shrink-0">
         {t.is_pinned ? (
-          <Pin className="h-4 w-4 text-tertiary-container" />
+          <Pin className="h-4 w-4 text-tertiary-container" aria-label="ปักหมุด" />
+        ) : t.is_locked ? (
+          <Lock className="h-4 w-4 text-amber-600" aria-label="เฉพาะสมาชิก" />
+        ) : isHot ? (
+          <Flame className="h-4 w-4 text-orange-500" aria-label="กระทู้เด่น" />
         ) : (
-          <Flame className="h-4 w-4 text-orange-500" />
+          <MessageSquare className="h-4 w-4 text-on-surface-variant" aria-label="กระทู้" />
         )}
       </span>
 
