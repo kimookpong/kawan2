@@ -13,6 +13,8 @@ const TYPE_LABEL: Record<string, string> = {
   post: "ความเห็นในกระทู้",
   news: "ข่าว",
   news_comment: "ความเห็นข่าว",
+  listing: "ประกาศ Marketplace",
+  listing_comment: "ความเห็นในประกาศ",
 };
 
 export default async function AdminReportsPage() {
@@ -27,16 +29,24 @@ export default async function AdminReportsPage() {
 
   // ดึงหัวข้อ/ลิงก์ของเป้าหมาย เพื่อให้แอดมินดูเนื้อหาก่อนตัดสิน
   const ids = (t: string) => (reports ?? []).filter((r: any) => r.target_type === t).map((r: any) => r.target_id);
-  const [{ data: threads }, { data: news }] = await Promise.all([
+  const [{ data: threads }, { data: news }, { data: listings }, { data: listingComments }] = await Promise.all([
     ids("thread").length
       ? supabase.from("threads").select("id, title").in("id", ids("thread"))
       : Promise.resolve({ data: [] as any[] }),
     ids("news").length
       ? supabase.from("news").select("id, title, slug").in("id", ids("news"))
       : Promise.resolve({ data: [] as any[] }),
+    ids("listing").length
+      ? supabase.from("marketplace_listings").select("id, title").in("id", ids("listing"))
+      : Promise.resolve({ data: [] as any[] }),
+    ids("listing_comment").length
+      ? supabase.from("listing_comments").select("id, listing_id").in("id", ids("listing_comment"))
+      : Promise.resolve({ data: [] as any[] }),
   ]);
   const threadMap = new Map((threads ?? []).map((t: any) => [t.id, t]));
   const newsMap = new Map((news ?? []).map((n: any) => [n.id, n]));
+  const listingMap = new Map((listings ?? []).map((l: any) => [l.id, l]));
+  const listingCommentMap = new Map((listingComments ?? []).map((c: any) => [c.id, c]));
 
   function targetInfo(r: any): { title: string; href: string | null } {
     if (r.target_type === "thread")
@@ -46,6 +56,17 @@ export default async function AdminReportsPage() {
     if (r.target_type === "news") {
       const n = newsMap.get(r.target_id);
       return { title: n?.title ?? `ข่าว #${r.target_id}`, href: n?.slug ? `/news/${n.slug}` : null };
+    }
+    if (r.target_type === "listing") {
+      const l = listingMap.get(r.target_id);
+      return { title: l?.title ?? `ประกาศ #${r.target_id}`, href: `/marketplace/listing/${r.target_id}` };
+    }
+    if (r.target_type === "listing_comment") {
+      const c = listingCommentMap.get(r.target_id);
+      return {
+        title: `ความเห็น #${r.target_id}`,
+        href: c?.listing_id ? `/marketplace/listing/${c.listing_id}#comment-${r.target_id}` : null,
+      };
     }
     return { title: `${TYPE_LABEL[r.target_type] ?? r.target_type} #${r.target_id}`, href: null };
   }
