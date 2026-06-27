@@ -41,6 +41,68 @@ export async function createThread(formData: FormData) {
   redirect(`/board/thread/${data!.id}`);
 }
 
+const threadUpdateSchema = z.object({
+  thread_id: z.coerce.number().int().positive(),
+  title: z.string().min(5, "หัวข้อสั้นเกินไป").max(200),
+  body: z.string().min(10, "เนื้อหาสั้นเกินไป"),
+  members_only: z.boolean().optional(),
+});
+
+export async function updateThread(formData: FormData) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const threadId = Number(formData.get("thread_id"));
+  if (!user) redirect(`/auth/login?redirect=/board/thread/${threadId}/edit`);
+
+  const parsed = threadUpdateSchema.safeParse({
+    thread_id: formData.get("thread_id"),
+    title: formData.get("title"),
+    body: formData.get("body"),
+    members_only: formData.get("members_only") === "1",
+  });
+  if (!parsed.success) {
+    redirect(`/board/thread/${threadId}/edit?error=${encodeURIComponent(parsed.error.issues[0].message)}`);
+  }
+
+  const { error } = await supabase
+    .from("threads")
+    .update({
+      title: parsed.data.title,
+      body: parsed.data.body,
+      members_only: parsed.data.members_only ?? false,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", parsed.data.thread_id);
+
+  if (error) {
+    redirect(`/board/thread/${threadId}/edit?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath(`/board/thread/${threadId}`);
+  revalidatePath("/board");
+  revalidatePath("/");
+  redirect(`/board/thread/${threadId}`);
+}
+
+export async function updatePost(formData: FormData) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const postId = Number(formData.get("post_id"));
+  const threadId = Number(formData.get("thread_id"));
+  if (!user) redirect(`/auth/login?redirect=/board/thread/${threadId}`);
+
+  const body = String(formData.get("body") || "").trim();
+  if (body.length < 1) redirect(`/board/thread/${threadId}`);
+
+  await supabase
+    .from("posts")
+    .update({ body, updated_at: new Date().toISOString() })
+    .eq("id", postId);
+
+  revalidatePath(`/board/thread/${threadId}`);
+  redirect(`/board/thread/${threadId}#post-${postId}`);
+}
+
 export async function createReply(formData: FormData) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

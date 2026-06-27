@@ -28,6 +28,7 @@ export function ChatRoom({
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const supabase = createClient();
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -66,11 +67,15 @@ export function ChatRoom({
     const body = text.trim();
     if (!body || sending) return;
     setSending(true);
+    setSendError(null);
     setText("");
     const { error } = await supabase
       .from("messages")
       .insert({ conversation_id: conversationId, sender_id: currentUserId, body });
-    if (error) setText(body);
+    if (error) {
+      setText(body);
+      setSendError(error.message || "ส่งข้อความไม่สำเร็จ");
+    }
     setSending(false);
   }
 
@@ -125,6 +130,12 @@ export function ChatRoom({
         })}
         <div ref={bottomRef} />
       </div>
+
+      {sendError && (
+        <p className="border-x border-outline-variant bg-error-container px-4 py-2 text-xs text-on-error-container">
+          ส่งข้อความไม่สำเร็จ: {sendError}
+        </p>
+      )}
 
       <form onSubmit={send} className="card flex gap-2 rounded-t-none p-3">
         <input

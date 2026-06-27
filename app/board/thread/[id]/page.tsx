@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Bookmark, Heart, Lock, CornerUpLeft, Pin, PinOff } from "lucide-react";
+import { Bookmark, Heart, Lock, CornerUpLeft, Pin, PinOff, Pencil, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { createReply, setThreadPin, reactThread, reactPost } from "@/app/board/actions";
+import { createReply, setThreadPin, reactThread, reactPost, updatePost } from "@/app/board/actions";
 import { AuthorCard } from "@/components/board/author-card";
 import { BBCodeEditor } from "@/components/board/bbcode-editor";
 import { QuoteButton } from "@/components/board/quote-button";
@@ -28,13 +28,20 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default async function ThreadPage({ params }: { params: { id: string } }) {
+export default async function ThreadPage({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { edit_post?: string };
+}) {
   const supabase = createClient();
   const threadId = Number(params.id);
+  const editPostId = Number(searchParams.edit_post) || null;
 
   const { data: thread } = await supabase
     .from("threads")
-    .select("id, title, body, like_count, reply_count, view_count, created_at, is_locked, is_pinned, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, bio, threads(count), posts(count)), categories(name_th, slug)")
+    .select("id, title, body, author_id, updated_at, like_count, reply_count, view_count, created_at, is_locked, is_pinned, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, bio, threads(count), posts(count)), categories(name_th, slug)")
     .eq("id", threadId)
     .eq("profiles.threads.status", "published")
     .eq("profiles.posts.status", "published")
@@ -45,7 +52,7 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
   const { data: posts } = await supabase
     .from("posts")
-    .select("id, body, like_count, created_at, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, bio, threads(count), posts(count))")
+    .select("id, body, author_id, updated_at, like_count, created_at, profiles(username, display_name, avatar_url, level_id, role, reputation, created_at, bio, threads(count), posts(count))")
     .eq("thread_id", threadId)
     .eq("status", "published")
     .eq("profiles.threads.status", "published")
@@ -54,6 +61,7 @@ export default async function ThreadPage({ params }: { params: { id: string } })
 
   const { data: { user } } = await supabase.auth.getUser();
   let isAdmin = false;
+  let isStaff = false;
   let likedThread = false;
   let likedPosts = new Set<number>();
   if (user) {
@@ -68,9 +76,16 @@ export default async function ThreadPage({ params }: { params: { id: string } })
         : Promise.resolve({ data: [] as any[] }),
     ]);
     isAdmin = me?.role === "admin";
+    isStaff = me?.role === "admin" || me?.role === "editor";
     likedThread = !!tReact;
     likedPosts = new Set((pReacts ?? []).map((r: any) => r.target_id));
   }
+  const canEditThread = !!user && (user.id === (thread as any).author_id || isStaff);
+  const threadEdited =
+    (thread as any).updated_at &&
+    new Date((thread as any).updated_at).getTime() -
+      new Date(thread.created_at).getTime() >
+      60_000;
   const cat: any = thread.categories;
   const tAuthor: any = thread.profiles;
   const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kawan2.vercel.app";
@@ -127,6 +142,11 @@ export default async function ThreadPage({ params }: { params: { id: string } })
               </button>
             </form>
           )}
+          {canEditThread && (
+            <Link href={`/board/thread/${threadId}/edit`} className="btn-outline gap-1">
+              <Pencil className="h-4 w-4" /> แก้ไข
+            </Link>
+          )}
           <button className="btn-outline gap-1"><Bookmark className="h-4 w-4" /> บันทึก</button>
           <a href="#reply" className="btn-primary gap-1"><CornerUpLeft className="h-4 w-4" /> ตอบกระทู้</a>
         </div>
@@ -142,6 +162,11 @@ export default async function ThreadPage({ params }: { params: { id: string } })
           </h1>
           <p className="mt-1 text-xs text-on-surface-variant">
             โพสต์เมื่อ {new Date(thread.created_at).toLocaleString("th-TH")} · {thread.view_count} อ่าน
+            {threadEdited && (
+              <span className="ml-1 italic">
+                (แก้ไขเมื่อ {new Date((thread as any).updated_at).toLocaleString("th-TH")})
+              </span>
+            )}
           </p>
           <div className="bbcode mt-3 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(thread.body) }} />
           <div className="mt-5 flex items-center gap-4 border-t border-outline-variant pt-3 text-sm text-on-surface-variant">
@@ -165,31 +190,76 @@ export default async function ThreadPage({ params }: { params: { id: string } })
       </h2>
 
       <div className="space-y-3">
-        {(posts ?? []).map((p: any, i: number) => (
-          <div key={p.id} className="card flex flex-col sm:flex-row overflow-hidden">
-            <AuthorCard author={p.profiles} compact />
-            <div className="min-w-0 flex-1 p-4">
-              <div className="flex items-center justify-between text-xs text-on-surface-variant">
-                <span>{new Date(p.created_at).toLocaleString("th-TH")}</span>
-                <span className="font-medium">#{i + 1}</span>
-              </div>
-              <div className="bbcode mt-2 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(p.body) }} />
-              <div className="mt-3 flex items-center gap-4 text-xs text-on-surface-variant">
-                <form action={reactPost}>
-                  <input type="hidden" name="post_id" value={p.id} />
-                  <input type="hidden" name="thread_id" value={threadId} />
-                  <button className={`inline-flex items-center gap-1 ${likedPosts.has(p.id) ? "font-medium text-primary" : "hover:text-primary"}`}>
-                    <Heart className={`h-3.5 w-3.5 ${likedPosts.has(p.id) ? "fill-current" : ""}`} /> {p.like_count} ถูกใจ
-                  </button>
-                </form>
-                <QuoteButton author={p.profiles?.display_name || p.profiles?.username || "สมาชิก"} body={p.body} />
-                <div className="ml-auto">
-                  <ReportButton targetType="post" targetId={p.id} />
+        {(posts ?? []).map((p: any, i: number) => {
+          const canEditPost = !!user && (user.id === p.author_id || isStaff);
+          const isEditing = canEditPost && editPostId === p.id;
+          const postEdited =
+            p.updated_at &&
+            new Date(p.updated_at).getTime() - new Date(p.created_at).getTime() > 60_000;
+          return (
+            <div
+              key={p.id}
+              id={`post-${p.id}`}
+              className="card flex flex-col sm:flex-row overflow-hidden scroll-mt-20"
+            >
+              <AuthorCard author={p.profiles} compact />
+              <div className="min-w-0 flex-1 p-4">
+                <div className="flex items-center justify-between text-xs text-on-surface-variant">
+                  <span>
+                    {new Date(p.created_at).toLocaleString("th-TH")}
+                    {postEdited && (
+                      <span className="ml-1 italic">
+                        (แก้ไขเมื่อ {new Date(p.updated_at).toLocaleString("th-TH")})
+                      </span>
+                    )}
+                  </span>
+                  <span className="font-medium">#{i + 1}</span>
                 </div>
+                {isEditing ? (
+                  <form action={updatePost} className="mt-2 overflow-hidden rounded border border-outline-variant">
+                    <input type="hidden" name="post_id" value={p.id} />
+                    <input type="hidden" name="thread_id" value={threadId} />
+                    <BBCodeEditor defaultValue={p.body} />
+                    <div className="flex items-center justify-end gap-2 border-t border-outline-variant px-4 py-2.5">
+                      <Link
+                        href={`/board/thread/${threadId}#post-${p.id}`}
+                        className="btn-outline gap-1"
+                      >
+                        <X className="h-4 w-4" /> ยกเลิก
+                      </Link>
+                      <button className="btn-primary">บันทึก</button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="bbcode mt-2 text-on-surface" dangerouslySetInnerHTML={{ __html: renderBBCode(p.body) }} />
+                )}
+                {!isEditing && (
+                  <div className="mt-3 flex items-center gap-4 text-xs text-on-surface-variant">
+                    <form action={reactPost}>
+                      <input type="hidden" name="post_id" value={p.id} />
+                      <input type="hidden" name="thread_id" value={threadId} />
+                      <button className={`inline-flex items-center gap-1 ${likedPosts.has(p.id) ? "font-medium text-primary" : "hover:text-primary"}`}>
+                        <Heart className={`h-3.5 w-3.5 ${likedPosts.has(p.id) ? "fill-current" : ""}`} /> {p.like_count} ถูกใจ
+                      </button>
+                    </form>
+                    <QuoteButton author={p.profiles?.display_name || p.profiles?.username || "สมาชิก"} body={p.body} />
+                    {canEditPost && (
+                      <Link
+                        href={`/board/thread/${threadId}?edit_post=${p.id}#post-${p.id}`}
+                        className="inline-flex items-center gap-1 hover:text-primary"
+                      >
+                        <Pencil className="h-3.5 w-3.5" /> แก้ไข
+                      </Link>
+                    )}
+                    <div className="ml-auto">
+                      <ReportButton targetType="post" targetId={p.id} />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {(!posts || posts.length === 0) && (
           <p className="card p-6 text-center text-sm text-on-surface-variant">ยังไม่มีความเห็น เป็นคนแรกที่ตอบกลับ</p>
         )}
