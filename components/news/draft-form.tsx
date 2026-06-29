@@ -2,13 +2,13 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { Plus } from "lucide-react";
-import { draftNewsFromUrl } from "@/app/news/fetch/actions";
+import { processNewsFromUrl } from "@/app/news/fetch/actions";
 import { useEffect } from "react";
 
 const initialState = { error: "" };
 
 export function DraftForm({ url, title, description }: { url: string; title: string; description: string }) {
-  const [state, formAction] = useFormState(draftNewsFromUrl, initialState);
+  const [state, formAction] = useFormState(processNewsFromUrl, initialState);
 
   useEffect(() => {
     if (state?.error) {
