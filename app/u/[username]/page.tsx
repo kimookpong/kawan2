@@ -307,15 +307,15 @@ export default async function ProfilePage({
               />
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* สถิติ */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat Icon={MessageSquare} label="กระทู้" value={threadCount ?? 0} />
-        <Stat Icon={MessagesSquare} label="ความเห็น" value={postCount ?? 0} />
-        <Stat Icon={Trophy} label="คะแนน" value={profile.reputation} />
-        <Stat Icon={Medal} label="เหรียญ" value={badges?.length ?? 0} />
+          {/* สถิติ — inline กับการ์ดโปรไฟล์ */}
+          <div className="mt-4 grid grid-cols-2 gap-2 border-t border-outline-variant pt-4 sm:grid-cols-4 sm:gap-3">
+            <Stat Icon={MessageSquare} label="กระทู้" value={threadCount ?? 0} />
+            <Stat Icon={MessagesSquare} label="ความเห็น" value={postCount ?? 0} />
+            <Stat Icon={Trophy} label="คะแนน" value={profile.reputation} />
+            <Stat Icon={Medal} label="เหรียญ" value={badges?.length ?? 0} />
+          </div>
+        </div>
       </div>
 
       {/* ประวัติการใช้งาน */}
@@ -416,17 +416,17 @@ function Stat({
   value: number;
 }) {
   return (
-    <div className="card flex items-center gap-3 p-3 sm:p-4">
+    <div className="flex items-center gap-2 rounded-lg bg-surface-container-low p-2.5 sm:gap-3 sm:p-3">
       {Icon && (
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-container/10 text-primary">
-          <Icon className="h-5 w-5" />
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary-container/15 text-primary">
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>
       )}
       <div className="min-w-0">
-        <p className="text-lg font-bold leading-tight text-on-surface sm:text-xl">
+        <p className="text-base font-bold leading-tight text-on-surface sm:text-lg">
           {value.toLocaleString("th-TH")}
         </p>
-        <p className="text-xs text-on-surface-variant">{label}</p>
+        <p className="text-[11px] text-on-surface-variant sm:text-xs">{label}</p>
       </div>
     </div>
   );
