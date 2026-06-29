@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = createClient();
   const { data: l } = await supabase
     .from("marketplace_listings")
-    .select("title, description")
+    .select("title, description, cover_url, image_urls")
     .eq("id", Number(params.id))
     .single();
   if (!l) return { title: "ไม่พบประกาศ" };
@@ -42,10 +42,18 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 160);
+    
+  const image = l.cover_url || (l.image_urls && l.image_urls[0]) || undefined;
+  
   return {
     title: l.title,
     description: desc || undefined,
     alternates: { canonical: `/marketplace/listing/${params.id}` },
+    openGraph: {
+      title: l.title,
+      description: desc || undefined,
+      images: image ? [image] : undefined,
+    },
   };
 }
 

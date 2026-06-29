@@ -20,9 +20,11 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Kawan2",
     locale: "th_TH",
+    images: ["/wallpaper.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/wallpaper.png"],
   },
   icons: {
     icon: "/image.png",

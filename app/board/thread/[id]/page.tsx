@@ -39,6 +39,10 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 160);
+    
+  const imgMatch = t.body?.match(/\[img\](.*?)\[\/img\]/i);
+  const image = imgMatch ? imgMatch[1] : undefined;
+  
   return {
     title: t.title,
     description: desc || undefined,
@@ -47,6 +51,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
       type: "article",
       title: t.title,
       description: desc || undefined,
+      images: image ? [image] : undefined,
     },
   };
 }

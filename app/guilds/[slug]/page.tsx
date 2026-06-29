@@ -20,7 +20,7 @@ export async function generateMetadata({
   const supabase = createClient();
   const { data: g } = await supabase
     .from("guilds")
-    .select("name, description")
+    .select("name, description, emblem_url")
     .eq("slug", params.slug)
     .single();
   if (!g) return { title: "ไม่พบกิลด์" };
@@ -28,7 +28,11 @@ export async function generateMetadata({
     title: g.name,
     description: g.description ?? undefined,
     alternates: { canonical: `/guilds/${params.slug}` },
-    openGraph: { title: g.name, description: g.description ?? undefined },
+    openGraph: { 
+      title: g.name, 
+      description: g.description ?? undefined,
+      images: g.emblem_url ? [g.emblem_url] : undefined,
+    },
   };
 }
 

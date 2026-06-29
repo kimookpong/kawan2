@@ -13,13 +13,21 @@ export async function generateMetadata({
   const supabase = createClient();
   const { data: s } = await supabase
     .from("sellers")
-    .select("shop_name")
+    .select("shop_name, logo_url, cover_url")
     .eq("id", params.id)
     .eq("status", "approved")
     .maybeSingle();
+    
+  const image = s?.logo_url || s?.cover_url || undefined;
+  
   return {
     title: s?.shop_name ?? "ผู้ขาย",
     description: s ? `ร้าน ${s.shop_name}` : undefined,
+    openGraph: {
+      title: s?.shop_name ?? "ผู้ขาย",
+      description: s ? `ร้าน ${s.shop_name}` : undefined,
+      images: image ? [image] : undefined,
+    },
   };
 }
 
