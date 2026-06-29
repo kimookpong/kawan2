@@ -94,7 +94,7 @@ export async function processNewsFromUrl(prevState: any, formData: FormData) {
   try {
     const scrapeResult = await app.scrapeUrl(url, {
       formats: ['markdown']
-    });
+    }) as any;
     
     if (scrapeResult.success !== false) {
       title = scrapeResult.metadata?.title || title;
