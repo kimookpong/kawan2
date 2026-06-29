@@ -55,13 +55,20 @@ export async function updateThread(formData: FormData) {
   const threadId = Number(formData.get("thread_id"));
   if (!user) redirect(`/auth/login?redirect=/board/thread/${threadId}/edit`);
 
-  // เจ้าตัวเท่านั้น (staff มีหน้าที่ซ่อน/ลบ ไม่ใช่แก้)
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  const isAdmin = profile?.role === "admin";
+
+  // เจ้าตัวหรือแอดมิน
   const { data: thread } = await supabase
     .from("threads")
     .select("author_id")
     .eq("id", threadId)
     .single();
-  if (!thread || thread.author_id !== user.id) {
+  if (!thread || (thread.author_id !== user.id && !isAdmin)) {
     redirect(`/board/thread/${threadId}`);
   }
 

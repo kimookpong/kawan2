@@ -129,7 +129,7 @@ export default async function ThreadPage({
     likedThread = !!tReact;
     likedPosts = new Set((pReacts ?? []).map((r: any) => r.target_id));
   }
-  const canEditThread = !!user && user.id === (thread as any).author_id;
+  const canEditThread = !!user && (user.id === (thread as any).author_id || isAdmin);
   const threadEdited =
     (thread as any).updated_at &&
     new Date((thread as any).updated_at).getTime() -

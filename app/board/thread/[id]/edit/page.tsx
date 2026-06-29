@@ -30,8 +30,15 @@ export default async function EditThreadPage({
 
   if (!thread) notFound();
 
-  // เจ้าตัวเท่านั้น (staff ใช้ปุ่มซ่อน/ลบ ไม่ใช่แก้ไข)
-  if (thread.author_id !== user.id) {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  const isAdmin = profile?.role === "admin";
+
+  // เจ้าตัวหรือแอดมิน
+  if (thread.author_id !== user.id && !isAdmin) {
     redirect(`/board/thread/${threadId}`);
   }
 
