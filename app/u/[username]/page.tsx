@@ -201,14 +201,33 @@ export default async function ProfilePage({
 
       {/* header */}
       <div className="card overflow-hidden">
-        {/* banner */}
-        <div className="relative h-28 bg-gradient-to-br from-primary via-primary to-tertiary-container sm:h-40">
+        {/* banner: gradient + name overlay */}
+        <div className="relative h-32 bg-gradient-to-br from-primary via-primary to-tertiary-container sm:h-44">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_60%)]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+
+          {/* Display name on banner (right of where avatar will sit) */}
+          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-3 pl-4 sm:p-5 sm:pl-32">
+            <div className="min-w-0 flex-1">
+              <h1
+                className="truncate text-xl font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] sm:text-3xl"
+                style={{ textShadow: "0 1px 3px rgba(0,0,0,.45)" }}
+              >
+                {profile.display_name || profile.username}
+              </h1>
+              <p className="mt-0.5 truncate text-xs text-white/85 sm:text-sm">
+                @{profile.username}
+              </p>
+            </div>
+            <div className="hidden shrink-0 sm:block">
+              <LevelBadge levelId={profile.level_id} showTier />
+            </div>
+          </div>
         </div>
 
         <div className="px-4 pb-5 sm:px-6 sm:pb-6">
-          {/* avatar + name + actions */}
-          <div className="-mt-12 flex flex-col gap-4 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between">
+          {/* avatar + meta + actions */}
+          <div className="-mt-12 flex flex-col gap-3 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
             <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-end">
               <span className="rounded-full bg-surface-container-lowest ring-4 ring-surface-container-lowest">
                 <Avatar
@@ -219,14 +238,11 @@ export default async function ProfilePage({
                 />
               </span>
               <div className="min-w-0 sm:pb-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="truncate text-xl font-bold text-on-surface sm:text-2xl">
-                    {profile.display_name || profile.username}
-                  </h1>
+                {/* level badge: mobile only (desktop shows on banner) */}
+                <div className="mb-1 sm:hidden">
                   <LevelBadge levelId={profile.level_id} showTier />
                 </div>
-                <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-on-surface-variant">
-                  <span>@{profile.username}</span>
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-on-surface-variant">
                   {(profile as any).provinces?.name_th && (
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5" />
