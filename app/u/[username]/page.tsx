@@ -187,8 +187,8 @@ export default async function ProfilePage({
         </p>
       )}
 
-      {/* แผงเจ้าหน้าที่ */}
-      {isStaff && (
+      {/* แผงเจ้าหน้าที่ — แสดงเฉพาะ admin/editor ที่ดูโปรไฟล์ของคนอื่น */}
+      {user && !isSelf && isStaff && (
         <ModerationPanel
           targetId={profile.id}
           username={profile.username}
