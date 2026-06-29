@@ -6,6 +6,10 @@ import {
   MessagesSquare,
   Ban,
   Swords,
+  MapPin,
+  CalendarDays,
+  Trophy,
+  Medal,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { LevelBadge } from "@/components/user-badges";
@@ -197,73 +201,108 @@ export default async function ProfilePage({
 
       {/* header */}
       <div className="card overflow-hidden">
-        <div className="h-28 bg-primary" />
-        <div className="px-6 pb-6">
-          <div className="-mt-10 flex flex-wrap items-end gap-4">
-            <span className="rounded-full ring-4 ring-surface-container-lowest">
-              <Avatar
-                src={profile.avatar_url}
-                name={profile.display_name || profile.username}
-                role={profile.role}
-                size={80}
-              />
-            </span>
-            <div className="flex-1">
-              <h1 className="text-xl font-bold">
-                {profile.display_name || profile.username}
-              </h1>
-              <p className="text-sm text-on-surface-variant">
-                @{profile.username}
-                {guild && (
-                  <>
-                    {" "}
-                    ·{" "}
+        {/* banner */}
+        <div className="relative h-28 bg-gradient-to-br from-primary via-primary to-tertiary-container sm:h-40">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_60%)]" />
+        </div>
+
+        <div className="px-4 pb-5 sm:px-6 sm:pb-6">
+          {/* avatar + name + actions */}
+          <div className="-mt-12 flex flex-col gap-4 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-end">
+              <span className="rounded-full bg-surface-container-lowest ring-4 ring-surface-container-lowest">
+                <Avatar
+                  src={profile.avatar_url}
+                  name={profile.display_name || profile.username}
+                  role={profile.role}
+                  size={96}
+                />
+              </span>
+              <div className="min-w-0 sm:pb-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h1 className="truncate text-xl font-bold text-on-surface sm:text-2xl">
+                    {profile.display_name || profile.username}
+                  </h1>
+                  <LevelBadge levelId={profile.level_id} showTier />
+                </div>
+                <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-on-surface-variant">
+                  <span>@{profile.username}</span>
+                  {(profile as any).provinces?.name_th && (
+                    <span className="inline-flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {(profile as any).provinces.name_th}
+                    </span>
+                  )}
+                  {guild && (
                     <Link
                       href={`/guilds/${guild.slug}`}
                       className="inline-flex items-center gap-1 text-primary hover:underline"
                     >
-                      <Swords className="h-3.5 w-3.5" /> {guild.name}
+                      <Swords className="h-3.5 w-3.5" />
+                      {guild.name}
                     </Link>
-                  </>
-                )}
-              </p>
+                  )}
+                </p>
+                <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-on-surface-variant">
+                  <CalendarDays className="h-3 w-3" />
+                  เข้าร่วมเมื่อ{" "}
+                  {new Date(profile.created_at).toLocaleDateString("th-TH", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <LevelBadge levelId={profile.level_id} showTier />
+
+            <div className="flex flex-wrap gap-2 sm:pb-1">
               {isSelf ? (
-                <Link href="/me" className="btn-outline">
+                <Link href="/me" className="btn-outline text-sm">
                   แก้ไขโปรไฟล์
                 </Link>
               ) : (
-                <Link
-                  href={`/messages/new?to=${profile.id}`}
-                  className="btn-accent"
-                >
-                  ส่งข้อความ
-                </Link>
+                user && (
+                  <Link
+                    href={`/messages/new?to=${profile.id}`}
+                    className="btn-accent inline-flex items-center gap-1 text-sm"
+                  >
+                    <MessageSquare className="h-4 w-4" /> ส่งข้อความ
+                  </Link>
+                )
               )}
             </div>
           </div>
 
           {profile.bio && (
-            <p className="mt-4 text-sm text-on-surface">{profile.bio}</p>
+            <p className="mt-4 whitespace-pre-wrap rounded-lg bg-surface-container-low p-3 text-sm text-on-surface">
+              {profile.bio}
+            </p>
           )}
 
           {/* progress level */}
           <div className="mt-4">
-            <div className="flex justify-between text-xs text-on-surface-variant">
-              <span>
-                คะแนนสะสม {profile.reputation.toLocaleString("th-TH")}
+            <div className="mb-1 flex items-center justify-between gap-2 text-xs text-on-surface-variant">
+              <span className="inline-flex items-center gap-1">
+                <Trophy className="h-3.5 w-3.5 text-tertiary-container" />
+                คะแนนสะสม{" "}
+                <span className="font-semibold text-on-surface">
+                  {profile.reputation.toLocaleString("th-TH")}
+                </span>
               </span>
-              {nextLevel && (
-                <span>
-                  ถัดไป: {nextLevel.name_th} ({nextLevel.min_points})
+              {nextLevel ? (
+                <span className="truncate">
+                  ถัดไป: <span className="font-medium">{nextLevel.name_th}</span>{" "}
+                  ({nextLevel.min_points.toLocaleString("th-TH")})
+                </span>
+              ) : (
+                <span className="font-medium text-tertiary-container">
+                  ระดับสูงสุดแล้ว
                 </span>
               )}
             </div>
-            <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-container">
+            <div className="h-2 overflow-hidden rounded-full bg-surface-container">
               <div
-                className="h-full bg-tertiary-container"
+                className="h-full rounded-full bg-gradient-to-r from-tertiary-container to-primary transition-all"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -273,10 +312,10 @@ export default async function ProfilePage({
 
       {/* สถิติ */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="กระทู้" value={threadCount ?? 0} />
-        <Stat label="ความเห็น" value={postCount ?? 0} />
-        <Stat label="คะแนน" value={profile.reputation} />
-        <Stat label="เหรียญ" value={badges?.length ?? 0} />
+        <Stat Icon={MessageSquare} label="กระทู้" value={threadCount ?? 0} />
+        <Stat Icon={MessagesSquare} label="ความเห็น" value={postCount ?? 0} />
+        <Stat Icon={Trophy} label="คะแนน" value={profile.reputation} />
+        <Stat Icon={Medal} label="เหรียญ" value={badges?.length ?? 0} />
       </div>
 
       {/* ประวัติการใช้งาน */}
@@ -330,35 +369,65 @@ export default async function ProfilePage({
 
       {/* badges */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold">เหรียญรางวัล</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {(badges ?? []).map((b: any, i) => (
-            <div key={i} className="card p-4 text-center">
-              <Award className="mx-auto h-7 w-7 text-tertiary-container" />
-              <p className="mt-1 text-sm font-medium">{b.badges?.name_th}</p>
-              <p className="text-xs text-on-surface-variant">
-                {b.badges?.description}
-              </p>
-            </div>
-          ))}
-          {(!badges || badges.length === 0) && (
-            <p className="text-sm text-on-surface-variant">
-              ยังไม่มีเหรียญรางวัล
-            </p>
+        <h2 className="mb-3 flex items-center gap-2 border-l-4 border-tertiary-container pl-3 text-lg font-bold">
+          <Award className="h-5 w-5 text-tertiary-container" /> เหรียญรางวัล
+          {badges && badges.length > 0 && (
+            <span className="text-sm font-normal text-on-surface-variant">
+              ({badges.length})
+            </span>
           )}
-        </div>
+        </h2>
+        {(badges ?? []).length > 0 ? (
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+            {(badges ?? []).map((b: any, i) => (
+              <div
+                key={i}
+                className="card flex items-start gap-2 p-3 transition hover:-translate-y-0.5 hover:shadow-card"
+              >
+                <Award className="h-6 w-6 shrink-0 text-tertiary-container" />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-on-surface">
+                    {b.badges?.name_th}
+                  </p>
+                  <p className="line-clamp-2 text-xs text-on-surface-variant">
+                    {b.badges?.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="card p-6 text-center text-sm text-on-surface-variant">
+            ยังไม่มีเหรียญรางวัล
+          </p>
+        )}
       </section>
     </div>
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({
+  Icon,
+  label,
+  value,
+}: {
+  Icon?: any;
+  label: string;
+  value: number;
+}) {
   return (
-    <div className="card p-4 text-center">
-      <p className="text-xl font-bold text-primary sm:text-2xl">
-        {value.toLocaleString("th-TH")}
-      </p>
-      <p className="text-xs text-on-surface-variant">{label}</p>
+    <div className="card flex items-center gap-3 p-3 sm:p-4">
+      {Icon && (
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-container/10 text-primary">
+          <Icon className="h-5 w-5" />
+        </span>
+      )}
+      <div className="min-w-0">
+        <p className="text-lg font-bold leading-tight text-on-surface sm:text-xl">
+          {value.toLocaleString("th-TH")}
+        </p>
+        <p className="text-xs text-on-surface-variant">{label}</p>
+      </div>
     </div>
   );
 }
