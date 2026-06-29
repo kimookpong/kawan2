@@ -119,10 +119,11 @@ export function AppShell({
           key={href}
           href={href}
           onClick={onClick}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive(href)
-            ? "bg-primary text-on-primary"
-            : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
-            }`}
+          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+            isActive(href)
+              ? "bg-primary text-on-primary"
+              : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
+          }`}
         >
           <Icon className="h-5 w-5 shrink-0" />
           {label}
@@ -132,10 +133,11 @@ export function AppShell({
         <Link
           href="/admin"
           onClick={onClick}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive("/admin")
-            ? "bg-primary text-on-primary"
-            : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
-            }`}
+          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+            isActive("/admin")
+              ? "bg-primary text-on-primary"
+              : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
+          }`}
         >
           <Shield className="h-5 w-5 shrink-0" /> แผงผู้ดูแล
         </Link>
@@ -178,7 +180,7 @@ export function AppShell({
             />
           </form>
 
-          <div className="ml-auto flex items-center gap-1">
+          <div className="ml-auto flex items-center gap-1 pr-2">
             {user && profile ? (
               <div className="relative">
                 <button
@@ -263,12 +265,12 @@ export function AppShell({
                           },
                           ...(profile.role === "admin"
                             ? [
-                              {
-                                href: "/admin",
-                                Icon: Shield,
-                                label: "แผงผู้ดูแล",
-                              },
-                            ]
+                                {
+                                  href: "/admin",
+                                  Icon: Shield,
+                                  label: "แผงผู้ดูแล",
+                                },
+                              ]
                             : []),
                           {
                             href: "/membership",
@@ -366,11 +368,7 @@ export function AppShell({
                 className="flex items-center gap-2"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/image2.png"
-                  alt="Kawan2"
-                  className="h-6 w-auto"
-                />
+                <img src="/image2.png" alt="Kawan2" className="h-6 w-auto" />
               </Link>
               <button
                 onClick={() => setOpen(false)}
