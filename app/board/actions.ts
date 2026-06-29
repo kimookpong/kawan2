@@ -45,6 +45,7 @@ const threadUpdateSchema = z.object({
   thread_id: z.coerce.number().int().positive(),
   title: z.string().min(5, "หัวข้อสั้นเกินไป").max(200),
   body: z.string().min(10, "เนื้อหาสั้นเกินไป"),
+  category_id: z.coerce.number().int().positive(),
   members_only: z.boolean().optional(),
 });
 
@@ -68,6 +69,7 @@ export async function updateThread(formData: FormData) {
     thread_id: formData.get("thread_id"),
     title: formData.get("title"),
     body: formData.get("body"),
+    category_id: formData.get("category_id"),
     members_only: formData.get("members_only") === "1",
   });
   if (!parsed.success) {
@@ -79,6 +81,7 @@ export async function updateThread(formData: FormData) {
     .update({
       title: parsed.data.title,
       body: parsed.data.body,
+      category_id: parsed.data.category_id,
       members_only: parsed.data.members_only ?? false,
       updated_at: new Date().toISOString(),
     })

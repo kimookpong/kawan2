@@ -24,7 +24,7 @@ export default async function EditThreadPage({
 
   const { data: thread } = await supabase
     .from("threads")
-    .select("id, title, body, author_id, members_only, categories(name_th)")
+    .select("id, title, body, author_id, members_only, category_id, categories(name_th)")
     .eq("id", threadId)
     .single();
 
@@ -36,6 +36,11 @@ export default async function EditThreadPage({
   }
 
   const cat: any = thread.categories;
+
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("id, name_th")
+    .order("sort_order");
 
   return (
     <div className="w-full">
@@ -68,13 +73,24 @@ export default async function EditThreadPage({
           />
         </div>
 
-        {cat && (
+        {categories && (
           <div>
             <label className="mb-1 block text-sm font-medium">หมวดหมู่</label>
-            <p className="rounded border border-outline-variant bg-surface-container-low px-3 py-2 text-sm text-on-surface-variant">
-              {cat.name_th}{" "}
-              <span className="text-xs">(ไม่สามารถเปลี่ยนได้)</span>
-            </p>
+            <select
+              name="category_id"
+              defaultValue={thread.category_id}
+              required
+              className="w-full rounded border border-outline-variant bg-surface px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+            >
+              <option value="" disabled>
+                -- เลือกหมวดหมู่ --
+              </option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name_th}
+                </option>
+              ))}
+            </select>
           </div>
         )}
 
