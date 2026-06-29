@@ -202,20 +202,22 @@ export default async function ProfilePage({
       {/* header */}
       <div className="card overflow-hidden">
         {/* banner: gradient + name overlay */}
-        <div className="relative h-32 bg-gradient-to-br from-primary via-primary to-tertiary-container sm:h-44">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_60%)]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+        <div className="relative h-32 bg-gradient-to-br from-primary/85 via-primary to-tertiary-container sm:h-44">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.25),transparent_55%)]" />
 
           {/* Display name on banner (right of where avatar will sit) */}
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-3 pl-4 sm:p-5 sm:pl-32">
             <div className="min-w-0 flex-1">
               <h1
-                className="truncate text-xl font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] sm:text-3xl"
-                style={{ textShadow: "0 1px 3px rgba(0,0,0,.45)" }}
+                className="truncate text-xl font-extrabold text-white sm:text-3xl"
+                style={{ textShadow: "0 1px 4px rgba(0,0,0,.55)" }}
               >
                 {profile.display_name || profile.username}
               </h1>
-              <p className="mt-0.5 truncate text-xs text-white/85 sm:text-sm">
+              <p
+                className="mt-0.5 truncate text-xs text-white/90 sm:text-sm"
+                style={{ textShadow: "0 1px 2px rgba(0,0,0,.5)" }}
+              >
                 @{profile.username}
               </p>
             </div>

@@ -6,6 +6,7 @@ import {
   MessageSquare,
   ChevronLeft,
   ChevronRight,
+  Search,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { NEWS_FALLBACK_IMG } from "@/lib/constants";
@@ -62,12 +63,20 @@ export default async function NewsPage({
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-primary sm:text-2xl">ข่าวสาร</h1>
         {canWrite && (
-          <Link
-            href="/news/new"
-            className="btn-accent inline-flex items-center gap-1"
-          >
-            <Plus className="h-4 w-4" /> เขียนข่าว
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/news/fetch"
+              className="inline-flex items-center gap-1 rounded-full border border-outline-variant px-4 py-2 text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors"
+            >
+              <Search className="h-4 w-4" /> ดึงข่าวออนไลน์
+            </Link>
+            <Link
+              href="/news/new"
+              className="btn-accent inline-flex items-center gap-1"
+            >
+              <Plus className="h-4 w-4" /> เขียนข่าว
+            </Link>
+          </div>
         )}
       </div>
 
