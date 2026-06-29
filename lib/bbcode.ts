@@ -38,7 +38,7 @@ export function renderBBCode(input: string | null | undefined): string {
   });
   s = s.replace(/\[tiktok\]\s*([^\[\]\s]+)\s*\[\/tiktok\]/gi, (m, u: string) => {
     const raw = unescapeUrl(u);
-    const idm = raw.match(/\/video\/(\d{6,})/) || raw.match(/^(\d{6,})$/);
+    const idm = raw.match(/\/(?:video|photo)\/(\d{6,})/) || raw.match(/^(\d{6,})$/);
     if (!idm) return m;
     return `<span class="bbcode-tiktok"><iframe src="https://www.tiktok.com/embed/v2/${idm[1]}" scrolling="no" frameborder="0" allowfullscreen loading="lazy"></iframe></span>`;
   });
